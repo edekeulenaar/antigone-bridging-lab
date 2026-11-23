@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4 Code with a chatbot · Bridging</title>
+<meta name="description" content="Turn your bridging metrics into a prompt, and code your thread with a chatbot.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Steps">
+    <a href="index.html">Instructions</a>
+    <a href="posts.html">1 Pick a post</a>
+    <a href="read.html">2 Close read</a>
+    <a href="metrics.html">3 Define metrics</a>
+    <a href="prompt.html" aria-current="page">4 Code with a chatbot</a>
+    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>4 · Code the thread with a chatbot</h1>
+  <p class="lede">This page writes the prompt for you, from your post and your three metrics. Give it to a chatbot together with your
+  thread's CSV: the chatbot adds three columns, <code>metric_A</code>, <code>metric_B</code> and <code>metric_C</code>, with <i>yes</i> or <i>no</i>
+  for every comment.</p>
+
+  <section class="step">
+    <header><span class="n">1</span><h2>Your post and your metrics</h2></header>
+    <div class="row">
+      <label class="field" style="flex:1 1 420px"><span>Your post</span><select id="post"><option value="">Loading…</option></select></label>
+      <button type="button" class="btn" id="dl-thread">Download its thread (CSV)</button>
+      <span class="msg" id="thread-msg"></span>
+    </div>
+    <div id="mets" class="grid3" style="margin-top:14px"></div>
+    <p class="small" style="margin-top:10px"><a href="metrics.html">Edit your metrics</a> — they are saved in this browser, so the prompt below updates when you come back.</p>
+  </section>
+
+  <section class="step">
+    <header><span class="n">2</span><h2>Your prompt</h2><span class="sub">edit it if you like: it is yours to design</span></header>
+    <textarea id="prompt" rows="18" spellcheck="false" aria-label="The prompt"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="btn primary" id="copy">Copy the prompt</button>
+      <button type="button" class="btn" id="dl">Download it as a text file</button>
+      <button type="button" class="btn" id="reset">Rewrite it from my metrics</button>
+      <span class="msg" id="copy-msg"></span>
+    </div>
+    <p class="small muted" style="margin-top:8px">Your edits to the prompt are kept in this browser. Put your final prompt in your hand-in.</p>
+  </section>
+
+  <section class="step"><div class="prose">
+    <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">3</span><h2 style="margin:0">Run it</h2></header>
+    <ol>
+      <li><b>Open your chatbot</b> — ChatGPT, Claude, Gemini, Mistral, DeepSeek or another — in a new conversation.</li>
+      <li><b>Attach the thread's CSV</b> (paperclip or <i>+</i> button) and <b>paste the prompt</b> in the same message. Send.</li>
+      <li><b>Download the CSV it returns.</b> If it prints the CSV as text instead, copy all of it into a plain-text editor and save it as <code>.csv</code>.</li>
+      <li><b>Check that every row came back,</b> with the three new columns filled. Free versions often stop part-way: if rows are missing,
+        split the thread into parts (below), send each part with the same prompt in a new conversation, and upload all the parts together in step 5.</li>
+      <li><b>Use the same chatbot for every part</b>, and note its name and the date.</li>
+    </ol>
+    <details class="more"><summary>Split the thread into parts</summary>
+      <div class="row" style="margin-top:10px">
+        <label class="field"><span>Rows per part</span><input type="number" id="per" value="80" min="10" max="2000"></label>
+        <button type="button" class="btn" id="split">Make the parts</button>
+      </div>
+      <div class="row" id="parts" style="margin-top:10px;gap:8px"></div>
+    </details>
+  </div></section>
+
+  <section class="step"><div class="prose">
+    <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">4</span><h2 style="margin:0">Check the chatbot's coding</h2></header>
+    <ol>
+      <li><b>Code 20 comments yourself.</b> In the returned CSV, add three columns, <code>mine_A</code>, <code>mine_B</code> and <code>mine_C</code>,
+        and write <i>yes</i> or <i>no</i> in them for 20 comments of your choice — some that the chatbot marked <i>yes</i>, some <i>no</i>. Code them
+        from your rule, without looking at the chatbot's answer.</li>
+      <li><b>Upload the file in step 5.</b> The page compares your columns with the chatbot's and shows, for each metric, how often you agree.</li>
+      <li><b>If you agree on fewer than about 8 comments in 10</b>, your rule is not precise enough, or the chatbot misreads it: sharpen the rule
+        (in step 3, or in the prompt), and run it again.</li>
+    </ol>
+  </div></section>
+  <p style="margin-top:24px"><a class="btn primary" href="order.html">Next: upload and order →</a></p>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF } = LAB;
+let META = null, ROWS = null;
+const M = (() => { const m = LAB.store.get("metrics"); return Array.isArray(m) && m.length === 3 ? m : [{}, {}, {}]; })();
+
+$("#mets").append(...M.map((m, j) => el("div", { class: "metric" },
+  el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `metric_${"ABC"[j]}: ${m.name || "not defined yet"}` })),
+  m.rule ? el("p", { class: "small", text: m.rule }) : el("p", { class: "small err", text: "No coding rule yet: define it in step 3." }))));
+
+LAB.postSelect($("#post")).then(d => { META = d; if ($("#post").value) load($("#post").value); else build(); })
+  .catch(e => { $("#thread-msg").textContent = "The posts could not be loaded: " + e.message; build(); });
+$("#post").onchange = () => { const id = $("#post").value; if (!id) return; LAB.store.set("post", id); load(id); };
+
+async function load(id) {
+  $("#thread-msg").className = "msg"; $("#thread-msg").textContent = "Loading …";
+  try { ROWS = await LAB.threadRows(id, true); $("#thread-msg").textContent = `${NF.format(ROWS.length)} rows`; }
+  catch (e) { ROWS = null; $("#thread-msg").className = "msg err"; $("#thread-msg").textContent = "Could not load the thread: " + e.message; }
+  build(true);
+}
+
+function generate() {
+  const id = $("#post").value, p = META && META.posts.find(x => x.id === id);
+  const comments = (ROWS || []).filter(r => /reply|note/i.test(r.Type));
+  const counts = new Map(); comments.forEach(r => LAB.splitStatements(r.Statement).forEach(s => counts.set(s.label || s.key, (counts.get(s.label || s.key) || 0) + 1)));
+  const post = (ROWS || []).find(r => /original/i.test(r.Type)), fcs = (ROWS || []).filter(r => /fact/i.test(r.Type));
+  const side = r => r && r.Statement ? LAB.splitStatements(r.Statement).map(s => s.label || s.key) : [];
+  const L = ["You are helping with a research project on how people disagree in X (Twitter) threads.", "",
+    "I attach a CSV file with one X thread. Each row is one item; the column \"Type\" says which: the original post, a fact-check, a community note or a reply. "
+    + "The text is in the column \"text_translated\" (an English translation) or, where that is empty, in \"text\". "
+    + "The column \"Statement\" lists the statements each item makes, separated by \" | \".", ""];
+  if (p) {
+    L.push("THE THREAD", `The post, by @${p.poster}, was fact-checked. The claim checked: "${p.checked}"`);
+    p.verdicts.forEach(v => L.push(`${v.by} rated it ${v.rating && v.rating.toLowerCase() !== v.verdict.toLowerCase() ? `"${v.rating}" (${v.verdict})` : v.verdict}.`));
+    L.push(`${p.notes} community notes: ${p.notes_misleading} say the post is misleading, ${p.notes_not} say it is not.`, "");
+  }
+  if (counts.size) {
+    L.push(`THE STATEMENTS IN THIS THREAD, and how many of its ${comments.length} comments make each`);
+    [...counts].sort((a, b) => b[1] - a[1]).forEach(([t, n], k) => L.push(`${k + 1}. ${t} — ${n} comment${n === 1 ? "" : "s"} (${(100 * n / comments.length).toFixed(n / comments.length < 0.01 ? 1 : 0)}%)`));
+    if (side(post).length) L.push("", "The original post makes: " + side(post).join(" | "));
+    if (fcs.some(f => side(f).length)) L.push("The fact-check makes: " + fcs.flatMap(side).join(" | "));
+    L.push("");
+  }
+  L.push("TASK", "Code every community note and every reply on three bridging metrics. Add three new columns, \"metric_A\", \"metric_B\" and \"metric_C\", and write yes or no in each.", "");
+  M.forEach((m, j) => { L.push(`metric_${"ABC"[j]} — ${m.name || "(name)"}`);
+    if (m.def) L.push(`What it captures: ${m.def}`);
+    L.push(`Code yes when: ${m.rule || "(write the coding rule in step 3)"}`); if (m.example) L.push(`Example of a yes: ${m.example}`); L.push(""); });
+  L.push("RULES", "- Apply each rule exactly as written. When a comment does not clearly meet a rule, write no.",
+    "- Judge what the comment says, not whether it is true.", "- Leave the three new columns empty for the original post and the fact-check.",
+    "- Do not change, reorder, add or delete any other row or column.", "",
+    "OUTPUT", "Return the complete CSV file with the three new columns, as a file I can download. If you cannot make files, print the whole CSV in one code block. "
+    + "Do not skip, shorten or summarise rows. If the file is too long to finish, say so instead of stopping silently.");
+  return L.join("\n");
+}
+function build() {   // the student's own edited prompt for this post, if there is one; otherwise a fresh one
+  const saved = LAB.store.get("prompt:" + ($("#post").value || "none"));
+  $("#prompt").value = saved || generate();
+  if (saved) $("#copy-msg").textContent = "This is your edited prompt from before. “Rewrite it from my metrics” starts again.";
+}
+$("#prompt").addEventListener("input", () => LAB.store.set("prompt:" + ($("#post").value || "none"), $("#prompt").value));
+$("#reset").onclick = () => { LAB.store.del("prompt:" + ($("#post").value || "none")); $("#prompt").value = generate(); $("#copy-msg").textContent = "Rewritten from your metrics."; };
+$("#copy").onclick = () => { const t = $("#prompt").value, m = $("#copy-msg");
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => m.textContent = "Copied.",
+    () => { $("#prompt").select(); try { document.execCommand("copy"); m.textContent = "Copied."; } catch (e) { m.textContent = "Select the prompt and copy it by hand."; } }); };
+$("#dl").onclick = () => LAB.download("bridging_prompt.txt", $("#prompt").value, "text/plain");
+$("#dl-thread").onclick = () => { if (!ROWS) { $("#thread-msg").textContent = "Choose a post first."; return; }
+  LAB.download(`post_${$("#post").value}_thread.csv`, LAB.toCSV(LAB.OUT_COLS, ROWS)); };
+$("#split").onclick = () => {
+  if (!ROWS) { $("#parts").replaceChildren(el("span", { class: "msg err", text: "Choose a post first." })); return; }
+  const per = Math.max(10, +$("#per").value || 80), head = ROWS.filter(r => !/reply|note/i.test(r.Type)), body = ROWS.filter(r => /reply|note/i.test(r.Type));
+  const parts = []; for (let i = 0; i < body.length; i += per) parts.push((i === 0 ? head : []).concat(body.slice(i, i + per)));
+  $("#parts").replaceChildren(...parts.map((rows, k) => el("button", { type: "button", class: "btn small", text: `Part ${k + 1} of ${parts.length} (${rows.length} rows)`,
+    onclick: () => LAB.download(`post_${$("#post").value}_part${k + 1}of${parts.length}.csv`, LAB.toCSV(LAB.OUT_COLS, rows)) })));
+};
+</script>
+</body>
+</html>

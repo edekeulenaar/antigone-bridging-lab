@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5–6 Upload &amp; order · Bridging</title>
+<meta name="description" content="Upload a thread coded by your bridging metrics and order it by engagement, time, or your metrics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Steps">
+    <a href="index.html">Instructions</a>
+    <a href="posts.html">1 Pick a post</a>
+    <a href="read.html">2 Close read</a>
+    <a href="metrics.html">3 Define metrics</a>
+    <a href="prompt.html">4 Code with a chatbot</a>
+    <a href="order.html" aria-current="page">5–6 Upload &amp; order</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>5–6 · Upload your coded thread, and order it</h1>
+  <p class="lede">Upload the CSV the chatbot returned. Then decide how the thread is ordered: by engagement, by time, or by your metrics.
+  Your result is saved in this browser as you work; download it to open it on another computer, or as a page to show in class.</p>
+
+  <section class="step" id="saved-box" hidden>
+    <header><h2>Your saved results</h2><span class="sub">in this browser</span></header>
+    <div class="tw"><table id="saved"></table></div>
+  </section>
+
+  <section class="step">
+    <header><span class="n">5</span><h2>Upload</h2><span class="sub">the coded CSV — several files if the chatbot returned parts — or a result file you saved</span></header>
+    <div id="drop"></div>
+    <div id="found" class="found" style="margin-top:14px"></div>
+  </section>
+
+  <section class="step off" id="s-order">
+    <header><span class="n">6</span><h2>Order the thread</h2><span class="sub" id="order-sub"></span></header>
+    <div class="row" id="levels" style="align-items:flex-end"></div>
+    <p class="found" id="order-says" style="margin-top:10px"></p>
+    <div class="row" id="counts" style="gap:8px;margin:6px 0 14px"></div>
+    <div class="row" style="margin-bottom:12px">
+      <label class="ck"><input type="checkbox" id="compare" checked> side by side with X's order (most liked first)</label>
+      <label class="field"><span>Show</span><select id="topk"><option value="10">top 10</option><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
+    </div>
+    <div id="view"></div>
+    <details class="more" style="margin-top:20px"><summary>Your metrics (as they will appear in your presentation)</summary>
+      <div class="grid3" id="mets" style="margin-top:12px"></div>
+      <button type="button" class="btn small" id="from-step3" style="margin-top:10px">Take them again from step 3</button>
+    </details>
+  </section>
+
+  <section class="step off" id="s-save">
+    <header><h2>Save and show</h2><span class="sub" id="save-state"></span></header>
+    <div class="row">
+      <label class="field" style="flex:1 1 300px"><span>Name of this result</span><input type="text" id="rname" placeholder="for example: Group 3 — Putin interview"></label>
+      <label class="field"><span>Comments in the presentation</span><select id="pres"><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button type="button" class="btn primary" id="dl-pres">Download a presentation page</button>
+      <button type="button" class="btn" id="dl-result">Download your result file</button>
+      <button type="button" class="btn" id="dl-csv">Download the ordered CSV</button>
+    </div>
+    <p class="small muted" style="margin-top:10px">The <b>presentation page</b> opens in any browser, offline too: bring it to class. The <b>result file</b>
+    holds everything — your coded thread, your metrics, your order — and opens here again, on any computer.</p>
+  </section>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF, esc } = LAB;
+const L3 = ["A", "B", "C"], COL = { A: "var(--g1)", B: "var(--g2)", C: "var(--g3)" }, HEX = { A: "#2a78d6", B: "#eb6834", C: "#1baf7a" };
+const lc = s => String(s || "").toLowerCase().replace(/[\s_-]+/g, "");
+let R = null;        // the current result
+let ITEMS = [];      // its comments
+let D = null;        // what is where in its file
+
+/* ---------- saved results ---------- */
+function drawSaved() {
+  const list = LAB.results.list();
+  $("#saved-box").hidden = !list.length;
+  $("#saved").replaceChildren(el("thead", {}, el("tr", {}, el("th", { text: "Result" }), el("th", { text: "Last saved" }), el("th", { text: "" }))),
+    el("tbody", {}, ...list.map(r => el("tr", {}, el("td", {}, el("b", { text: r.name || "(no name)" }), r.metrics ? el("div", { class: "small muted", text: r.metrics }) : null),
+      el("td", { class: "small", text: r.savedAt ? new Date(r.savedAt).toLocaleString() : "" }),
+      el("td", { class: "num" }, el("button", { type: "button", class: "btn small" + (R && R.id === r.id ? "" : " primary"), text: R && R.id === r.id ? "Open now" : "Open",
+          onclick: () => { const d = LAB.results.load(r.id); if (!d) { alert("This result could not be read back from the browser."); return; } openResult(Object.assign({ id: r.id }, d, d.settings)); } }), " ",
+        el("button", { type: "button", class: "btn small", text: "Delete", onclick: () => { if (confirm(`Delete “${r.name}” from this browser? Download its result file first if you want to keep it.`)) {
+          LAB.results.del(r.id); if (R && R.id === r.id) { R = null; location.reload(); } else drawSaved(); } } }))))));
+}
+
+/* ---------- upload ---------- */
+function cleanCSV(t) {   // what a chatbot wraps around a CSV: code fences, a sentence before the header
+  t = String(t).replace(/^﻿/, "");
+  const fence = t.match(/```[a-zA-Z]*\s*\r?\n([\s\S]*?)```/); if (fence) t = fence[1];
+  const lines = t.split(/\r?\n/), k = lines.findIndex(l => (l.match(/[,;\t]/g) || []).length >= 3);
+  return k > 0 ? lines.slice(k).join("\n") : t;
+}
+LAB.filezone($("#drop"), (files, say) => {
+  try {
+    const json = files.find(f => /\.json$/i.test(f.name) || /^\s*\{/.test(f.text));
+    if (json) { const d = JSON.parse(json.text);
+      if (d.app !== "antigone-bridging-result" || !Array.isArray(d.rows)) throw new Error("this is not a result file of this site");
+      openResult(Object.assign({}, d, { id: d.id || LAB.newId() }), true); say(`Opened ${json.name}`, "msg ok"); return; }
+    files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    const parsed = files.map(f => ({ name: f.name, p: LAB.parseCSV(cleanCSV(f.text)) })).filter(x => x.p.rows.length);
+    if (!parsed.length) throw new Error("no rows could be read");
+    const cols = []; parsed.forEach(x => x.p.cols.forEach(c => { if (!cols.includes(c)) cols.push(c); }));
+    const seen = new Set(), rows = [];
+    for (const x of parsed) for (const r of x.p.rows) {
+      const typeCol = LAB.findCol(cols, ["Type"]), k = LAB.kindOf(typeCol ? r[typeCol] : "");
+      if (k === "post" || k === "factcheck") { const key = k + "|" + (r.text || r.text_translated || ""); if (seen.has(key)) continue; seen.add(key); }
+      rows.push(r);
+    }
+    const postCol = LAB.findCol(cols, ["post_id"]);
+    const postId = postCol ? (rows.map(r => String(r[postCol] || "").trim()).find(v => /^\d{6,}$/.test(v)) || null) : null;
+    const m = LAB.store.get("metrics");
+    const bare = n => n.replace(/\.(csv|tsv|txt)$/i, "");
+    const name = parsed.length > 1 ? `${bare(parsed[0].name)} (+${parsed.length - 1} more part${parsed.length > 2 ? "s" : ""})` : bare(parsed[0].name);
+    openResult({ id: LAB.newId(), name, postId, cols, rows, metrics: Array.isArray(m) && m.length === 3 ? m : [{}, {}, {}], map: null,
+      order: ["A", "eng", ""], compare: true, topk: 20, pres: 20 }, true);
+    say(`${parsed.map(x => `${x.name}: ${NF.format(x.p.rows.length)} rows`).join(" · ")}`, "msg ok");
+  } catch (e) { say("The file could not be read: " + e.message, "msg err"); }
+}, { multiple: true, accept: ".csv,text/csv,.tsv,.txt,.json,application/json", label: "Drop your coded CSV (or all its parts, or a result file) here, or" });
+
+function guessMap(cols, rows, metrics) {
+  const map = {}, used = new Set();
+  L3.forEach((L, j) => { const nm = (metrics[j] && metrics[j].name) || "";
+    const c = LAB.findCol(cols, [`metric_${L}`, `metric ${L}`, `metric${L}`, `bridging_${L}`])
+      || (nm && cols.find(x => lc(x) === lc(nm))) || (nm && lc(nm).length > 3 && cols.find(x => lc(x).includes(lc(nm)) && !/^mine/i.test(x)));
+    if (c && !used.has(c)) { map[L] = c; used.add(c); } });
+  const typeCol = LAB.findCol(cols, ["Type"]);
+  const com = rows.filter(r => !typeCol || !["post", "factcheck"].includes(LAB.kindOf(r[typeCol])));
+  const cands = cols.filter(c => !LAB.OUT_COLS.includes(c) && !used.has(c) && !/^(mine|my)[ _-]?[abc]$/i.test(c) && !/sample_id|rank/i.test(c)
+    && com.some(r => String(r[c] ?? "").trim()) && com.filter(r => LAB.isYesNo(r[c])).length >= 0.9 * com.length);
+  L3.forEach(L => { if (!map[L] && cands.length) { map[L] = cands.shift(); used.add(map[L]); } });
+  return map;
+}
+
+function openResult(r, fresh) {
+  R = Object.assign({ order: ["A", "eng", ""], compare: true, topk: 20, pres: 20, metrics: [{}, {}, {}] }, r);
+  D = LAB.describe(R.cols, R.rows);
+  D.timeCol = LAB.findCol(R.cols, ["timestamp", "created_at", "date", "time", "datetime"]);
+  if (!R.map || !Object.values(R.map).some(c => R.cols.includes(c))) R.map = guessMap(R.cols, R.rows, R.metrics);
+  if (fresh) { const ok = LAB.results.saveData(R.id, { id: R.id, name: R.name, savedAt: new Date().toISOString(), metrics: metricNames() },
+    { app: "antigone-bridging-result", name: R.name, postId: R.postId, cols: R.cols, rows: R.rows });
+    R.persist = ok; persist(); }
+  ["#s-order", "#s-save"].forEach(s => $(s).classList.remove("off"));
+  $("#rname").value = R.name || ""; $("#compare").checked = R.compare !== false; $("#topk").value = String(R.topk || 20); $("#pres").value = String(R.pres || 20);
+  build(); drawFound(); drawLevels(); drawMets(); render(); drawSaved();
+  if (fresh) document.getElementById("s-order").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+const metricNames = () => R.metrics.map((m, j) => `${L3[j]}: ${(m && m.name) || "—"}`).join(" · ");
+function persist() {
+  if (!R) return;
+  const ok = LAB.results.saveSettings(R.id, { metrics: R.metrics, map: R.map, order: R.order, compare: R.compare, topk: R.topk, pres: R.pres, name: R.name, postId: R.postId },
+    { name: R.name, metrics: metricNames() });
+  const good = ok && R.persist !== false;
+  $("#save-state").textContent = good ? "✓ saved in this browser" : "⚠ this browser could not keep a copy: download your result file";
+  $("#save-state").style.color = good ? "var(--good)" : "var(--bad)";
+}
+
+/* ---------- reading the file ---------- */
+const mname = L => { const m = R.metrics[L3.indexOf(L)]; return (m && m.name) || `Metric ${L}`; };
+function build() {
+  const likeOf = r => { const k = D.typeCol ? LAB.kindOf(r[D.typeCol]) : "comment", c = k === "note" ? (D.ratingCol || D.likeCol) : D.likeCol;
+    return Math.max(0, +String(c ? r[c] ?? "" : "").replace(/[^\d.]/g, "") || 0); };
+  ITEMS = R.rows.map((r, i) => ({ i, r, kind: D.typeCol ? LAB.kindOf(r[D.typeCol]) : "comment" })).filter(x => x.kind !== "post" && x.kind !== "factcheck")
+    .map(x => Object.assign(x, { text: String(x.r[D.textCol] ?? "").trim() || String(x.r[D.origCol] ?? "").trim(), likes: likeOf(x.r),
+      t: D.timeCol ? LAB.parseTime(x.r[D.timeCol]) : NaN, m: Object.fromEntries(L3.map(L => [L, !!(R.map[L] && LAB.yes(x.r[R.map[L]]))])),
+      st: D.stCands[0] ? LAB.splitStatements(x.r[D.stCands[0]]) : [] }));
+}
+function drawFound() {
+  const N = ITEMS.length, warn = [];
+  const sel = L => { const s = el("select", { "aria-label": `Column of metric ${L}` }, el("option", { value: "", text: "(no column)" }), ...R.cols.map(c => el("option", { value: c, text: c })));
+    s.value = R.map[L] || ""; s.onchange = () => { R.map[L] = s.value; persist(); build(); drawFound(); drawLevels(); render(); }; return s; };
+  if (!L3.some(L => R.map[L])) warn.push("No metric columns were found. The chatbot should have added metric_A, metric_B and metric_C: pick the right columns below, or check the file it returned.");
+  L3.forEach(L => { if (R.map[L]) { const filled = ITEMS.filter(x => String(x.r[R.map[L]] ?? "").trim()).length;
+    if (filled < N) warn.push(`“${R.map[L]}” (${mname(L)}) is empty for ${N - filled} of ${N} comments: the chatbot may have stopped part-way. Those count as no.`); } });
+  if (!D.likeCol) warn.push("No likes column: engagement treats every comment as 0 likes.");
+  if (!D.timeCol || ITEMS.every(x => isNaN(x.t))) warn.push("No readable dates: chronological order falls back to the order of your file.");
+  else { const bad = ITEMS.filter(x => isNaN(x.t)).length; if (bad) warn.push(`${bad} comments have no readable date; in chronological order they come last.`); }
+  // agreement with the student's own coding
+  const agree = L3.map(L => { const mine = LAB.findCol(R.cols, [`mine_${L}`, `mine ${L}`, `my_${L}`, `mine${L}`]); if (!mine || !R.map[L]) return null;
+    const pairs = ITEMS.filter(x => String(x.r[mine] ?? "").trim() && String(x.r[R.map[L]] ?? "").trim()); if (!pairs.length) return null;
+    const a = pairs.filter(x => LAB.yes(x.r[mine]) === LAB.yes(x.r[R.map[L]])).length;
+    return { L, n: pairs.length, a, botOnly: pairs.filter(x => !LAB.yes(x.r[mine]) && LAB.yes(x.r[R.map[L]])).length, youOnly: pairs.filter(x => LAB.yes(x.r[mine]) && !LAB.yes(x.r[R.map[L]])).length }; }).filter(Boolean);
+  R.agreement = agree;
+  $("#found").replaceChildren(
+    el("p", {}, el("b", { text: R.name }), ` · ${NF.format(R.rows.length)} rows, of which `, el("b", { text: NF.format(N) }), " comments.",
+      R.postId ? ` Post ${R.postId}.` : ""),
+    el("div", { class: "row", style: "margin:10px 0" }, ...L3.map(L => el("label", { class: "field" },
+      el("span", { html: `<span style="color:${COL[L]}">●</span> ${esc(mname(L))} is in the column` }), sel(L)))),
+    el("p", {}, ...L3.filter(L => R.map[L]).map(L => { const n = ITEMS.filter(x => x.m[L]).length;
+      return el("span", { style: "margin-right:18px" }, el("b", { text: mname(L) }), `: ${n} yes (${N ? Math.round(100 * n / N) : 0}%)`); })),
+    agree.length ? el("div", { class: "tw", style: "margin:8px 0" }, el("table", {}, el("thead", {}, el("tr", {}, ...["Your check", "compared", "agree", "chatbot yes, you no", "you yes, chatbot no"].map((t, k) => el("th", { class: k ? "num" : "", text: t })))),
+      el("tbody", {}, ...agree.map(g => el("tr", {}, el("td", { text: mname(g.L) }), el("td", { class: "num", text: g.n }),
+        el("td", { class: "num " + (g.a / g.n >= 0.8 ? "diff-ok" : "diff-bad"), text: `${g.a} · ${Math.round(100 * g.a / g.n)}%` }), el("td", { class: "num", text: g.botOnly }), el("td", { class: "num", text: g.youOnly })))))) : null,
+    ...warn.map(w => el("p", { class: "err", text: w })));
+}
+
+/* ---------- ordering ---------- */
+const KEYS = () => [["", "—"], ["eng", "Engagement: most liked first"], ["old", "Chronological: oldest first"], ["new", "Chronological: newest first"],
+  ...L3.filter(L => R.map[L]).map(L => [L, `${mname(L)} first`])];
+function drawLevels() {
+  const opts = KEYS();
+  $("#levels").replaceChildren(...[0, 1, 2].map(k => { const s = el("select", { "aria-label": `Order, level ${k + 1}` }, ...opts.filter(o => k > 0 || o[0]).map(([v, t]) => el("option", { value: v, text: t })));
+    const valid = opts.filter(o => k > 0 || o[0]).some(o => o[0] === R.order[k]);
+    s.value = valid ? R.order[k] : (k === 0 ? "eng" : "");
+    R.order[k] = s.value; s.onchange = () => { R.order[k] = s.value; persist(); render(); };
+    return el("label", { class: "field" }, el("span", { text: ["Order by", "then by", "then by"][k] }), s); }));
+}
+function compare(order) {
+  return (a, b) => { for (const k of order) { if (!k) continue; let d = 0;
+      if (L3.includes(k)) d = (b.m[k] ? 1 : 0) - (a.m[k] ? 1 : 0);
+      else if (k === "eng") d = b.likes - a.likes;
+      else if (k === "old") d = (isNaN(a.t) ? Infinity : a.t) - (isNaN(b.t) ? Infinity : b.t);
+      else if (k === "new") d = (isNaN(b.t) ? -Infinity : b.t) - (isNaN(a.t) ? -Infinity : a.t);
+      if (d) return d > 0 ? 1 : -1; }
+    return a.i - b.i; };
+}
+const LABEL = k => ({ eng: "the most liked first", old: "the oldest first", new: "the newest first" }[k] || `those marked ${mname(k)} first`);
+function describeOrder() { const ks = R.order.filter(Boolean); return ks.length ? ks.map((k, i) => (i ? (i === 1 ? "then " : "then ") : "") + LABEL(k)).join(", ") : "the order of the file"; }
+function orders() {
+  const yours = ITEMS.slice().sort(compare(R.order)), x = ITEMS.slice().sort(compare(["eng"]));
+  yours.forEach((it, k) => it.ry = k + 1); x.forEach((it, k) => it.rx = k + 1);
+  return { yours, x };
+}
+function card(x, rank, move) {
+  return el("article", { class: "cmt" },
+    el("div", { class: "cm" }, el("span", { class: "rk", text: rank }),
+      move == null ? null : move === 0 ? el("span", { class: "mv", text: "=" }) : el("span", { class: "mv " + (move > 0 ? "up" : "dn"), text: (move > 0 ? "▲" : "▼") + Math.abs(move) }),
+      el("span", { text: x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind] }), el("span", { text: `${NF.format(x.likes)} ${x.kind === "note" ? "ratings" : "likes"}` }),
+      isNaN(x.t) ? null : el("span", { text: new Date(x.t).toISOString().slice(0, 16).replace("T", " ") })),
+    el("div", { class: "cb", text: LAB.short(x.text || "(no text)", 600) }),
+    el("div", { class: "st" }, ...L3.filter(L => x.m[L]).map(L => el("span", { class: "chip g", style: `background:${COL[L]}`, text: mname(L) })),
+      ...x.st.slice(0, 4).map(s => el("span", { class: "chip", title: s.label || s.key, text: LAB.short(s.label || s.key, 40) }))));
+}
+function render() {
+  if (!R) return;
+  const O = orders(), N = ITEMS.length, k = +R.topk || 20;
+  $("#order-sub").textContent = `${NF.format(N)} comments`;
+  $("#order-says").innerHTML = `<b>Your order:</b> ${esc(describeOrder())}. Ties keep the order of your file.`;
+  $("#counts").replaceChildren(...L3.filter(L => R.map[L]).map(L => el("span", { class: "chip g", style: `background:${COL[L]};font-size:12.5px;padding:3px 10px`,
+    text: `${mname(L)}: ${ITEMS.filter(x => x.m[L]).length} of ${N}` })));
+  const col = (title, list, withMove, c) => el("div", { class: "col" }, el("h3", {}, el("span", { class: "sw", style: `width:10px;height:10px;border-radius:2px;display:inline-block;background:${c}` }), title),
+    ...list.slice(0, k).map(x => card(x, withMove ? x.ry : x.rx, withMove && R.compare ? x.rx - x.ry : null)));
+  $("#view").replaceChildren(el("div", { class: "cols", style: `--ncol:${R.compare ? 2 : 1}` },
+    col("Your order", O.yours, true, "var(--accent)"), R.compare ? col("X's order: most liked first", O.x, false, "var(--rule-2)") : null));
+}
+$("#compare").onchange = () => { R.compare = $("#compare").checked; persist(); render(); };
+$("#topk").onchange = () => { R.topk = +$("#topk").value; persist(); render(); };
+$("#pres").onchange = () => { R.pres = +$("#pres").value; persist(); };
+$("#rname").oninput = () => { R.name = $("#rname").value; persist(); drawSaved(); };
+
+function drawMets() {
+  $("#mets").replaceChildren(...R.metrics.map((m, j) => { m = R.metrics[j] = Object.assign({ name: "", def: "", rule: "" }, m || {});
+    const f = (key, label, rows) => { const t = rows ? el("textarea", { rows, style: "font-family:var(--font-body);font-size:13.5px" }) : el("input", { type: "text" });
+      t.value = m[key] || ""; t.oninput = () => { m[key] = t.value; persist(); if (key === "name") { drawFound(); drawLevels(); render(); } };
+      return el("label", { class: "field", style: "margin-top:8px" }, el("span", { text: label }), t); };
+    return el("div", { class: "metric" }, el("div", { class: "mh" }, el("span", { class: "sw", style: `background:${COL[L3[j]]}` }), el("h3", { text: `Metric ${L3[j]}` })),
+      f("name", "Name"), f("def", "What it captures", 3), f("rule", "Coding rule", 3)); }));
+}
+$("#from-step3").onclick = () => { const m = LAB.store.get("metrics"); if (!Array.isArray(m) || m.length !== 3) { alert("No metrics were saved in step 3 in this browser."); return; }
+  R.metrics = JSON.parse(JSON.stringify(m)); persist(); drawMets(); drawFound(); drawLevels(); render(); };
+
+/* ---------- downloads ---------- */
+const fileBase = () => (R.name || "bridging").replace(/[^\w\-]+/g, "_").replace(/_+/g, "_").slice(0, 60);
+$("#dl-result").onclick = () => LAB.download(`${fileBase()}_result.json`, JSON.stringify({ app: "antigone-bridging-result", version: 2, id: R.id, name: R.name,
+  postId: R.postId, savedAt: new Date().toISOString(), metrics: R.metrics, map: R.map, order: R.order, compare: R.compare, topk: R.topk, pres: R.pres, cols: R.cols, rows: R.rows }), "application/json");
+$("#dl-csv").onclick = () => { const O = orders(), cols = R.cols.filter(c => c !== "rank_yours" && c !== "rank_engagement").concat(["rank_yours", "rank_engagement"]);
+  LAB.download(`${fileBase()}_ordered.csv`, LAB.toCSV(cols, O.yours.map(x => Object.assign({}, x.r, { rank_yours: x.ry, rank_engagement: x.rx })))); };
+$("#dl-pres").onclick = async () => {
+  const O = orders(), k = +R.pres || 20, N = ITEMS.length;
+  let meta = null; try { if (R.postId) meta = (await LAB.loadDisputed()).posts.find(p => p.id === R.postId) || null; } catch (e) {}
+  const badge = L => `<span class="b" style="background:${HEX[L]}">${esc(mname(L))}</span>`;
+  const item = (x, rank, move) => `<li><div class="m"><b>${rank}</b>${move != null ? (move ? `<span class="${move > 0 ? "up" : "dn"}">${move > 0 ? "▲" : "▼"}${Math.abs(move)}</span>` : `<span>=</span>`) : ""}`
+    + `<span>${esc(x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind])}</span><span>${NF.format(x.likes)} ${x.kind === "note" ? "ratings" : "likes"}</span>`
+    + `${isNaN(x.t) ? "" : `<span>${new Date(x.t).toISOString().slice(0, 10)}</span>`}</div><p>${esc(LAB.short(x.text || "(no text)", 700))}</p>`
+    + `<div>${L3.filter(L => x.m[L]).map(badge).join(" ")}</div></li>`;
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(R.name || "Bridging")}</title><style>
+body{margin:0;background:#f7f7f6;color:#15171a;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:40px 24px 80px}h1{font:400 2.1rem/1.15 Georgia,serif;margin:0 0 10px}h2{font:400 1.35rem Georgia,serif;margin:34px 0 10px}
+.claim{font:400 1.2rem/1.45 Georgia,serif;border-left:3px solid #2a78d6;padding:8px 14px;background:#fff;border-radius:0 8px 8px 0}
+.muted{color:#5b6068;font-size:14px}.mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.met{background:#fff;border:1px solid #dcdcd8;border-radius:12px;padding:14px 16px}.met h3{margin:0 0 6px;font-size:16px}.met p{margin:6px 0;font-size:14px;color:#3e434a}
+.b{display:inline-block;color:#fff;border-radius:999px;padding:1px 9px;font-size:12px;margin:2px 4px 0 0}
+.cols{display:grid;grid-template-columns:repeat(${R.compare ? 2 : 1},minmax(0,1fr));gap:18px}ol{list-style:none;margin:0;padding:0}
+li{background:#fff;border:1px solid #dcdcd8;border-radius:10px;padding:10px 13px;margin-bottom:8px}li p{margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px}
+.m{display:flex;gap:9px;font-size:12.5px;color:#5b6068;flex-wrap:wrap}.m b{color:#15171a}.up{color:#1b7a3e}.dn{color:#b3261e}
+table{border-collapse:collapse;font-size:14px}td,th{padding:5px 12px;border-bottom:1px solid #dcdcd8;text-align:left}
+@media(max-width:800px){.cols{grid-template-columns:1fr}}@media print{body{background:#fff}li,.met{break-inside:avoid}}
+</style></head><body><main>
+<p class="muted">ANTIGONE · bridging assignment · ${esc(new Date().toISOString().slice(0, 10))}</p>
+<h1>${esc(R.name || "Bridging")}</h1>
+${meta ? `<p class="claim">${esc(meta.checked)}</p><p class="muted">@${esc(meta.poster)} · ${esc(meta.date)} · fact-checked: ${esc(meta.verdicts.map(v => `${v.by}, ${v.rating || v.verdict}`).join("; "))} · ${meta.notes} community notes (${meta.notes_misleading} say misleading) · ${NF.format(meta.replies)} replies</p>` : ""}
+<h2>Our bridging metrics</h2><div class="mets">${R.metrics.map((m, j) => `<div class="met"><h3>${badge(L3[j])}</h3><p>${esc(m.def || "")}</p><p><b>Coded yes when:</b> ${esc(m.rule || "")}</p>`
+  + `<p class="muted">${R.map[L3[j]] ? `${ITEMS.filter(x => x.m[L3[j]]).length} of ${N} comments (${N ? Math.round(100 * ITEMS.filter(x => x.m[L3[j]]).length / N) : 0}%)` : "not coded"}</p></div>`).join("")}</div>
+${R.agreement && R.agreement.length ? `<p class="muted">Checked against our own coding: ${R.agreement.map(g => `${esc(mname(g.L))} ${Math.round(100 * g.a / g.n)}% agreement on ${g.n} comments`).join(" · ")}.</p>` : ""}
+<h2>Our order</h2><p>${esc(describeOrder().replace(/^./, c => c.toUpperCase()))}.${R.compare ? " Next to it, X's order: the most liked first. ▲ and ▼ show how far a comment moved." : ""}</p>
+<div class="cols"><div><h2 style="margin-top:6px">Our order</h2><ol>${O.yours.slice(0, k).map(x => item(x, x.ry, R.compare ? x.rx - x.ry : null)).join("")}</ol></div>
+${R.compare ? `<div><h2 style="margin-top:6px">X's order: most liked first</h2><ol>${O.x.slice(0, k).map(x => item(x, x.rx, null)).join("")}</ol></div>` : ""}</div>
+<p class="muted" style="margin-top:30px">${N} comments in all${k < N ? `; the first ${k} shown` : ""}. Made with the ANTIGONE bridging site.</p>
+</main></body></html>`;
+  LAB.download(`${fileBase()}_presentation.html`, html, "text/html");
+};
+
+drawSaved();
+const last = LAB.results.list()[0];
+if (last && !LAB.param("new")) { const d = LAB.results.load(last.id); if (d) openResult(Object.assign({ id: last.id }, d, d.settings)); }
+</script>
+</body>
+</html>

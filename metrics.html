@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3 Define metrics · Bridging</title>
+<meta name="description" content="Define three bridging metrics, each with a coding rule.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Steps">
+    <a href="index.html">Instructions</a>
+    <a href="posts.html">1 Pick a post</a>
+    <a href="read.html">2 Close read</a>
+    <a href="metrics.html" aria-current="page">3 Define metrics</a>
+    <a href="prompt.html">4 Code with a chatbot</a>
+    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>3 · Define your bridging metrics</h1>
+  <p class="lede">A bridging metric is a property of a comment that, if comments with it came first, would help the two sides understand
+  each other. Define three. Each needs a <b>coding rule</b> precise enough that two people — or a person and a chatbot — reading the same
+  comment would both say <i>yes</i> or both say <i>no</i>.</p>
+  <div class="callout"><b>Base them on your close reading.</b> If the sides talk past each other because one argues facts and the other values,
+  a metric could pick out comments that address both. If a minority position is drowned out, a metric could lift it. Start from a template
+  below if you like, but rewrite it for your thread: say <i>which</i> statements, <i>how many</i>, <i>which</i> side.</div>
+
+  <div class="row" style="margin:18px 0 6px;gap:8px"><span class="lab" style="align-self:center">Templates:</span><span id="tpl" class="row" style="gap:8px"></span></div>
+  <p class="small muted" id="tpl-msg">Press a template to fill the first empty metric.</p>
+  <div class="grid3" id="boxes" style="margin-top:12px"></div>
+  <div class="row" style="margin-top:20px">
+    <a class="btn primary" href="prompt.html">Next: code the thread with a chatbot →</a>
+    <button type="button" class="btn" id="dl">Download your definitions</button>
+    <span class="msg" id="saved"></span>
+  </div>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el } = LAB;
+const TEMPLATES = [
+  { name: "Cross-cutting", def: "Comments that take up the statements of both sides, so that readers of one side meet the other side's points in a comment that also speaks to theirs.",
+    rule: "Yes if the comment makes at least two statements, and at least one of them is a statement the post makes while another is a statement the fact-check makes (or the two contradict each other). Otherwise no." },
+  { name: "Majority", def: "Comments that make the thread's most common statement: what most users agree on, shown first so that readers see the common ground.",
+    rule: "Yes if the comment makes the statement that the largest number of comments make (see the statement list). Otherwise no." },
+  { name: "Minority", def: "Comments that make a rare statement, so that positions the majority drowns out are read.",
+    rule: "Yes if every statement the comment makes is made by fewer than 10% of the comments. Comments that make no statement: no." },
+  { name: "Context", def: "Comments that explain rather than only assert: they give the background a reader of the other side needs.",
+    rule: "Yes if the comment explains or contextualises a statement — gives a source or link, a date, background facts, or the reason behind a position — instead of only asserting it. Otherwise no." },
+  { name: "Acknowledges the other side", def: "Comments that recognise a point of the other side before disagreeing.",
+    rule: "Yes if the comment states, concedes or fairly summarises a point of the side it disagrees with (for example ‘I see why…, but…’). Otherwise no." },
+  { name: "Breadth", def: "Comments that make more than one statement, and so connect several points of the dispute.",
+    rule: "Yes if the comment makes two or more different statements. Otherwise no." },
+];
+const blank = () => ({ name: "", def: "", rule: "", example: "" });
+let M = LAB.store.get("metrics");
+if (!Array.isArray(M) || M.length !== 3) M = [blank(), blank(), blank()];
+const save = () => { const ok = LAB.store.set("metrics", M); $("#saved").textContent = ok ? "Saved in this browser." : "This browser would not save: download your definitions."; };
+
+function draw() {
+  $("#boxes").replaceChildren(...M.map((m, j) => {
+    const L = "ABC"[j];
+    const f = (key, label, rows, ph) => { const t = rows ? el("textarea", { rows, placeholder: ph, style: "font-family:var(--font-body);font-size:14px" })
+        : el("input", { type: "text", placeholder: ph }); t.value = m[key]; t.oninput = () => { m[key] = t.value; save(); };
+      return el("label", { class: "field", style: "margin-top:10px" }, el("span", { text: label }), t); };
+    return el("div", { class: "metric" }, el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `Metric ${L}` }),
+        el("button", { type: "button", class: "btn small", style: "margin-left:auto", text: "Clear", onclick: () => { M[j] = blank(); save(); draw(); } })),
+      f("name", "Name", 0, "for example: Cross-cutting"),
+      f("def", "What it captures, and why it bridges", 3, "Which comments, and why putting them first would help the sides understand each other."),
+      f("rule", "Coding rule: code yes when…", 4, "Exactly when a comment gets yes. Name the statements, the number, the side."),
+      f("example", "An example from your thread (optional)", 2, "A comment that gets yes, quoted."));
+  }));
+}
+$("#tpl").append(...TEMPLATES.map(t => el("button", { type: "button", class: "btn small", text: t.name, onclick: () => {
+  const j = M.findIndex(m => !m.name && !m.def && !m.rule);
+  if (j < 0) { $("#tpl-msg").textContent = "All three metrics are filled: clear one first."; return; }
+  M[j] = Object.assign(blank(), t); save(); draw(); $("#tpl-msg").textContent = `Metric ${"ABC"[j]} filled with ${t.name}. Now rewrite it for your thread.`; } })));
+$("#dl").onclick = () => LAB.download("my_bridging_metrics.md", ["# My bridging metrics", "",
+  ...M.flatMap((m, j) => [`## Metric ${"ABC"[j]}: ${m.name || "(no name)"}`, "", `**What it captures.** ${m.def || "—"}`, "", `**Coding rule.** ${m.rule || "—"}`, "",
+    ...(m.example ? [`**Example.** ${m.example}`, ""] : [])])].join("\n"), "text/markdown");
+draw();
+if (M.some(m => m.name || m.rule)) $("#saved").textContent = "Your metrics, as you left them in this browser.";
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bridging assignment · ANTIGONE</title>
-<meta name="description" content="Design a bridging mechanism for X's comment threads: pick a disputed post, code its statements, and reorder its comments by your own bridging metrics.">
+<meta name="description" content="Design bridging metrics for a disputed X thread, code the thread by them with a chatbot, and reorder it.">
 <script>if (new URLSearchParams(location.search).get("post")) location.replace("posts.html" + location.search);</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,84 +14,84 @@
 <body>
 <div class="top"><div class="in">
   <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
-  <nav class="nav" aria-label="Sections">
-    <a href="index.html" aria-current="page">1 Instructions</a>
-    <a href="posts.html">2 Posts</a>
-    <a href="sample.html">3 Sample</a>
-    <a href="code.html">4 Code</a>
-    <a href="llm.html">5 Expand with an LLM</a>
-    <a href="bridge.html">6 Bridge</a>
+  <nav class="nav" aria-label="Steps">
+    <a href="index.html" aria-current="page">Instructions</a>
+    <a href="posts.html">1 Pick a post</a>
+    <a href="read.html">2 Close read</a>
+    <a href="metrics.html">3 Define metrics</a>
+    <a href="prompt.html">4 Code with a chatbot</a>
+    <a href="order.html">5–6 Upload &amp; order</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
   <div class="prose">
-  <h1>Design a bridging mechanism for X's comment threads</h1>
-  <p class="lede">In week 2 we used fact-checks as gateways into speech grey zones. In week 3 we described them: how fact-checkers
-  and community noters disagreed, what commenters said about community notes, and what they agreed and disagreed on. This week we
-  stop describing the conflict and try to <b>intervene</b> in it.</p>
-
-  <p>The intervention is called <b>bridging</b>: a mechanism for facilitating <i>understanding</i>, i.e. <i>socio-informational
-  coherence</i> — the possibility that users with conflicting statements have the information they need to understand and engage
-  with each other. Bridging is a framework, not a technique, so it can be operationalised in many ways. Following this week's
-  reading, every operationalisation names three things:</p>
-
-  <div class="tw"><table>
-    <thead><tr><th>part</th><th>question it answers</th></tr></thead>
-    <tbody>
-      <tr><td><b>bridging goal</b></td><td>What would count as more mutual understanding here?</td></tr>
-      <tr><td><b>relation metric</b></td><td>What measurable relation between users stands in for that goal?</td></tr>
-      <tr><td><b>attention allocator</b></td><td>What does the platform <i>do</i> with the metric: rank, group, summarise, label?</td></tr>
-    </tbody>
-  </table></div>
-
-  <p><b>Your assignment:</b> design a bridging mechanism for one disputed X thread. The bridging goal is <i>to facilitate
-  understanding between divided users in X comment spaces</i>. Your metrics, and the new order of the thread they produce, are
-  yours to invent and to justify.</p>
+  <h1>Design a bridging mechanism for an X thread</h1>
+  <p class="lede">In week 2 we used fact-checks as gateways into speech grey zones. In week 3 we described them: how fact-checkers and
+  community noters disagreed, what commenters said, and what they agreed and disagreed on. This week we stop describing the conflict
+  and try to <b>intervene</b> in it.</p>
+  <p>The intervention is called <b>bridging</b>: a mechanism for facilitating <i>understanding</i> — the possibility that users who make
+  conflicting statements have the information they need to understand and engage with each other. Bridging is a framework, not a single
+  technique: every operationalisation names a <b>bridging goal</b> (what would count as more understanding), a <b>relation metric</b>
+  (what measurable property of a comment stands in for it) and an <b>attention allocator</b> (what the platform does with it — here, how
+  it orders the comments).</p>
+  <p><b>Your assignment:</b> take one disputed X thread, define three bridging metrics, code every comment of the thread by them with a
+  chatbot, and reorder the thread so that what bridges comes first. X orders threads by engagement; you will order it by your metrics,
+  and show the result in class.</p>
   </div>
 
   <h2 style="margin-top:34px">Six steps</h2>
   <ol class="steps">
-    <li><h2>Instructions</h2><p>This page: read it to the end.</p></li>
-    <li><h2><a href="posts.html">Posts</a></h2><p>Pick a disputed post: one where the fact-checker and the community notes reach opposite
-      conclusions. Download its thread as a CSV, with the statements the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets</a>
-      already found in it, or with an empty <i>Statement</i> column to code yourself.</p></li>
-    <li><h2><a href="sample.html">Sample</a></h2><p>If you code the thread yourself, first draw a sample of its comments (100 to 150 is enough).</p></li>
-    <li><h2><a href="code.html">Code</a></h2><p>Write the statement each comment makes in the <i>Statement</i> column, then read the
-      thread closely: what is the majority opinion, what is the minority's, and where do users misunderstand or misrepresent one another?</p></li>
-    <li><h2><a href="llm.html">Expand your coding with an LLM</a> <span class="pill">optional</span></h2><p>Turn your codebook into a prompt
-      for a chatbot, let it code the rest of the thread, and check its coding against yours.</p></li>
-    <li><h2><a href="bridge.html">Bridge</a></h2><p>Define three bridging metrics, see the thread reordered by each, and put your sample in
-      your own bridging order by hand.</p></li>
+    <li><h2><a href="posts.html">Pick a post</a></h2><p>Choose one of the disputed posts — where the fact-checker and the community notes
+      reach opposite conclusions — and download its thread as a CSV. Each row is the post, the fact-check, a community note or a reply;
+      the <code>Statement</code> column says which statements each row makes.</p></li>
+    <li><h2><a href="read.html">Close read by statement</a></h2><p>Read the thread statement by statement: which statements the majority makes,
+      which the minority makes, and where users misunderstand, misrepresent or ignore one another.</p></li>
+    <li><h2><a href="metrics.html">Define your bridging metrics</a></h2><p>Three metrics, each with a name, what it captures, and a coding rule
+      precise enough that someone else — or a chatbot — would code every comment the same way. For example: a comment is
+      <i>cross-cutting</i> if it makes statements of both sides; it is a <i>majority</i> comment if it makes the statement most comments make.</p></li>
+    <li><h2><a href="prompt.html">Code the thread with a chatbot</a></h2><p>The site turns your metrics into a prompt. Give it, with your CSV,
+      to a chatbot: it adds a yes/no column for each metric. Check its coding against your own on 20 comments.</p></li>
+    <li><h2><a href="order.html">Upload the coded dataset</a></h2><p>Upload the CSV the chatbot returned (in several parts, if it split it).</p></li>
+    <li><h2><a href="order.html">Order the thread</a></h2><p>Decide how the thread is ordered: by engagement, chronologically, or by your
+      metrics — choosing a metric moves every comment that has it to the top. Combine them: for example metric A first, then the most liked.</p></li>
   </ol>
 
   <div class="prose">
-  <h2>Working in groups</h2>
-  <p>Work in groups of three or four, one post per group (tell me if two groups want the same post). This site keeps everything you do
-  <b>in your own browser</b>: nobody else sees your uploads, codes, metrics or orderings, and nothing you do changes the site for anyone
-  else. To share work within your group, download your files (each page has a download button) and send them to each other.</p>
+  <h2>Your work is yours, and it is saved</h2>
+  <p>Everyone uses this site on their own: nothing you open, write or code is sent anywhere, and nothing you do changes the site for anyone else.</p>
+  <ul>
+    <li><b>Automatically, in your browser.</b> Your metrics, your uploads and your orders are kept in the browser you use. Come back later on
+      the same computer and they are still there, under <i>Your saved results</i>.</li>
+    <li><b>As a result file.</b> On the last page, <i>Download your result file</i> saves everything — your coded thread, your metrics and your
+      order — in one file. Open it on the same page on any other computer, the classroom's included, to carry on.</li>
+    <li><b>As a presentation.</b> <i>Download a presentation page</i> saves a page you can open in any browser, even offline, to show your
+      metrics and your reordered thread in class.</li>
+  </ul>
+  <p>Work in groups of three or four, one post per group. Each of you can follow the steps on your own computer; share files within the group.</p>
 
   <h2>What to hand in</h2>
   <div class="tw"><table>
-    <thead><tr><th>#</th><th>what</th><th>from</th></tr></thead>
+    <thead><tr><th>#</th><th>what</th><th>step</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td><b>The case.</b> Your post, and why it is a speech grey zone: which actors classify it, in which competing ways, and what is at stake. Two or three paragraphs.</td><td>Posts</td></tr>
-      <tr><td>2</td><td><b>The statements and your close reading.</b> Your codebook; the majority and the minority opinions; where users misunderstand, misrepresent or ignore one another.</td><td>Code</td></tr>
-      <tr><td>3</td><td><i>Optional:</i> how you used an LLM and how far its coding agreed with yours.</td><td>Expand with an LLM</td></tr>
-      <tr><td>4</td><td><b>Three bridging metrics</b>, each defined clearly enough that someone else could apply it, with what it puts at the top of the thread and what it would miss; and your own bridging order of the sample.</td><td>Bridge</td></tr>
+      <tr><td>1</td><td><b>The case.</b> Your post, and why it is a speech grey zone: which actors classify it, in which competing ways, and what is at stake.</td><td>1</td></tr>
+      <tr><td>2</td><td><b>Your close reading.</b> The majority and the minority statements; where users misunderstand, misrepresent or ignore one another.</td><td>2</td></tr>
+      <tr><td>3</td><td><b>Your three bridging metrics</b>, each with what it captures, its coding rule, and why it would help the sides understand each other.</td><td>3</td></tr>
+      <tr><td>4</td><td><b>Your prompt</b>, the chatbot you used, and how often its coding agreed with yours.</td><td>4</td></tr>
+      <tr><td>5</td><td><b>Your reordered thread</b> (the presentation page): what your order puts first, compared with X's engagement order, and what it would miss.</td><td>5–6</td></tr>
     </tbody>
   </table></div>
-  <p><b>Length:</b> 2,500 words, appendices excluded. <b>Format:</b> one PDF, plus the CSV and the metric definitions downloaded from
-  Bridge. <b>Deadline:</b> Monday 7 December, 17:00. <b>In class the week after:</b> ten minutes per group: your post, its majority and
-  minority, and the one metric you would actually ship.</p>
+  <p><b>Length:</b> 2,500 words, appendices excluded. <b>Format:</b> one PDF, plus your result file and your presentation page.
+  <b>Deadline:</b> Monday 7 December, 17:00. <b>In class the week after:</b> ten minutes per group, showing your presentation page: your post,
+  your metrics, and your reordered thread.</p>
 
   <h2>Reading</h2>
   <p>Ovadya, A., &amp; Thorburn, L. (2023). <a href="https://knightcolumbia.org/content/bridging-systems" target="_blank" rel="noopener"><i>Bridging systems:
   Open problems for countering destructive divisiveness across ranking, recommenders, and governance</i></a>. Knight First Amendment Institute.</p>
   </div>
-  <footer class="foot">ANTIGONE · Digital Methods class. Data: fact-checks from ClaimReview via Fact-Check Insights; community notes and ratings from
-  X's public exports; replies collected from X. Statements distilled by the ANTIGONE team; see the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets</a>.</footer>
+  <footer class="foot">ANTIGONE · Digital Methods class. Data: the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets</a>
+  (fact-checks from ClaimReview via Fact-Check Insights; community notes and ratings from X's public exports; replies collected from X).</footer>
 </main>
 </body>
 </html>

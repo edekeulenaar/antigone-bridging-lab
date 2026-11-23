@@ -144,6 +144,70 @@ const LAB = (() => {
   document.addEventListener("click", e => { if (!e.target.closest(".qwrap")) document.querySelectorAll(".qtip").forEach(t => t.hidden = true); });
   document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".qtip").forEach(t => t.hidden = true); });
 
+  /* ---------- dates and yes/no, as students' spreadsheets and chatbots write them ---------- */
+  function parseTime(v) {
+    const s = String(v ?? "").trim(); if (!s) return NaN;
+    let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+    if (m) return Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0));
+    m = s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2,4})(?:[ ,T]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+    if (m) { const a = +m[1], b = +m[2]; let y = +m[3]; if (y < 100) y += 2000;
+      const [d, mo] = a > 12 ? [a, b] : b > 12 ? [b, a] : s.includes("/") ? [b, a] : [a, b];
+      return Date.UTC(y, mo - 1, d, +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)); }
+    const t = Date.parse(s); return isNaN(t) ? NaN : t;
+  }
+  const END = "(?=$|[^a-z0-9])";
+  const YES_RE = new RegExp("^(y|yes|ja|oui|si|sí|true|waar|vrai|x|✓|✔|1)" + END), NO_RE = new RegExp("^(n|no|nee|non|nein|false|onwaar|0)" + END);
+  function yes(v) { const s = String(v ?? "").trim().toLowerCase(); if (!s) return false;
+    if (YES_RE.test(s)) return true; if (NO_RE.test(s)) return false;
+    const n = parseFloat(s.replace(",", ".")); return isFinite(n) && n > 0; }
+  const isYesNo = v => { const s = String(v ?? "").trim().toLowerCase(); return !s || YES_RE.test(s) || NO_RE.test(s) || /^-?\d+([.,]\d+)?$/.test(s); };
+
+  /* ---------- a student's saved results, in this browser ---------- */
+  const results = {
+    list() { return store.get("results") || []; },
+    load(id) { const d = store.get("result:" + id); if (!d) return null; d.settings = store.get("result:" + id + ":s") || {}; return d; },
+    saveData(id, meta, data) {
+      if (!store.set("result:" + id, data)) return false;
+      const L = results.list().filter(r => r.id !== id); L.unshift(meta); store.set("results", L.slice(0, 40)); return true; },
+    saveSettings(id, settings, patch) {
+      const ok = store.set("result:" + id + ":s", settings);
+      const L = results.list(), r = L.find(x => x.id === id); if (r) { Object.assign(r, patch || {}, { savedAt: new Date().toISOString() }); store.set("results", L); }
+      return ok; },
+    del(id) { store.del("result:" + id); store.del("result:" + id + ":s"); store.set("results", results.list().filter(r => r.id !== id)); },
+  };
+  const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  /* ---------- one or several files at once (chatbots return long threads in parts) ---------- */
+  function filezone(host, onFiles, opts = {}) {
+    const inp = el("input", { type: "file", accept: opts.accept || ".csv,text/csv,.tsv,.txt", hidden: true, multiple: !!opts.multiple });
+    const msg = el("span", { class: "msg" });
+    const z = el("div", { class: "drop" }, el("span", { text: opts.label || "Drop your file here, or" }),
+      el("button", { type: "button", class: "btn small", text: opts.multiple ? "choose files" : "choose a file", onclick: () => inp.click() }), msg);
+    const read = list => { const fs = [...list]; if (!fs.length) return;
+      Promise.all(fs.map(f => new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok({ name: f.name, text: String(fr.result) });
+        fr.onerror = () => no(new Error(f.name + " could not be read")); fr.readAsText(f); })))
+        .then(files => { msg.className = "msg"; msg.textContent = ""; onFiles(files, (t, c = "msg") => { msg.className = c; msg.textContent = t; }); })
+        .catch(e => { msg.className = "msg err"; msg.textContent = e.message; }); };
+    inp.addEventListener("change", () => { read(inp.files); inp.value = ""; });
+    z.addEventListener("dragover", e => { e.preventDefault(); z.classList.add("over"); });
+    z.addEventListener("dragleave", () => z.classList.remove("over"));
+    z.addEventListener("drop", e => { e.preventDefault(); z.classList.remove("over"); read(e.dataTransfer.files); });
+    host.append(z, inp);
+    return { say: (t, c = "msg") => { msg.className = c; msg.textContent = t; } };
+  }
+
+  /* ---------- the post a student is working on ---------- */
+  async function postSelect(sel, opts = {}) {
+    const d = await loadDisputed();
+    const ps = d.posts.filter(p => !opts.onlyStatements || p.statements > 0).sort((a, b) => b.ratings - a.ratings);
+    sel.replaceChildren(el("option", { value: "", text: `— choose one of ${ps.length} posts —` }),
+      ...ps.map(p => el("option", { value: p.id, text: `${p.checked.slice(0, 95)}${p.checked.length > 95 ? "…" : ""} (@${p.poster}, ${p.replies} replies)` })));
+    const want = param("post") || store.get("post");
+    if (want && ps.some(p => p.id === want)) sel.value = want;
+    return d;
+  }
+  const short = (s, n) => (s = String(s ?? "")).length > n ? s.slice(0, n - 1) + "…" : s;
+
   return { DATASETS, $, el, esc, NF, parseCSV, toCSV, download, OUT_COLS, loadDisputed, threadRows, websiteStatements,
-           findCol, kindOf, KIND_LABEL, describe, splitStatements, normText, rng, shuffle, store, hash, param, dropzone, help };
+           findCol, kindOf, KIND_LABEL, describe, splitStatements, normText, rng, shuffle, store, hash, param, dropzone, help, parseTime, yes, isYesNo, results, newId, filezone, postSelect, short };
 })();

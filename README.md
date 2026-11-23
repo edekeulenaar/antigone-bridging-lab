@@ -4,17 +4,22 @@ The bridging assignment of the ANTIGONE Digital Methods class, as a website: des
 
 **Open it:** https://edekeulenaar.github.io/antigone-bridging-lab/
 
-| section | page | what students do there |
+| step | page | what students do there |
 |---|---|---|
-| 1 Instructions | `index.html` | the assignment: goal, steps, what to hand in |
-| 2 Posts | `posts.html` | the Datasets' *Disputed posts* (40 by the notes' majority, 174 by any single note); download each thread as a CSV, with the Datasets' statements in a `Statement` column or with that column empty |
-| 3 Sample | `sample.html` | upload a thread, choose a sample size and a method (simple random, stratified, weighted by engagement, most engaged), download the sample |
-| 4 Code | `code.html` | instructions: write a codebook, code the `Statement` column, read the thread closely |
-| 5 Expand with an LLM | `llm.html` | paste a codebook, get one prompt for their own chatbot, and instructions to verify its coding |
-| 6 Bridge | `bridge.html` | upload a coded CSV (or use a post as the Datasets coded it), define three bridging metrics (optionally from breadth, cross-cutting, context, majority, minority, length, engagement, or a column of their own), see the thread reordered, and order it by hand; download the result |
+| Instructions | `index.html` | the assignment, and how their work is saved |
+| 1 Pick a post | `posts.html` | the Datasets' disputed posts; choose one, download its thread (with a `Statement` column) |
+| 2 Close read | `read.html` | the thread laid out by statement, with close-reading questions |
+| 3 Define metrics | `metrics.html` | three bridging metrics: name, what it captures, coding rule (templates included) |
+| 4 Code with a chatbot | `prompt.html` | one prompt built from the post and the metrics; split long threads into parts; how to check the chatbot |
+| 5–6 Upload & order | `order.html` | upload the coded CSV (several parts at once, or a saved result file); order by engagement, time and the three metrics; agreement with the student's own coding; download a result file and a presentation page |
 
-Everything runs in the browser. Files students open are never uploaded, and everything they change is kept in their own
-browser only: twenty students using the site at once each have their own copy.
+Everything runs in the browser and nothing is uploaded. Each student's work is saved three ways: automatically in their own
+browser (a list of saved results), as a result file (`.json`) that reopens on `order.html` on any computer, and as a
+stand-alone presentation page (`.html`, no scripts) to show in class.
+
+The chatbot adds `metric_A`, `metric_B`, `metric_C` (yes/no); students add `mine_A`… for 20 comments to check it. The order
+page also reads columns named after the metrics, any yes/no-like values (Ja/Nee, TRUE, 1, "yes (…)"), CSVs wrapped in a
+chatbot's code fence, semicolon files and day-month dates.
 
 ## The `Statement` column
 

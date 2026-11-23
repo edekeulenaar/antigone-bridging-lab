@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2 Close read · Bridging</title>
+<meta name="description" content="Read a disputed thread statement by statement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Steps">
+    <a href="index.html">Instructions</a>
+    <a href="posts.html">1 Pick a post</a>
+    <a href="read.html" aria-current="page">2 Close read</a>
+    <a href="metrics.html">3 Define metrics</a>
+    <a href="prompt.html">4 Code with a chatbot</a>
+    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>2 · Close read the thread, statement by statement</h1>
+  <p class="lede">Users — fact-checkers, community notes and commenters — disagree around competing <b>statements</b>: expressions of
+  an attitude, belief or opinion. Below, the thread is laid out by the statements its comments make. Open each statement and read the
+  comments that make it.</p>
+
+  <section class="step">
+    <div class="row">
+      <label class="field" style="flex:1 1 420px"><span>Your post</span><select id="post"><option value="">Loading…</option></select></label>
+    </div>
+    <details class="more"><summary>…or open a CSV of your own (with a <code>Statement</code> column)</summary><div id="drop" style="margin-top:10px"></div></details>
+  </section>
+
+  <div class="grid2" style="margin-top:22px;align-items:start">
+    <section class="step" style="margin-top:0">
+      <h2>Questions to answer</h2>
+      <ol class="small" style="padding-left:1.2em;color:var(--ink-2)">
+        <li><b>The majority.</b> Which statements do most comments make? Which kinds of users make them: the post, the fact-checker, the notes, the replies?</li>
+        <li><b>The minority.</b> Which statements do few comments make? Are they few because they are marginal, or because the thread drowns them out?</li>
+        <li><b>Misunderstanding.</b> Where does one side read the other's normative statement ("this should not be platformed") as a factual one ("this is false"), or the reverse?</li>
+        <li><b>Misrepresentation.</b> Where does one side attribute to the other a position it does not hold?</li>
+        <li><b>What is ignored.</b> Which statements of one side get no answer from the other?</li>
+        <li><b>The premise.</b> What would both sides need to share to be arguing about the same thing — and do they share it?</li>
+      </ol>
+      <p class="small muted">For each answer, note two or three comments as evidence (their author and a phrase). These answers are also where your bridging metrics will come from.</p>
+    </section>
+    <section class="step" style="margin-top:0" id="ctx"><h2>The post</h2><p class="muted small">Choose a post above.</p></section>
+  </div>
+
+  <section class="step" id="stmts-box" hidden>
+    <header><h2>The statements</h2><span class="sub" id="st-sub"></span></header>
+    <div id="stmts"></div>
+  </section>
+  <p style="margin-top:24px"><a class="btn primary" href="metrics.html">Next: define your bridging metrics →</a></p>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF } = LAB;
+let META = null;
+
+LAB.postSelect($("#post"), { onlyStatements: true }).then(d => { META = d; if ($("#post").value) load($("#post").value); })
+  .catch(e => $("#post").replaceChildren(el("option", { text: "The posts could not be loaded: " + e.message })));
+$("#post").onchange = () => { const id = $("#post").value; if (!id) return; LAB.store.set("post", id); load(id); };
+LAB.filezone($("#drop"), (files, say) => {
+  try { const p = LAB.parseCSV(files[0].text); if (!p.rows.length) throw new Error("no rows");
+    say(`${files[0].name}: ${NF.format(p.rows.length)} rows`, "msg ok"); show(p.cols, p.rows, null, null); }
+  catch (e) { say("The file could not be read: " + e.message, "msg err"); } });
+
+async function load(id) {
+  $("#stmts").replaceChildren(el("p", { class: "msg", text: "Loading the thread …" })); $("#stmts-box").hidden = false;
+  try { const [rows, web] = await Promise.all([LAB.threadRows(id, true), LAB.websiteStatements(id)]);
+    show(LAB.OUT_COLS, rows, web, META && META.posts.find(p => p.id === id)); }
+  catch (e) { $("#stmts").replaceChildren(el("p", { class: "msg err", text: "The thread could not be loaded: " + e.message })); }
+}
+
+function show(cols, rows, web, meta) {
+  const d = LAB.describe(cols, rows), stCol = d.stCands[0];
+  const items = rows.map((r, i) => ({ i, r, kind: d.typeCol ? LAB.kindOf(r[d.typeCol]) : "comment", text: String(r[d.textCol] || "").trim(),
+    likes: +((LAB.kindOf(r[d.typeCol]) === "note" ? r[d.ratingCol] : r[d.likeCol]) || 0) || 0, st: stCol ? LAB.splitStatements(r[stCol]) : [] }));
+  const comments = items.filter(x => x.kind !== "post" && x.kind !== "factcheck");
+  // the post and the fact-check
+  const post = items.find(x => x.kind === "post"), fcs = items.filter(x => x.kind === "factcheck");
+  $("#ctx").replaceChildren(el("h2", { text: "The post" }),
+    meta ? el("p", { style: "font-family:var(--font-display);font-size:17px;line-height:1.4", text: meta.checked }) : null,
+    meta ? el("p", { class: "small muted", text: `@${meta.poster} · ${meta.date} · ${meta.notes} notes (${meta.notes_misleading} say misleading) · ${NF.format(meta.replies)} replies` }) : null,
+    ...fcs.map(f => el("p", { class: "small" }, el("b", { text: "Fact-check: " }), `${f.r.author || ""} rated it ${f.r.verdict || "?"}.`,
+      f.st.length ? ` It makes: ${f.st.map(s => s.label || s.key).join(" · ")}.` : "")),
+    post && post.st.length ? el("p", { class: "small" }, el("b", { text: "The post makes: " }), post.st.map(s => s.label || s.key).join(" · ")) : null,
+    meta && meta.agree ? el("p", { class: "small" }, el("b", { text: "Where they agree. " }), meta.agree) : null,
+    meta && meta.disagree ? el("p", { class: "small" }, el("b", { text: "Where they disagree. " }), meta.disagree) : null,
+    meta ? el("p", { class: "small" }, el("a", { href: meta.url, target: "_blank", rel: "noopener", text: "Open the post on X ↗" })) : null);
+  // statements
+  const byKey = new Map();
+  for (const x of items) for (const s of x.st) { const e = byKey.get(s.key) || { key: s.key, label: s.label || s.key, list: [], post: false, fc: false };
+    if (x.kind === "post") e.post = true; else if (x.kind === "factcheck") e.fc = true; else e.list.push(x); byKey.set(s.key, e); }
+  const contra = new Map((web || []).map(w => [LAB.normText(w.text), (w.contradicts || "").split(/[;,\s]+/).filter(Boolean)]));
+  const num = new Map((web || []).map(w => [w.statement, w.text]));
+  const N = comments.length || 1, list = [...byKey.values()].sort((a, b) => b.list.length - a.list.length);
+  const none = comments.filter(x => !x.st.length);
+  $("#stmts-box").hidden = false;
+  $("#st-sub").textContent = `${list.length} statements · ${NF.format(comments.length)} comments, ${NF.format(comments.length - none.length)} of which make at least one`;
+  if (!stCol) { $("#stmts").replaceChildren(el("p", { class: "msg err", text: "This file has no Statement column." })); return; }
+  const block = (title, sub, xs, tags) => {
+    const det = el("details", { class: "pcard", style: "margin-top:10px" });
+    const sum = el("summary", { style: "cursor:pointer;list-style:none" },
+      el("div", { class: "row", style: "align-items:baseline;gap:6px 12px" }, el("span", { class: "claim", style: "margin:0;font-size:16px;flex:1 1 380px", text: title }),
+        el("span", { class: "meta", text: sub }), ...(tags || [])),
+      el("div", { class: "nbar", style: "max-width:none" }, el("span", { style: `width:${100 * xs.length / N}%;background:var(--accent)` })));
+    det.append(sum);
+    det.addEventListener("toggle", () => { if (!det.open || det.childElementCount > 1) return;
+      const sorted = xs.slice().sort((a, b) => b.likes - a.likes); let shown = 40;
+      const host = el("div", {}); det.append(host);
+      const draw = () => { host.replaceChildren(...sorted.slice(0, shown).map(x => el("div", { class: "cmt", style: "margin:8px 0 0" },
+          el("div", { class: "cm" }, el("span", { text: LAB.KIND_LABEL[x.kind] }), el("span", { text: x.r.author ? "@" + x.r.author : "" }),
+            el("span", { text: `${NF.format(x.likes)} ${x.kind === "note" ? "ratings" : "likes"}` }), x.st.length > 1 ? el("span", { text: `also: ${x.st.filter(s => s.label !== title && s.key !== title).map(s => LAB.short(s.label || s.key, 40)).join(" · ")}` }) : null),
+          el("div", { class: "cb", text: x.text || "(no text)" }))),
+        sorted.length > shown ? el("button", { type: "button", class: "btn small", style: "margin-top:8px", text: `Show all ${sorted.length}`, onclick: () => { shown = 1e9; draw(); } }) : null); };
+      draw(); });
+    return det;
+  };
+  $("#stmts").replaceChildren(...list.map(e => { const label = e.key.startsWith("#") && num.get(e.key.slice(1)) ? num.get(e.key.slice(1)) : e.label;
+      const c = (contra.get(LAB.normText(label)) || []);
+      return block(label, `${e.list.length} comments · ${(100 * e.list.length / N).toFixed(0)}%`, e.list,
+        [e.post ? el("span", { class: "pill", text: "the post makes it" }) : null, e.fc ? el("span", { class: "pill warn", text: "the fact-check makes it" }) : null,
+         c.length ? el("span", { class: "pill", text: `contradicts ${c.length} other${c.length > 1 ? "s" : ""}` }) : null]); }),
+    block("No statement", `${none.length} comments · ${(100 * none.length / N).toFixed(0)}% · jokes, insults, off-topic, or not coded`, none));
+}
+</script>
+</body>
+</html>
