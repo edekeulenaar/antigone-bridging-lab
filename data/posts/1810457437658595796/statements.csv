@@ -1,0 +1,5 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1810457437658595796","1","Obama called Michelle 'Michael'","3","yes","0","0","48","2","341","yes"
+"1810457437658595796","2","Michelle Obama is secretly a man","3","yes","0","0","80","2","341","yes"
+"1810457437658595796","3","In the 2011 clip, 'Michael' refers to Admiral Mike Mullen","1; 2; 4","no","1","1","0","2","341","yes"
+"1810457437658595796","4","The post is satire and needs no note","3","no","0","1","1","2","341","yes"

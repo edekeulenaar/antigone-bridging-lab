@@ -1,0 +1,8 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1677485075653435392","1","A new study proves Pfizer's mRNA vaccine causes 'turbo cancer'","2; 4","yes","0","1","58","4","353","yes"
+"1677485075653435392","2","The study found no evidence of causality; it rests on one mouse","1","no","2","3","5","4","353","yes"
+"1677485075653435392","3","The mice were a strain bred to be prone to cancer","","no","0","1","0","4","353","no"
+"1677485075653435392","4","There is no evidence that mRNA vaccines cause or worsen cancer","1; 5","no","2","1","0","4","353","yes"
+"1677485075653435392","5","Vaccine makers skipped safety tests on purpose","4","no","0","0","48","4","353","yes"
+"1677485075653435392","6","Personal accounts of cancer and fear after vaccination","","no","0","0","50","4","353","yes"
+"1677485075653435392","7","Relief at never having been vaccinated","","no","0","0","15","4","353","yes"

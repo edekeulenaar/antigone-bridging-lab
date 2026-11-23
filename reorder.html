@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reorder a thread · Bridging lab</title>
+<meta name="description" content="Define bridging metrics, label comments by bridging quality, and see a contested X thread reordered.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging lab <small>ANTIGONE</small></a>
+  <nav class="nav" aria-label="Tools">
+    <a href="index.html">Posts</a>
+    <a href="sample.html">Sample</a>
+    <a href="code.html">Code with an LLM</a>
+    <a href="reorder.html" aria-current="page">Reorder</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">ANTIGONE website ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>Reorder a thread by your bridging metrics</h1>
+  <p class="lede">X orders a thread mostly by engagement. A bridging metric orders it by something else: what helps one side understand
+  the other. Build up to three metrics from the features below, label comments by their bridging quality yourself, and compare the
+  orders side by side. Your metric is <b>formalised</b> once its weights and its definition say exactly how it orders comments.</p>
+
+  <section class="step" id="s1">
+    <header><span class="n">1</span><h2>Load a thread</h2><span class="sub">with the website's coding, or your own</span></header>
+    <div id="picker"></div>
+    <div class="or">or upload a coded CSV (the full thread, your sample, or your LLM-coded sample)</div>
+    <div id="drop"></div>
+  </section>
+
+  <section class="step off" id="s2">
+    <header><span class="n">2</span><h2>The coding</h2><span class="sub" id="cd-sub"></span></header>
+    <div class="row">
+      <label class="field"><span>Statement coding</span><select id="col"></select></label>
+      <div class="field"><span>Rank</span>
+        <div class="seg" id="kinds" role="group" aria-label="Which items to rank">
+          <button type="button" data-v="reply" aria-pressed="true">Replies</button>
+          <button type="button" data-v="note" aria-pressed="false">Community notes</button>
+          <button type="button" data-v="both" aria-pressed="false">Both</button>
+        </div></div>
+    </div>
+    <p class="small muted" id="grp-note" style="margin-top:10px"></p>
+    <div class="grid2" style="margin-top:8px">
+      <div><h3>Statements <span class="muted" style="text-transform:none;letter-spacing:0">· share of ranked items making each</span></h3><div class="legend" id="legend"></div></div>
+      <div><h3>Who makes what</h3><div id="sides" class="small"></div></div>
+    </div>
+  </section>
+
+  <section class="step off" id="s3">
+    <header><span class="n">3</span><h2>Your metrics</h2><span class="sub">score = the sum of each feature × its weight; features run from 0 to 1</span></header>
+    <details class="more" open><summary>What the features measure</summary><div class="tw" style="margin-top:10px"><table id="feat-doc"></table></div></details>
+    <div class="grid3" id="metrics" style="margin-top:18px"></div>
+    <h3 style="margin-top:24px">Bridging-quality labels</h3>
+    <p class="small muted">Label comments below with these categories; the <i>Your label</i> feature turns a label into its value, so your own
+    judgement can drive a metric. Unlabelled comments count as the value of <i>Unclear</i>.</p>
+    <div class="row" id="cats"></div>
+  </section>
+
+  <section class="step off" id="s4">
+    <header><span class="n">4</span><h2>The thread, reordered</h2><span class="sub" id="view-sub"></span></header>
+    <div class="row" style="margin-bottom:14px">
+      <div class="field"><span>View</span>
+        <div class="seg" id="mode" role="group" aria-label="View">
+          <button type="button" data-v="cols" aria-pressed="true">Side by side</button>
+          <button type="button" data-v="sect" aria-pressed="false">Sections</button>
+        </div></div>
+      <label class="field" id="sect-by-f" hidden><span>Order sections by</span><select id="sect-by"></select></label>
+      <label class="field"><span>Show</span><select id="topk"><option value="10">top 10</option><option value="20" selected>top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
+      <label class="field"><span>Find</span><input type="search" id="find" placeholder="text or author"></label>
+      <span style="margin-left:auto"></span>
+      <button type="button" class="btn" id="dl">Download the ranking (CSV)</button>
+      <button type="button" class="btn" id="dl-md">Download the metric definitions</button>
+    </div>
+    <div id="view"></div>
+  </section>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF, pct, esc } = LAB;
+const GCOL = ["var(--g1)", "var(--g2)", "var(--g3)", "var(--g4)", "var(--g5)", "var(--g6)", "var(--g7)", "var(--g8)"];
+const MCOL = ["var(--g1)", "var(--g2)", "var(--g3)"];
+
+/* ---------- features: what a metric can be built from ---------- */
+const FEATURES = [
+  ["engagement", "Engagement", "Likes (ratings, for notes), on a log scale: what X already rewards. 1 = the most engaged comment."],
+  ["common", "Common ground", "How evenly its statements are made across the opinion groups (entropy of their makers' groups). High when the comment says what several groups say."],
+  ["bridges", "Bridges groups", "How many different groups its statements come from (each statement belongs to the group that makes it most). High when one comment joins statements of different groups."],
+  ["both", "Holds both sides", "1 when it makes a statement of the post and one of the fact-check, or two statements marked as contradicting each other; else 0."],
+  ["majority", "Majority", "How widely its statements are shared: the mean share of ranked comments making them."],
+  ["minority", "Minority", "How rare its statements are: 1 minus the mean share. 0 for comments with no statement."],
+  ["postside", "With the post", "1 when it makes at least one statement the original post makes."],
+  ["fcside", "With the fact-check", "1 when it makes at least one statement the fact-check makes."],
+  ["breadth", "Breadth", "How many statements it makes, against the comment that makes the most."],
+  ["coded", "Makes a statement", "1 when it makes any statement of the codebook; 0 for jokes, insults and off-topic comments."],
+  ["length", "Length", "Length of the text, on a log scale."],
+  ["label", "Your label", "The value of the bridging-quality label you gave it (below)."],
+];
+const FN = Object.fromEntries(FEATURES.map(f => [f[0], f[1]]));
+const PRESETS = [
+  { name: "Common ground", on: true, def: "Puts first the comments that say what several opinion groups say, so that readers see where the sides already agree before they see where they differ.",
+    w: { common: 2, bridges: 1, coded: 1, engagement: 0.5 } },
+  { name: "Minority voices", on: true, def: "Puts first comments that make statements few others make, so that positions the majority drowns out are read; comments with no statement sink.",
+    w: { minority: 2, coded: 1.5, engagement: 0.5 } },
+  { name: "Cross-cutting", on: true, def: "Puts first comments that take up both the post's and the fact-check's statements, or join statements of different groups, and those I labelled as bridging.",
+    w: { both: 2, bridges: 1.5, label: 1 } },
+];
+const DEFAULT_CATS = [{ k: "b", name: "Bridging", v: 1 }, { k: "n", name: "Neutral", v: 0.5 }, { k: "d", name: "Divisive", v: 0 }, { k: "x", name: "Unclear", v: 0.5 }];
+
+let SRC = null;   // { key, name, rows, statements: Map n->text, contra: Map n->Set }
+let ST = { col: "", kinds: "reply", mode: "cols", topk: 20, find: "", sectBy: 0 };
+let METRICS = JSON.parse(JSON.stringify(PRESETS)), CATS = JSON.parse(JSON.stringify(DEFAULT_CATS)), LABELS = {};
+let ITEMS = [], GROUP_SRC = "";
+
+const store = {
+  key: () => "lab:reorder:" + (SRC ? SRC.key : ""),
+  load() { try { const v = JSON.parse(localStorage.getItem(this.key()) || "null"); if (v) { METRICS = v.metrics || METRICS; CATS = v.cats || CATS; LABELS = v.labels || {}; } } catch (e) {} },
+  save() { try { localStorage.setItem(this.key(), JSON.stringify({ metrics: METRICS, cats: CATS, labels: LABELS })); } catch (e) {} },
+};
+
+/* ---------- loading ---------- */
+function load(src) {
+  SRC = src; METRICS = JSON.parse(JSON.stringify(PRESETS)); CATS = JSON.parse(JSON.stringify(DEFAULT_CATS)); LABELS = {};
+  store.load();
+  // labels already in the file (bridging_category) are taken in
+  for (const r of src.rows) if (r.bridging_category && idOf(r)) { const c = CATS.find(c => c.name.toLowerCase() === String(r.bridging_category).toLowerCase()); if (c) LABELS[idOf(r)] = c.k; }
+  const cols = ["llm_statements", "my_statements", "statements"].filter(c => src.rows.some(r => String(r[c] ?? "").trim() !== ""));
+  const LAB_ = { llm_statements: "the LLM's coding (llm_statements)", my_statements: "your hand coding (my_statements)", statements: "the website's coding (statements)" };
+  $("#col").replaceChildren(...(cols.length ? cols : ["statements"]).map(c => el("option", { value: c, text: LAB_[c] })));
+  ST.col = $("#col").value;
+  ["#s2", "#s3", "#s4"].forEach(s => $(s).classList.remove("off"));
+  $("#cd-sub").textContent = src.name;
+  drawMetrics(); drawCats(); recompute();
+}
+const idOf = r => r.item_id || r.sample_id || "";
+$("#col").onchange = () => { ST.col = $("#col").value; recompute(); };
+const seg = (id, key, after) => $(id).addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  [...$(id).children].forEach(x => x.setAttribute("aria-pressed", String(x === b))); ST[key] = b.dataset.v; after(); });
+seg("#kinds", "kinds", recompute); seg("#mode", "mode", render);
+$("#topk").onchange = () => { ST.topk = +$("#topk").value; render(); };
+$("#find").oninput = () => { ST.find = $("#find").value.trim().toLowerCase(); render(); };
+$("#sect-by").onchange = () => { ST.sectBy = +$("#sect-by").value; render(); };
+
+/* ---------- features ---------- */
+function recompute() {
+  if (!SRC) return;
+  const col = ST.col, rows = SRC.rows;
+  const nums = r => LAB.parseNums(r[col]);
+  const post = rows.find(r => LAB.kindOf(r) === "post"), fcs = rows.filter(r => LAB.kindOf(r) === "factcheck");
+  const postSet = new Set(post ? nums(post) : []), fcSet = new Set(fcs.flatMap(nums));
+  if (!postSet.size && SRC.postMakes) SRC.postMakes.forEach(n => postSet.add(n));
+  const want = ST.kinds === "both" ? ["reply", "note"] : [ST.kinds];
+  ITEMS = rows.map((r, i) => ({ i, r, id: idOf(r) || "row" + i, kind: LAB.kindOf(r), s: nums(r), text: LAB.textOf(r) })).filter(x => want.includes(x.kind));
+  const N = ITEMS.length || 1, coded = ITEMS.filter(x => x.s.length);
+  // support: share of ranked items making each statement
+  const sup = new Map(); ITEMS.forEach(x => x.s.forEach(n => sup.set(n, (sup.get(n) || 0) + 1)));
+  // groups: the website's opinion groups with the website's coding, else each comment's most widely shared statement
+  const useOG = col === "statements" && ITEMS.some(x => x.r.opinion_group);
+  GROUP_SRC = useOG ? "Groups are the website's opinion groups (users who make similar statements)."
+    : "Groups are derived from this coding: each comment belongs to the group of its most widely shared statement.";
+  ITEMS.forEach(x => { x.g = useOG ? (x.r.opinion_group || "") : (x.s.length ? "#" + x.s.slice().sort((a, b) => (sup.get(b) - sup.get(a)) || a - b)[0] : ""); });
+  const groups = [...new Set(ITEMS.map(x => x.g).filter(Boolean))].sort();
+  const gIndex = new Map(groups.map((g, k) => [g, k]));
+  // per statement: how its makers spread over groups, and its home group
+  const spread = new Map(), home = new Map();
+  for (const [n] of sup) {
+    const c = new Map(); ITEMS.forEach(x => { if (x.g && x.s.includes(n)) c.set(x.g, (c.get(x.g) || 0) + 1); });
+    const tot = [...c.values()].reduce((a, b) => a + b, 0) || 1;
+    const H = -[...c.values()].reduce((a, v) => a + (v / tot) * Math.log(v / tot), 0);
+    spread.set(n, groups.length > 1 ? H / Math.log(groups.length) : 0);
+    home.set(n, [...c].sort((a, b) => b[1] - a[1])[0]?.[0] || "");
+  }
+  const contra = SRC.contra || new Map();
+  const maxS = Math.max(1, ...ITEMS.map(x => x.s.length));
+  const eng = x => x.kind === "note" ? (+x.r.n_ratings || 0) : (+x.r.like_count || 0);
+  const maxE = Math.max(1, ...ITEMS.map(x => Math.log1p(eng(x)))), maxL = Math.max(1, ...ITEMS.map(x => Math.log1p(x.text.length)));
+  const maxBr = Math.max(1, ...ITEMS.map(x => new Set(x.s.map(n => home.get(n)).filter(Boolean)).size - 1));
+  ITEMS.forEach(x => {
+    const shares = x.s.map(n => sup.get(n) / N), mean = shares.length ? shares.reduce((a, b) => a + b, 0) / shares.length : 0;
+    const pc = x.s.some(n => postSet.has(n)), fc = x.s.some(n => fcSet.has(n));
+    const pair = x.s.some(a => x.s.some(b => a !== b && ((contra.get(a) && contra.get(a).has(b)) || (contra.get(b) && contra.get(b).has(a)))));
+    x.f = { engagement: Math.log1p(eng(x)) / maxE, majority: mean, minority: x.s.length ? 1 - mean : 0, breadth: x.s.length / maxS,
+      common: x.s.length ? x.s.reduce((a, n) => a + spread.get(n), 0) / x.s.length : 0,
+      bridges: Math.max(0, new Set(x.s.map(n => home.get(n)).filter(Boolean)).size - 1) / maxBr,
+      both: (pc && fc) || pair ? 1 : 0, postside: pc ? 1 : 0, fcside: fc ? 1 : 0, coded: x.s.length ? 1 : 0,
+      length: Math.log1p(x.text.length) / maxL, label: 0 };
+    x.eng = eng(x);
+  });
+  // rescale majority and minority to 0–1 within the thread
+  for (const k of ["majority", "minority"]) { const m = Math.max(1e-9, ...ITEMS.map(x => x.f[k])); ITEMS.forEach(x => x.f[k] = x.f[k] / m); }
+  SRC.sup = sup; SRC.groups = groups; SRC.gIndex = gIndex; SRC.postSet = postSet; SRC.fcSet = fcSet; SRC.home = home;
+  // the side panel
+  const L = [...sup].sort((a, b) => b[1] - a[1]);
+  $("#legend").replaceChildren(...(L.length ? L.map(([n, c]) => el("div", {}, el("b", { text: "#" + n }), el("span", { text: SRC.statements.get(n) || "(no wording in this file)" }),
+    el("span", { class: "c", text: pct(c / N) }))) : [el("p", { class: "msg", text: "No item has this coding." })]));
+  $("#grp-note").textContent = `${NF.format(ITEMS.length)} ${ST.kinds === "both" ? "replies and notes" : ST.kinds === "note" ? "notes" : "replies"} ranked; ${NF.format(coded.length)} make at least one statement. ${GROUP_SRC}`;
+  $("#sides").replaceChildren(
+    el("p", {}, el("b", { text: "The post makes: " }), postSet.size ? [...postSet].map(n => "#" + n).join(", ") : "no coded statement"),
+    el("p", {}, el("b", { text: "The fact-check makes: " }), fcSet.size ? [...fcSet].map(n => "#" + n).join(", ") : "no coded statement"),
+    el("p", {}, el("b", { text: `Groups (${groups.length}): ` }), groups.length ? groups.map(g => `${g} (${ITEMS.filter(x => x.g === g).length})`).join(" · ") : "none"),
+    el("p", { class: "muted" }, "With your own coding, the post's and the fact-check's statements come from their rows in your file: code those rows too."));
+  $("#sect-by").replaceChildren(...METRICS.map((m, k) => el("option", { value: k, text: m.name || `Metric ${k + 1}` })));
+  $("#sect-by").value = String(ST.sectBy);
+  score();
+}
+
+function score() {
+  const cv = Object.fromEntries(CATS.map(c => [c.k, +c.v]));
+  const unl = (CATS.find(c => c.k === "x") || { v: 0.5 }).v;
+  ITEMS.forEach(x => { x.f.label = LABELS[x.id] ? (cv[LABELS[x.id]] ?? unl) : +unl;
+    x.score = METRICS.map(m => FEATURES.reduce((a, [k]) => a + (+(m.w[k] || 0)) * x.f[k], 0)); });
+  // ranks: X's order (most engaged first), then each metric
+  const rank = (key) => { const s = ITEMS.slice().sort((a, b) => key(b) - key(a) || b.eng - a.eng || a.i - b.i); s.forEach((x, k) => x["r" + key.tag] = k + 1); return s; };
+  const kx = x => x.eng; kx.tag = "x"; SRC.base = rank(kx);
+  SRC.ranked = METRICS.map((m, j) => { const f = x => x.score[j]; f.tag = j; return rank(f); });
+  render();
+}
+
+/* ---------- metric editors ---------- */
+function drawMetrics() {
+  $("#feat-doc").replaceChildren(el("thead", {}, el("tr", {}, el("th", { text: "Feature" }), el("th", { text: "What it measures (0 to 1)" }))),
+    el("tbody", {}, ...FEATURES.map(([k, n, d]) => el("tr", {}, el("td", { text: n }), el("td", { text: d })))));
+  $("#metrics").replaceChildren(...METRICS.map((m, j) => {
+    const box = el("div", { class: "metric", "data-on": String(m.on) });
+    const name = el("input", { type: "text", value: m.name, "aria-label": `Name of metric ${j + 1}` });
+    name.oninput = () => { m.name = name.value; store.save(); const o = $("#sect-by").options[j]; if (o) o.textContent = m.name; render(); };
+    const onb = el("input", { type: "checkbox" }); onb.checked = m.on;
+    onb.onchange = () => { m.on = onb.checked; box.dataset.on = String(m.on); store.save(); render(); };
+    const def = el("textarea", { rows: 3, "aria-label": `Definition of metric ${j + 1}`, style: "font-family:var(--font-body);font-size:13.5px" }); def.value = m.def;
+    def.oninput = () => { m.def = def.value; store.save(); };
+    const wts = el("div", { class: "wts" });
+    FEATURES.forEach(([k, n, d]) => { const v = +(m.w[k] || 0);
+      const r = el("input", { type: "range", min: -3, max: 3, step: 0.5, value: v, "aria-label": `${n} weight in ${m.name}` });
+      const o = el("output", { text: v ? (v > 0 ? "+" : "") + v : "0" });
+      r.oninput = () => { const x = +r.value; if (x) m.w[k] = x; else delete m.w[k]; o.textContent = x ? (x > 0 ? "+" : "") + x : "0"; store.save(); score(); };
+      wts.append(el("span", { class: "fn" }, el("abbr", { title: d, text: n })), r, o); });
+    box.append(el("div", { class: "mh" }, el("span", { class: "sw", style: `background:${MCOL[j]}` }), name, el("label", { class: "ck", title: "Show this metric" }, onb)),
+      el("div", { class: "field", style: "margin-bottom:10px" }, el("span", { text: "Definition: how it orders comments, and why" }), def), wts,
+      el("button", { type: "button", class: "btn small", style: "margin-top:10px", text: "Reset weights to zero", onclick: () => { m.w = {}; store.save(); drawMetrics(); score(); } }));
+    return box;
+  }));
+}
+function drawCats() {
+  $("#cats").replaceChildren(...CATS.map(c => {
+    const n = el("input", { type: "text", value: c.name, size: 10, "aria-label": "Label name" });
+    const v = el("input", { type: "number", value: c.v, min: -3, max: 3, step: 0.5, "aria-label": `Value of ${c.name}`, style: "width:80px" });
+    n.oninput = () => { c.name = n.value; store.save(); render(); }; v.onchange = () => { c.v = +v.value; store.save(); score(); };
+    return el("div", { class: "field" }, el("span", { text: { b: "label 1", n: "label 2", d: "label 3", x: "unlabelled = this" }[c.k] }), el("div", { class: "row", style: "gap:6px" }, n, v));
+  }));
+}
+
+/* ---------- rendering ---------- */
+function card(x, rank, move, j) {
+  const cat = LABELS[x.id] || "";
+  const sel = el("select", { "aria-label": "Bridging-quality label" }, el("option", { value: "", text: "label…" }), ...CATS.filter(c => c.k !== "x" || true).map(c => el("option", { value: c.k, text: c.name })));
+  sel.value = cat;
+  sel.onchange = () => { if (sel.value) LABELS[x.id] = sel.value; else delete LABELS[x.id]; store.save(); score(); };
+  const chips = x.s.map(n => el("span", { class: "chip", title: SRC.statements.get(n) || "", text: "#" + n }));
+  const g = x.g ? el("span", { class: "chip g", style: `background:${GCOL[(SRC.gIndex.get(x.g) || 0) % GCOL.length]}`, title: "group", text: x.g }) : null;
+  const mv = move == null ? null : move === 0 ? el("span", { class: "mv", text: "=" }) : el("span", { class: "mv " + (move > 0 ? "up" : "dn"), text: (move > 0 ? "▲" : "▼") + Math.abs(move) });
+  return el("article", { class: "cmt" + (cat ? " cat-" + cat : "") },
+    el("div", { class: "cm" }, el("span", { class: "rk", text: rank }), mv, el("span", { text: x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind] }),
+      el("span", { text: x.kind === "note" ? `${NF.format(x.eng)} ratings` : `${NF.format(x.eng)} likes` }),
+      j != null ? el("span", { text: `score ${x.score[j].toFixed(2)}` }) : null,
+      x.r.url ? el("a", { href: x.r.url, target: "_blank", rel: "noopener", text: "open ↗" }) : null),
+    el("div", { class: "cb", text: x.text.length > 600 ? x.text.slice(0, 599) + "…" : x.text }),
+    el("div", { class: "st" }, ...chips, g, x.s.length ? null : el("span", { class: "chip", text: "no statement" }), sel));
+}
+const match = x => !ST.find || x.text.toLowerCase().includes(ST.find) || String(x.r.author || "").toLowerCase().includes(ST.find);
+function render() {
+  if (!SRC || !SRC.base) return;
+  const view = $("#view"); view.replaceChildren();
+  $("#sect-by-f").hidden = ST.mode !== "sect";
+  const on = METRICS.map((m, j) => [m, j]).filter(([m]) => m.on);
+  if (ST.mode === "cols") {
+    $("#view-sub").textContent = `${NF.format(ITEMS.length)} comments · the arrows show how far each comment moved from X's order`;
+    const cols = [{ t: "As X orders it: most engaged", list: SRC.base, j: null, c: "var(--rule-2)" }]
+      .concat(on.map(([m, j]) => ({ t: m.name || `Metric ${j + 1}`, list: SRC.ranked[j], j, c: MCOL[j] })));
+    const wrap = el("div", { class: "cols", style: `--ncol:${cols.length}` });
+    cols.forEach(c => { const list = c.list.filter(match).slice(0, ST.topk);
+      wrap.append(el("div", { class: "col" }, el("h3", {}, el("span", { class: "sw", style: `width:10px;height:10px;border-radius:2px;display:inline-block;background:${c.c}` }), c.t),
+        ...list.map(x => card(x, c.j == null ? x.rx : x["r" + c.j], c.j == null ? null : x.rx - x["r" + c.j], c.j)),
+        list.length ? null : el("p", { class: "msg", text: "Nothing matches." }))); });
+    view.append(wrap);
+  } else {
+    // sections: cross-cutting comments, then one section per statement (most shared first), then rare statements, then the rest
+    const j = Math.min(ST.sectBy, METRICS.length - 1), by = (a, b) => b.score[j] - a.score[j] || b.eng - a.eng;
+    const N = ITEMS.length || 1, rareCut = 0.1, used = new Set();
+    $("#view-sub").textContent = `ordered within each section by ${METRICS[j].name || "metric " + (j + 1)}`;
+    const sect = (title, sub, list) => { if (!list.length) return; view.append(el("div", { class: "sect" }, title, el("small", { text: sub })));
+      list.filter(match).slice(0, ST.topk).forEach((x, k) => view.append(card(x, k + 1, null, j))); };
+    const cross = ITEMS.filter(x => x.f.both || x.f.bridges > 0).sort(by); cross.forEach(x => used.add(x));
+    sect("Cross-cutting comments", `${cross.length} · make statements of both sides, or of different groups`, cross);
+    const stmts = [...SRC.sup].sort((a, b) => b[1] - a[1]);
+    for (const [n, c] of stmts.filter(([, c]) => c / N >= rareCut)) {
+      const list = ITEMS.filter(x => !used.has(x) && x.s.length && x.s.slice().sort((a, b) => SRC.sup.get(b) - SRC.sup.get(a))[0] === n).sort(by); list.forEach(x => used.add(x));
+      sect(`#${n} ${SRC.statements.get(n) || ""}`, `majority statement · ${pct(c / N)} of comments make it`, list);
+    }
+    const rare = ITEMS.filter(x => !used.has(x) && x.s.length).sort(by); rare.forEach(x => used.add(x));
+    sect("Minority statements", `${rare.length} · statements made by fewer than ${pct(rareCut)} of comments`, rare);
+    sect("No statement", "jokes, insults, off-topic, or not coded", ITEMS.filter(x => !used.has(x)).sort(by));
+  }
+}
+
+/* ---------- export ---------- */
+$("#dl").onclick = () => {
+  const extra = ["rank_x"].concat(METRICS.flatMap((m, j) => [`score_${j + 1}`, `rank_${j + 1}`]), FEATURES.map(f => "f_" + f[0]), ["group", "bridging_category"]);
+  const base = Object.keys(SRC.rows[0]).filter(c => !extra.includes(c));
+  const rows = SRC.base.map(x => Object.assign({}, x.r, { rank_x: x.rx, group: x.g, bridging_category: (CATS.find(c => c.k === LABELS[x.id]) || {}).name || "" },
+    ...METRICS.map((m, j) => ({ [`score_${j + 1}`]: x.score[j].toFixed(4), [`rank_${j + 1}`]: x["r" + j] })),
+    Object.fromEntries(FEATURES.map(([k]) => ["f_" + k, x.f[k].toFixed(4)]))));
+  LAB.download(`${SRC.file}_bridging_ranking.csv`, LAB.toCSV(base.concat(extra), rows));
+};
+$("#dl-md").onclick = () => {
+  const L = [`# Bridging metrics — ${SRC.name}`, "", `Coding: ${$("#col").selectedOptions[0].textContent}. Ranked: ${{ both: "replies and notes", reply: "replies", note: "community notes" }[ST.kinds]} (${ITEMS.length}).`, GROUP_SRC, "",
+    "Each metric scores a comment as the sum of its features times their weights; comments are ordered by score, highest first (ties: most engaged first).", ""];
+  METRICS.forEach((m, j) => { L.push(`## Metric ${j + 1}: ${m.name}`, "", m.def || "_(no definition)_", "", "score = " +
+    (Object.entries(m.w).filter(([, v]) => v).map(([k, v]) => `${v} × ${FN[k]}`).join(" + ") || "0"), "");
+    L.push("Top five:", ""); SRC.ranked[j].slice(0, 5).forEach(x => L.push(`${x["r" + j]}. ${x.text.replace(/\s+/g, " ").slice(0, 200)} (was ${x.rx} in X's order)`)); L.push(""); });
+  L.push("## Labels", "", ...CATS.map(c => `- ${c.name} = ${c.v}`), `- ${Object.keys(LABELS).length} comments labelled`, "", "## Features", "", ...FEATURES.map(([, n, d]) => `- **${n}**: ${d}`), "");
+  LAB.download(`${SRC.file}_bridging_metrics.md`, L.join("\n"), "text/markdown");
+};
+
+/* ---------- sources ---------- */
+function fromPost(d) {
+  const contra = new Map(d.statements.map(s => [+s.statement, new Set(LAB.parseNums(s.contradicts))]));
+  const postMakes = d.statements.filter(s => s.post_makes_it === "yes").map(s => +s.statement);
+  return { key: "post:" + d.id, file: "post_" + d.id, name: `post ${d.id}${d.meta ? " · " + d.meta.checked.slice(0, 90) : ""}`, rows: d.rows,
+    statements: LAB.statementMap(d.statements, d.rows), contra, postMakes };
+}
+async function fromFile(rows, name, codebook) {
+  const id = rows.find(r => r.post_id)?.post_id || null;
+  let statements = [], contra = new Map(), postMakes = [];
+  if (id) try { const d = await LAB.loadPost(id); statements = d.statements; contra = new Map(d.statements.map(s => [+s.statement, new Set(LAB.parseNums(s.contradicts))]));
+    postMakes = d.statements.filter(s => s.post_makes_it === "yes").map(s => +s.statement); } catch (e) {}
+  const map = LAB.statementMap(statements, rows);
+  if (codebook && codebook.length) codebook.forEach(c => map.set(c.n, c.t));   // the student's own wording wins
+  return { key: "file:" + name, file: name.replace(/\.csv$/i, ""), name, rows, statements: map, contra, postMakes };
+}
+const handed = LAB.hand.take("coded");
+LAB.picker($("#picker"), p => { if (handed && handed._used !== true && LAB.param("post") === p.id && SRC) return; LAB.setParam("post", p.id);
+  LAB.loadPost(p.id).then(d => load(fromPost(d))).catch(e => alert("The thread could not be loaded: " + e.message)); },
+  { selected: handed ? null : LAB.param("post") });
+LAB.dropzone($("#drop"), async (rows, name) => load(await fromFile(rows, name)));
+if (handed) fromFile(handed.rows, handed.name, handed.codebook).then(load);
+</script>
+</body>
+</html>

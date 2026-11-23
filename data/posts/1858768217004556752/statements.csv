@@ -1,0 +1,6 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1858768217004556752","1","Thousands of tractors are heading to London","3","yes","0","0","15","2","379","yes"
+"1858768217004556752","2","Labour should listen to farmers","","yes","0","0","12","2","379","yes"
+"1858768217004556752","3","The photo shows a 2023 farmers' protest in Berlin","1; 4","no","1","1","298","2","379","yes"
+"1858768217004556752","4","The photo is illustrative; the post does not say these tractors are in London","3","no","0","1","28","2","379","yes"
+"1858768217004556752","5","Protests that block roads are hypocritical","","no","0","0","4","2","379","yes"

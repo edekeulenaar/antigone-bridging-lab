@@ -1,0 +1,5 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1703886179865710929","1","Footage shows the missing F-35 being shot down by Cuba","2; 3","yes","0","0","15","4","199","yes"
+"1703886179865710929","2","The footage is from the video game Arma 3","1; 4","no","1","2","35","4","199","yes"
+"1703886179865710929","3","The plane is an A-10, not an F-35","1","no","0","2","70","4","199","yes"
+"1703886179865710929","4","It is clearly a joke and needs no note","2","no","0","1","18","4","199","yes"

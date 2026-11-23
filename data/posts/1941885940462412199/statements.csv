@@ -1,0 +1,6 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1941885940462412199","1","Cloud seeding by Rainmaker caused the Texas floods","3; 5","yes","0","0","108","2","374","yes"
+"1941885940462412199","2","Rainmaker, a Thiel-funded startup, was cloud seeding over Texas two days before","3","yes","0","1","2","2","374","yes"
+"1941885940462412199","3","Weather modification could not have caused the floods; Rainmaker did not operate there on July 3 or 4","1; 2","no","1","1","6","2","374","yes"
+"1941885940462412199","4","Weather modification is a wider threat that is being ignored","","no","0","0","68","2","374","yes"
+"1941885940462412199","5","The post is false or irresponsible","1","no","0","0","9","2","374","yes"

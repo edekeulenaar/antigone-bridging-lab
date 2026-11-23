@@ -1,0 +1,6 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1807424627565887604","1","In 2007 the cricket team was photographed with Sonia Gandhi rather than Prime Minister Manmohan Singh","2","yes","0","0","3","3","369","yes"
+"1807424627565887604","2","The team first met Manmohan Singh for an official photo, then met Sonia Gandhi","1","no","1","1","15","3","369","yes"
+"1807424627565887604","3","The post is meant to vilify a political opponent","4","no","0","1","51","3","369","yes"
+"1807424627565887604","4","The post does not say the team skipped the prime minister; no note is needed","3","no","0","1","0","3","369","no"
+"1807424627565887604","5","Sonia Gandhi had no official role, so the photo was improper","","yes","0","1","6","3","369","yes"

@@ -1,0 +1,12 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1932166178790920360","1","Alabama has three times California's homicide rate","5","yes","0","0","40","5","284","yes"
+"1932166178790920360","2","Alabama's murder rate ranks third in the country","5","yes","0","0","20","5","284","yes"
+"1932166178790920360","3","California's homicide rate is lower than Alabama's, roughly as Newsom says","5; 7; 9","no","1","1","21","5","284","yes"
+"1932166178790920360","4","California's overall violent crime rate is higher than some of these states'","","no","1","0","9","5","284","no"
+"1932166178790920360","5","Alabama's rate is not three times California's, nor the third highest","1; 2; 3","no","0","2","21","5","284","yes"
+"1932166178790920360","6","California has the most murders in total","","no","0","1","10","5","284","yes"
+"1932166178790920360","7","California's crime data are incomplete because some cities do not report","3","no","0","1","22","5","284","yes"
+"1932166178790920360","8","Alabama's higher rate reflects its larger Black population","","no","0","1","61","5","284","yes"
+"1932166178790920360","9","California's rate is low because it does not arrest or charge criminals","3","no","0","0","19","5","284","yes"
+"1932166178790920360","10","Newsom shelters illegal immigrants and has failed California","11","no","0","0","36","5","284","yes"
+"1932166178790920360","11","Newsom is right","10","no","0","0","19","5","284","yes"

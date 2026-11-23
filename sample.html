@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample a thread · Bridging lab</title>
+<meta name="description" content="Draw a representative, reproducible sample of a contested X thread for coding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging lab <small>ANTIGONE</small></a>
+  <nav class="nav" aria-label="Tools">
+    <a href="index.html">Posts</a>
+    <a href="sample.html" aria-current="page">Sample</a>
+    <a href="code.html">Code with an LLM</a>
+    <a href="reorder.html">Reorder</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">ANTIGONE website ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>Sample a thread for coding</h1>
+  <p class="lede">A thread can hold hundreds of replies; you will code a sample of them. A sample is only useful if you can say what
+  it stands for. Pick the settings below, compare the sample with the whole thread, and keep the <b>sampling note</b>: it records your
+  choices and the random seed, so that anyone can draw the same sample again.</p>
+
+  <section class="step" id="s1">
+    <header><span class="n">1</span><h2>Choose the thread</h2></header>
+    <div id="picker"></div>
+    <div class="or">or upload a full-thread CSV</div>
+    <div id="drop"></div>
+  </section>
+
+  <section class="step off" id="s2">
+    <header><span class="n">2</span><h2>The whole thread</h2><span class="sub" id="pop-sub"></span></header>
+    <div class="tw"><table id="pop"></table></div>
+  </section>
+
+  <section class="step off" id="s3">
+    <header><span class="n">3</span><h2>Settings</h2><span class="sub">choose, and be ready to justify each choice</span></header>
+    <div class="grid2">
+      <div>
+        <h3>What goes in</h3>
+        <div class="row" style="gap:10px 18px">
+          <label class="ck"><input type="checkbox" id="in-post" checked> the original post</label>
+          <label class="ck"><input type="checkbox" id="in-fc" checked> the fact-check(s)</label>
+        </div>
+        <div class="field" style="margin-top:12px"><span>Community notes</span>
+          <div class="seg" id="notes-mode" role="group" aria-label="Community notes">
+            <button type="button" data-v="all" aria-pressed="true">Include all</button>
+            <button type="button" data-v="sample" aria-pressed="false">Sample with the replies</button>
+            <button type="button" data-v="none" aria-pressed="false">Leave out</button>
+          </div>
+          <small>Notes are few and each carries a full argument, so including all of them is usually right.</small></div>
+        <h3 style="margin-top:20px">Clean the pool first</h3>
+        <div class="row">
+          <label class="field"><span>Minimum length (characters)</span><input type="number" id="minlen" value="15" min="0" max="500"></label>
+          <label class="field"><span>Languages</span>
+            <select id="langs"><option value="all">All languages</option><option value="en">English only</option><option value="non">Non-English only</option></select></label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <label class="ck"><input type="checkbox" id="dedupe" checked> drop exact duplicate texts</label>
+        </div>
+      </div>
+      <div>
+        <h3>How to draw</h3>
+        <div class="row">
+          <label class="field"><span>Sample size</span><input type="number" id="n" value="150" min="5" max="5000"></label>
+          <label class="field"><span>Random seed</span><span class="row" style="gap:6px;align-items:center">
+            <input type="number" id="seed" min="1" max="999999"><button type="button" class="btn small" id="reseed">New seed</button></span></label>
+        </div>
+        <div class="field" style="margin-top:12px"><span>Method</span>
+          <div class="seg" id="method" role="group" aria-label="Sampling method">
+            <button type="button" data-v="stratified" aria-pressed="true">Stratified</button>
+            <button type="button" data-v="random" aria-pressed="false">Simple random</button>
+            <button type="button" data-v="weighted" aria-pressed="false">Weighted by engagement</button>
+            <button type="button" data-v="top" aria-pressed="false">Most engaged only</button>
+          </div>
+          <small id="method-help"></small></div>
+        <div class="field" id="strata-box" style="margin-top:12px"><span>Stratify by</span>
+          <div class="row" style="gap:8px 16px">
+            <label class="ck"><input type="checkbox" name="strata" value="level" checked> reply level</label>
+            <label class="ck"><input type="checkbox" name="strata" value="band" checked> engagement band</label>
+            <label class="ck"><input type="checkbox" name="strata" value="lang"> language</label>
+            <label class="ck"><input type="checkbox" name="strata" value="kind"> type (replies / notes)</label>
+          </div>
+          <small>Each combination of these is a stratum; the sample takes from each in proportion to its size.</small></div>
+        <h3 style="margin-top:20px">Coding</h3>
+        <label class="ck"><input type="checkbox" id="hide" checked> leave out the website's statement coding</label>
+        <p class="small muted" style="margin-top:6px">Code without seeing the website's coding, then compare with it afterwards.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="step off" id="s4">
+    <header><span class="n">4</span><h2>The sample</h2><span class="sub" id="smp-sub"></span></header>
+    <p class="small muted">The pool is the items that can be drawn: the replies (and the notes, if sampled) left after cleaning. The
+    table compares the drawn items with the pool; the fixed items (post, fact-check, notes) are added on top. A difference above
+    8 points is marked red.</p>
+    <div class="tw"><table id="cmp"></table></div>
+    <div class="row" style="margin-top:18px">
+      <button type="button" class="btn primary" id="dl">Download the sample (CSV)</button>
+      <button type="button" class="btn" id="dl-note">Download the sampling note</button>
+      <button type="button" class="btn" id="to-code">Code this sample with an LLM →</button>
+      <span class="msg" id="out-msg"></span>
+    </div>
+    <details class="more"><summary>Preview the first 25 rows</summary><div class="tw" style="margin-top:10px"><table id="prev"></table></div></details>
+  </section>
+  <footer class="foot">The sample adds an empty <code>my_statements</code> column: write the numbers of the statements each item makes
+    there (for example <code>2; 5</code>, or <code>0</code> for none).</footer>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF, pct } = LAB;
+let SRC = null;         // { id, name, rows }
+let LAST = null;        // the last drawn sample
+
+const S = { notes: "all", method: "stratified" };
+const segs = (id, key) => $(id).addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  [...$(id).children].forEach(x => x.setAttribute("aria-pressed", String(x === b))); S[key] = b.dataset.v; redraw(); });
+segs("#notes-mode", "notes"); segs("#method", "method");
+const HELP = {
+  stratified: "Proportional stratified sampling: the sample mirrors the thread on the chosen variables. The usual choice.",
+  random: "Every item in the pool has the same chance. Small groups (nested replies, other languages) may be missed by chance.",
+  weighted: "Items are drawn with probability proportional to engagement (likes, or ratings for notes) plus one: closer to what users actually see, less to what was said.",
+  top: "The most-liked items only, as X tends to show them. Not representative of the thread: use it only to contrast with a representative sample.",
+};
+$("#seed").value = LAB.newSeed();
+$("#reseed").onclick = () => { $("#seed").value = LAB.newSeed(); redraw(); };
+["#minlen", "#langs", "#dedupe", "#n", "#seed", "#hide", "#in-post", "#in-fc"].forEach(s => $(s).addEventListener("change", redraw));
+document.querySelectorAll("input[name=strata]").forEach(x => x.addEventListener("change", redraw));
+
+const band = v => v <= 0 ? "0" : v < 10 ? "1–9" : v < 100 ? "10–99" : "100+";
+const BANDS = ["0", "1–9", "10–99", "100+"];
+function itemsOf(rows) {
+  return rows.map((r, i) => { const kind = LAB.kindOf(r), eng = kind === "note" ? (+r.n_ratings || 0) : (+r.like_count || 0);
+    return { i, r, kind, text: LAB.textOf(r), eng, band: band(eng), level: kind === "reply" ? (r.reply_level || "unknown") : "—",
+      lang: r.language || "unknown", coded: LAB.parseNums(r.statements).length > 0 }; });
+}
+
+function load(src) {
+  SRC = src; ["#s2", "#s3", "#s4"].forEach(s => $(s).classList.remove("off"));
+  const it = itemsOf(src.rows), by = k => it.filter(x => x.kind === k).length;
+  $("#pop-sub").textContent = src.name;
+  const reps = it.filter(x => x.kind === "reply"), langs = count(reps, x => x.lang);
+  const tbody = [["Items", [["Original post", by("post")], ["Fact-checks", by("factcheck")], ["Community notes", by("note")], ["Replies", by("reply")]]],
+    ["Replies by level", [["direct", reps.filter(x => x.level === "direct").length], ["nested", reps.filter(x => x.level === "nested").length]]],
+    ["Replies by likes", BANDS.map(b => [b, reps.filter(x => x.band === b).length])],
+    ["Replies by language", langs.slice(0, 5).concat(langs.length > 5 ? [["other", langs.slice(5).reduce((a, x) => a + x[1], 0)]] : [])],
+    ["Website coding", [["replies with a statement", reps.filter(x => x.coded).length], ["replies with none", reps.filter(x => !x.coded).length]]]];
+  $("#pop").replaceChildren(el("thead", {}, el("tr", {}, el("th", { text: "" }), el("th", { class: "num", text: "Count" }), el("th", { class: "num", text: "Share" }))),
+    el("tbody", {}, ...tbody.flatMap(([g, rs]) => { const tot = rs.reduce((a, x) => a + x[1], 0) || 1;
+      return [el("tr", { class: "grp" }, el("td", { colspan: 3, text: g }))].concat(rs.map(([k, v]) => el("tr", {}, el("td", { text: k }),
+        el("td", { class: "num", text: NF.format(v) }), el("td", { class: "num", text: pct(v / tot) })))); })));
+  redraw();
+}
+function count(arr, f) { const m = new Map(); arr.forEach(x => m.set(f(x), (m.get(f(x)) || 0) + 1)); return [...m].sort((a, b) => b[1] - a[1]); }
+
+function draw(src) {
+  const all = itemsOf(src.rows), r = LAB.rng(+$("#seed").value || 1);
+  const minLen = +$("#minlen").value || 0, langs = $("#langs").value, dedupe = $("#dedupe").checked;
+  const kinds = new Set(["reply"].concat(S.notes === "sample" ? ["note"] : []));
+  const fixed = all.filter(x => (x.kind === "post" && $("#in-post").checked) || (x.kind === "factcheck" && $("#in-fc").checked) || (x.kind === "note" && S.notes === "all"));
+  const seen = new Set();
+  const pool = all.filter(x => kinds.has(x.kind)).filter(x => {
+    const t = x.text.trim();
+    if (t.replace(/@\w+/g, "").trim().length < minLen) return false;
+    if (langs === "en" && !/^en/i.test(x.lang)) return false;
+    if (langs === "non" && /^en/i.test(x.lang)) return false;
+    if (dedupe) { const k = t.toLowerCase().replace(/\s+/g, " "); if (seen.has(k)) return false; seen.add(k); }
+    return true;
+  });
+  const n = Math.max(0, Math.min(+$("#n").value || 0, pool.length));
+  const strata = [...document.querySelectorAll("input[name=strata]:checked")].map(x => x.value);
+  let drawn = [];
+  if (S.method === "random") drawn = LAB.shuffle(pool, r).slice(0, n);
+  else if (S.method === "top") drawn = pool.slice().sort((a, b) => b.eng - a.eng || a.i - b.i).slice(0, n);
+  else if (S.method === "weighted") drawn = pool.map(x => ({ x, k: Math.pow(r(), 1 / (x.eng + 1)) })).sort((a, b) => b.k - a.k).slice(0, n).map(o => o.x);
+  else {
+    const key = x => strata.map(s => x[s]).join(" · ") || "all";
+    const groups = new Map(); pool.forEach(x => { const k = key(x); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(x); });
+    // proportional allocation, largest remainder
+    const alloc = [...groups].map(([k, g]) => { const q = n * g.length / (pool.length || 1); return { k, g, n: Math.floor(q), rem: q - Math.floor(q) }; });
+    let left = n - alloc.reduce((a, s) => a + s.n, 0);
+    alloc.slice().sort((a, b) => b.rem - a.rem || b.g.length - a.g.length).forEach(s => { if (left > 0 && s.n < s.g.length) { s.n++; left--; } });
+    alloc.forEach(s => drawn.push(...LAB.shuffle(s.g, r).slice(0, s.n)));
+  }
+  drawn.sort((a, b) => a.i - b.i);
+  return { all, pool, fixed, drawn, n, strata };
+}
+
+function redraw() {
+  if (!SRC) return;
+  $("#method-help").textContent = HELP[S.method];
+  $("#strata-box").hidden = S.method !== "stratified";
+  const D = LAST = draw(SRC);
+  $("#smp-sub").textContent = `${D.drawn.length} drawn from a pool of ${NF.format(D.pool.length)}, plus ${D.fixed.length} fixed`;
+  const vars = [["Type", x => LAB.KIND_LABEL[x.kind]], ["Reply level", x => x.level], ["Engagement band", x => x.band],
+                ["Language", x => x.lang], ["Website coding", x => x.coded ? "has a statement" : "none"]];
+  const rows = [];
+  for (const [name, f] of vars) {
+    const P = count(D.pool, f), Sm = new Map(count(D.drawn, f)); if (P.length < 2 && name !== "Website coding") continue;
+    rows.push(el("tr", { class: "grp" }, el("td", { colspan: 5, text: name })));
+    P.slice(0, 8).forEach(([k, v]) => { const p = v / (D.pool.length || 1), s = (Sm.get(k) || 0) / (D.drawn.length || 1), d = 100 * (s - p);
+      rows.push(el("tr", {}, el("td", { text: k }), el("td", { class: "num", text: `${NF.format(v)} · ${pct(p)}` }),
+        el("td", { class: "num", text: `${NF.format(Sm.get(k) || 0)} · ${pct(s)}` }),
+        el("td", { class: "num " + (Math.abs(d) <= 3 ? "diff-ok" : Math.abs(d) <= 8 ? "diff-warn" : "diff-bad"), text: (d > 0 ? "+" : "") + d.toFixed(1) }))); });
+  }
+  $("#cmp").replaceChildren(el("thead", {}, el("tr", {}, el("th", { text: "" }), el("th", { class: "num", text: "Pool" }),
+    el("th", { class: "num", text: "Sample" }), el("th", { class: "num", text: "Difference (points)" }))), el("tbody", {}, ...rows));
+  const out = output(D);
+  $("#prev").replaceChildren(el("thead", {}, el("tr", {}, ...["sample_id", "Type", "author", "likes", "text"].map(t => el("th", { text: t })))),
+    el("tbody", {}, ...out.rows.slice(0, 25).map(o => el("tr", {}, el("td", { text: o.sample_id }), el("td", { text: o.Type }), el("td", { text: o.author }),
+      el("td", { class: "num", text: o.like_count || o.n_ratings || "" }), el("td", { class: "txt", text: o.text_translated || o.text })))));
+}
+
+function output(D) {
+  const hide = $("#hide").checked;
+  const base = ["sample_id", "post_id", "Type", "item_id", "author", "reply_level", "language", "text", "text_translated", "like_count",
+                "reply_count", "verdict", "classification", "note_status", "n_ratings", "url"];
+  const cols = base.concat(hide ? [] : ["statements", "statement_text", "opinion_group"], ["my_statements"]);
+  const items = D.fixed.concat(D.drawn).sort((a, b) => a.i - b.i);
+  const w = String(items.length).length;
+  const rows = items.map((x, k) => Object.assign({}, x.r, { sample_id: "S" + String(k + 1).padStart(Math.max(3, w), "0"), my_statements: "" }));
+  return { cols, rows };
+}
+const fileBase = () => SRC.id ? `post_${SRC.id}` : SRC.name.replace(/\.csv$/i, "");
+
+$("#dl").onclick = () => { const o = output(LAST); LAB.download(`${fileBase()}_sample_seed${$("#seed").value}.csv`, LAB.toCSV(o.cols, o.rows)); };
+$("#dl-note").onclick = () => {
+  const D = LAST, strata = D.strata.join(", ") || "none";
+  const L = [`# Sampling note — ${SRC.name}`, "", `Drawn ${new Date().toISOString().slice(0, 10)} with the ANTIGONE bridging lab (${location.origin}${location.pathname}).`, "",
+    "## Settings", "", `- Method: ${$("#method [aria-pressed=true]").textContent}${S.method === "stratified" ? ` (strata: ${strata})` : ""}`,
+    `- Sample size: ${D.drawn.length} drawn from a pool of ${D.pool.length}`, `- Random seed: ${$("#seed").value}`,
+    `- Fixed items: ${D.fixed.length} (original post: ${$("#in-post").checked ? "yes" : "no"}, fact-checks: ${$("#in-fc").checked ? "yes" : "no"}, community notes: ${S.notes})`,
+    `- Pool cleaning: minimum ${$("#minlen").value} characters, languages: ${$("#langs").selectedOptions[0].textContent}, duplicates dropped: ${$("#dedupe").checked ? "yes" : "no"}`,
+    `- Website coding in the sample: ${$("#hide").checked ? "left out" : "included"}`, "", "## Sample against the pool", "",
+    "| variable | value | pool | sample | difference (points) |", "|---|---|---:|---:|---:|"];
+  [...$("#cmp tbody").rows].forEach(tr => { if (tr.classList.contains("grp")) L.push(`| **${tr.cells[0].textContent}** | | | | |`);
+    else L.push(`| | ${tr.cells[0].textContent} | ${tr.cells[1].textContent} | ${tr.cells[2].textContent} | ${tr.cells[3].textContent} |`); });
+  L.push("", "## Justification", "", "- Why this method and these strata?", "- Why this sample size?", "- What does the sample leave out, and does it matter for the disagreement you study?", "");
+  LAB.download(`${fileBase()}_sampling_note.md`, L.join("\n"), "text/markdown");
+};
+$("#to-code").onclick = () => { const o = output(LAST);
+  if (LAB.hand.put("sample", { name: `${fileBase()}_sample_seed${$("#seed").value}.csv`, post: SRC.id || null, cols: o.cols, rows: o.rows }))
+    location.href = "code.html" + (SRC.id ? "?post=" + SRC.id : "");
+  else $("#out-msg").textContent = "This browser would not hand the sample over; download it and upload it in the coding helper instead."; };
+
+LAB.picker($("#picker"), p => { LAB.setParam("post", p.id);
+  LAB.loadPost(p.id).then(d => load({ id: p.id, name: `post ${p.id}`, rows: d.rows })).catch(e => alert("The thread could not be loaded: " + e.message)); },
+  { selected: LAB.param("post") });
+LAB.dropzone($("#drop"), (rows, name) => load({ id: rows[0] && rows[0].post_id || null, name, rows }));
+</script>
+</body>
+</html>

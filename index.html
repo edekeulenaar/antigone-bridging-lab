@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bridging lab · ANTIGONE</title>
+<meta name="description" content="Tools for the ANTIGONE bridging assignment: pick a contested X post, sample its thread, code it with an LLM, and reorder its comments by your own bridging metrics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging lab <small>ANTIGONE</small></a>
+  <nav class="nav" aria-label="Tools">
+    <a href="index.html" aria-current="page">Posts</a>
+    <a href="sample.html">Sample</a>
+    <a href="code.html">Code with an LLM</a>
+    <a href="reorder.html">Reorder</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">ANTIGONE website ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>Bridging lab</h1>
+  <p class="lede">Tools for designing a <b>bridging mechanism</b> for X's comment threads. Each thread here is one of the
+  118 contested posts on the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">ANTIGONE website</a>:
+  a post with a fact-check, community notes and a collected reply thread, broken down into the <b>statements</b> each
+  actor makes. Everything runs in your browser; nothing you load or code is sent anywhere.</p>
+
+  <div class="cards">
+    <div class="card"><span class="opt">Step 1–2</span><h2>Pick a post</h2>
+      <p>Choose a thread below, then read what each kind of user says on the ANTIGONE website: open the post and its <i>Statements</i> section.</p></div>
+    <div class="card"><span class="opt">Optional</span><h2><a href="sample.html">Sample</a></h2>
+      <p>Draw a representative sample of the thread to code yourself, with settings you choose and justify.</p></div>
+    <div class="card"><span class="opt">Optional</span><h2><a href="code.html">Code with an LLM</a></h2>
+      <p>Turn your codebook into a prompt for a chat model, paste its answers back, and check them against a hand-coded set.</p></div>
+    <div class="card"><span class="opt">Step 5–6</span><h2><a href="reorder.html">Reorder</a></h2>
+      <p>Define your bridging metrics, label comments by bridging quality, and see the thread reordered.</p></div>
+  </div>
+
+  <section class="step" aria-labelledby="h-posts">
+    <header><h2 id="h-posts">The 118 threads</h2><span class="sub">fact-check, notes and replies, with the website's statement coding</span></header>
+    <p class="muted small"><b>Opposed</b>: the fact-checker's verdict and the majority of the community notes point opposite ways.
+    <b>Need ratings</b>: notes the raters never resolved, so X shows none of them.</p>
+    <div id="picker"></div>
+    <div class="row" id="go" style="margin-top:14px" hidden>
+      <a class="btn primary" id="go-sample" href="sample.html">Sample this thread</a>
+      <a class="btn" id="go-reorder" href="reorder.html">Reorder this thread</a>
+    </div>
+  </section>
+
+  <section class="step" aria-labelledby="h-files">
+    <header><h2 id="h-files">What is in each thread's files</h2></header>
+    <div class="grid2">
+      <div>
+        <h3>full_thread.csv · one row per item</h3>
+        <p class="small">The original post, the fact-check(s), every community note and every collected reply. <code>Type</code> says which.
+        <code>text</code> is the original wording, <code>text_translated</code> its English translation. Notes carry their
+        <code>classification</code>, <code>note_status</code> and rating counts; replies their <code>reply_level</code> and likes.</p>
+        <p class="small">The website's coding: <code>statements</code> lists the numbers of the statements the item makes,
+        <code>statement_text</code> their wording, and <code>opinion_group</code> the item's group in the opinion network (users who make
+        similar statements). Empty statement columns mean the item makes none of the statements in the statement map.</p>
+      </div>
+      <div>
+        <h3>statements.csv · one row per statement</h3>
+        <p class="small">The statements distilled for the post, numbered: their wording, the statements each <code>contradicts</code>,
+        whether the post makes it, and how many fact-checkers, notes and replies make it. It is the website's codebook:
+        use it as it is, or as the starting point for your own.</p>
+        <p class="small muted">The statements were distilled by hand from the fact-check article, the most-rated notes and the most-liked
+        direct replies; every other note and reply was assigned to a statement by text similarity (precision about 58%, recall about 63%
+        against the hand coding). Treat the coding as a first pass, not as ground truth.</p>
+      </div>
+    </div>
+  </section>
+  <footer class="foot">ANTIGONE · Digital Methods class · data built from the ANTIGONE website on <span id="built"></span>.
+    Fact-checks: ClaimReview via Fact-Check Insights; community notes and ratings: X's public exports; replies collected from X.</footer>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const go = LAB.$("#go");
+LAB.picker(LAB.$("#picker"), p => {
+  go.hidden = false;
+  LAB.$("#go-sample").href = "sample.html?post=" + p.id;
+  LAB.$("#go-reorder").href = "reorder.html?post=" + p.id;
+  LAB.setParam("post", p.id);
+}, { selected: LAB.param("post") });
+LAB.loadIndex().then(i => { LAB.$("#built").textContent = i.built; }).catch(() => {});
+</script>
+</body>
+</html>

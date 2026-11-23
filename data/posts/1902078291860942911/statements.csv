@@ -1,0 +1,6 @@
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
+"1902078291860942911","1","An arrest warrant was issued against prosecutor Ángel Valencia for unpaid child support","2","yes","0","0","3","2","182","yes"
+"1902078291860942911","2","The image is a request filed with a court, not a warrant; the court had not granted it","1","no","1","1","13","2","182","yes"
+"1902078291860942911","3","Valencia was sued for unpaid support, but an appeal suspended the measures","","no","0","1","0","2","182","no"
+"1902078291860942911","4","The case dates from 2006","","no","0","0","22","2","182","yes"
+"1902078291860942911","5","The poster spread private data and may face legal action","","no","0","0","5","2","182","yes"
