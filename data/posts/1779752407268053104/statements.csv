@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1779752407268053104","1","The video of Dinesh Lal Yadav is a deepfake made by Congress","2","yes","0","0","2","5","332","yes"
-"1779752407268053104","2","The video is genuine: a journalist recorded the interview","1","no","3","5","96","5","332","yes"
-"1779752407268053104","3","Malviya spreads fake news and threatens critics with police complaints","5","no","0","0","188","5","332","yes"
-"1779752407268053104","4","Modi's promises are the real fakes","","no","0","0","9","5","332","yes"
-"1779752407268053104","5","Those who spread fake videos should be prosecuted","3","yes","0","0","12","5","332","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1779752407268053104","1","The video of Dinesh Lal Yadav is a deepfake made by Congress","2","yes","0","0","2","5","332","yes","A"
+"1779752407268053104","2","The video is genuine: a journalist recorded the interview","1","no","3","5","96","5","332","yes","A"
+"1779752407268053104","3","Malviya spreads fake news and threatens critics with police complaints","5","no","0","0","188","5","332","yes","A"
+"1779752407268053104","4","Modi's promises are the real fakes","","no","0","0","9","5","332","yes","B"
+"1779752407268053104","5","Those who spread fake videos should be prosecuted","3","yes","0","0","12","5","332","yes","C"

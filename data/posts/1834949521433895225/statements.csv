@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1834949521433895225","1","Sitaram Yechury was a Christian, which is why he disliked Hinduism","2; 3","yes","0","2","21","4","381","yes"
-"1834949521433895225","2","Yechury was born Hindu and identified as an atheist","1; 5","no","2","1","52","4","381","yes"
-"1834949521433895225","3","Laying a body in a coffin says nothing about religion","1","no","2","1","24","4","381","yes"
-"1834949521433895225","4","Trolling the dead is shameful","","no","0","0","88","4","381","yes"
-"1834949521433895225","5","Opposition leaders are secretly Christian","2","no","0","0","36","4","381","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1834949521433895225","1","Sitaram Yechury was a Christian, which is why he disliked Hinduism","2; 3","yes","0","2","21","4","381","yes","B"
+"1834949521433895225","2","Yechury was born Hindu and identified as an atheist","1; 5","no","2","1","52","4","381","yes","B"
+"1834949521433895225","3","Laying a body in a coffin says nothing about religion","1","no","2","1","24","4","381","yes","D"
+"1834949521433895225","4","Trolling the dead is shameful","","no","0","0","88","4","381","yes","A"
+"1834949521433895225","5","Opposition leaders are secretly Christian","2","no","0","0","36","4","381","yes","C"

@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1823754879481078063","1","Vance could not fill a small room","3; 5","yes","0","1","32","1","378","yes"
-"1823754879481078063","2","Harris and Walz fill large venues while Trump and Vance struggle","6","yes","0","0","39","1","378","yes"
-"1823754879481078063","3","The photo was taken hours before Vance spoke; the crowd later reached a few hundred","1","no","1","0","98","1","378","yes"
-"1823754879481078063","4","Even full, the event was small compared with Harris's","","no","0","1","0","1","378","no"
-"1823754879481078063","5","The post is dishonest","1","no","0","0","107","1","378","yes"
-"1823754879481078063","6","Harris's crowds are paid or fake","2","no","0","0","10","1","378","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1823754879481078063","1","Vance could not fill a small room","3; 5","yes","0","1","32","1","378","yes","C"
+"1823754879481078063","2","Harris and Walz fill large venues while Trump and Vance struggle","6","yes","0","0","39","1","378","yes","B"
+"1823754879481078063","3","The photo was taken hours before Vance spoke; the crowd later reached a few hundred","1","no","1","0","98","1","378","yes","A"
+"1823754879481078063","4","Even full, the event was small compared with Harris's","","no","0","1","0","1","378","no",""
+"1823754879481078063","5","The post is dishonest","1","no","0","0","107","1","378","yes","A"
+"1823754879481078063","6","Harris's crowds are paid or fake","2","no","0","0","10","1","378","yes","D"

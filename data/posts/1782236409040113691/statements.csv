@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1782236409040113691","1","Rahul Gandhi promised young people Rs 8,500 a month for doing nothing","2","yes","0","2","46","7","338","yes"
-"1782236409040113691","2","He promised paid apprenticeships for unemployed graduates; the clip is cut","1; 3","no","1","4","10","7","338","yes"
-"1782236409040113691","3","The notes are political bias; the post just quotes him","2","no","0","3","0","7","338","yes"
-"1782236409040113691","4","Handouts make young people lazy; skills are better","","no","0","0","64","7","338","yes"
-"1782236409040113691","5","Congress cannot pay for this without redistributing wealth","","no","0","0","12","7","338","yes"
-"1782236409040113691","6","Modi and the BJP deserve support","","no","0","0","3","7","338","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1782236409040113691","1","Rahul Gandhi promised young people Rs 8,500 a month for doing nothing","2","yes","0","2","46","7","338","yes","A"
+"1782236409040113691","2","He promised paid apprenticeships for unemployed graduates; the clip is cut","1; 3","no","1","4","10","7","338","yes","D"
+"1782236409040113691","3","The notes are political bias; the post just quotes him","2","no","0","3","0","7","338","yes","F"
+"1782236409040113691","4","Handouts make young people lazy; skills are better","","no","0","0","64","7","338","yes","A"
+"1782236409040113691","5","Congress cannot pay for this without redistributing wealth","","no","0","0","12","7","338","yes","B"
+"1782236409040113691","6","Modi and the BJP deserve support","","no","0","0","3","7","338","yes","E"

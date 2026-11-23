@@ -1,9 +1,9 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1788101070830354756","1","Rahul Gandhi stopped talking about Ambani and Adani in this election","3","yes","0","0","4","7","271","yes"
-"1788101070830354756","2","This points to a secret deal between Congress and the two businessmen","4","yes","0","0","4","7","271","yes"
-"1788101070830354756","3","Rahul Gandhi kept criticising Ambani and Adani in recent speeches","1; 5","no","3","2","12","7","271","yes"
-"1788101070830354756","4","There is no evidence that Adani or Ambani funded Congress","2","no","0","3","0","7","271","yes"
-"1788101070830354756","5","The post only asks a question; the notes are political bias","3","no","0","3","0","7","271","yes"
-"1788101070830354756","6","Modi is the one close to Adani","8","no","0","0","37","7","271","yes"
-"1788101070830354756","7","If there is black money, Modi's government should investigate","","no","0","1","34","7","271","yes"
-"1788101070830354756","8","Rahul Gandhi is close to Adani","6","no","0","0","7","7","271","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1788101070830354756","1","Rahul Gandhi stopped talking about Ambani and Adani in this election","3","yes","0","0","4","7","271","yes","C"
+"1788101070830354756","2","This points to a secret deal between Congress and the two businessmen","4","yes","0","0","4","7","271","yes","D"
+"1788101070830354756","3","Rahul Gandhi kept criticising Ambani and Adani in recent speeches","1; 5","no","3","2","12","7","271","yes","C"
+"1788101070830354756","4","There is no evidence that Adani or Ambani funded Congress","2","no","0","3","0","7","271","yes","B"
+"1788101070830354756","5","The post only asks a question; the notes are political bias","3","no","0","3","0","7","271","yes","E"
+"1788101070830354756","6","Modi is the one close to Adani","8","no","0","0","37","7","271","yes","A"
+"1788101070830354756","7","If there is black money, Modi's government should investigate","","no","0","1","34","7","271","yes","B"
+"1788101070830354756","8","Rahul Gandhi is close to Adani","6","no","0","0","7","7","271","yes","C"

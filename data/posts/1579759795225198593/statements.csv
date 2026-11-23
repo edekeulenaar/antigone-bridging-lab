@@ -1,9 +1,9 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1579759795225198593","1","Pfizer's vaccine was never tested on preventing transmission","","yes","0","1","5","5","393","yes"
-"1579759795225198593","2","'Get vaccinated for others' was a lie; vaccine passports only served to force vaccination","4","yes","0","2","14","5","393","yes"
-"1579759795225198593","3","Pfizer always said its trials did not test transmission; this was public before authorisation","6","no","3","1","2","5","393","yes"
-"1579759795225198593","4","The trials showed the vaccine reduced infection, and so reduced onward transmission","2; 5; 7","no","3","1","1","5","393","yes"
-"1579759795225198593","5","Vaccination does not prevent transmission; natural immunity is better","4","no","0","1","5","5","393","yes"
-"1579759795225198593","6","Notes defending the vaccine are written by Pfizer shills","3","no","0","1","0","5","393","no"
-"1579759795225198593","7","Pandemic coercion and discrimination rested on a lie","4","no","0","0","36","5","393","yes"
-"1579759795225198593","8","The vaccine was rushed and studies were hidden","","no","0","0","20","5","393","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1579759795225198593","1","Pfizer's vaccine was never tested on preventing transmission","","yes","0","1","5","5","393","yes","D"
+"1579759795225198593","2","'Get vaccinated for others' was a lie; vaccine passports only served to force vaccination","4","yes","0","2","14","5","393","yes","C"
+"1579759795225198593","3","Pfizer always said its trials did not test transmission; this was public before authorisation","6","no","3","1","2","5","393","yes","F"
+"1579759795225198593","4","The trials showed the vaccine reduced infection, and so reduced onward transmission","2; 5; 7","no","3","1","1","5","393","yes","F"
+"1579759795225198593","5","Vaccination does not prevent transmission; natural immunity is better","4","no","0","1","5","5","393","yes","E"
+"1579759795225198593","6","Notes defending the vaccine are written by Pfizer shills","3","no","0","1","0","5","393","no",""
+"1579759795225198593","7","Pandemic coercion and discrimination rested on a lie","4","no","0","0","36","5","393","yes","A"
+"1579759795225198593","8","The vaccine was rushed and studies were hidden","","no","0","0","20","5","393","yes","B"

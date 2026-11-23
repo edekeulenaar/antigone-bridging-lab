@@ -1,8 +1,8 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1731194202543755609","1","Mohammed Nazzal faked his broken arms for Hamas propaganda","2; 3","yes","0","0","10","8","349","yes"
-"1731194202543755609","2","The boy hugging relatives in the video is another released prisoner, Mohammed Shatara","1; 6","no","1","2","113","8","349","yes"
-"1731194202543755609","3","The BBC confirmed Nazzal's fractures with X-rays reviewed by doctors","1; 4; 5","no","0","2","6","8","349","yes"
-"1731194202543755609","4","Nazzal used his arms normally on release; any injury came later","3","no","0","3","0","8","349","yes"
-"1731194202543755609","5","The BBC and the other sources cited are biased and unreliable","3","no","0","3","7","8","349","yes"
-"1731194202543755609","6","Palestinians stage fake injuries for the cameras ('Pallywood')","2","no","0","0","92","8","349","yes"
-"1731194202543755609","7","Hamas broke his arms","","no","0","0","12","8","349","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1731194202543755609","1","Mohammed Nazzal faked his broken arms for Hamas propaganda","2; 3","yes","0","0","10","8","349","yes","D"
+"1731194202543755609","2","The boy hugging relatives in the video is another released prisoner, Mohammed Shatara","1; 6","no","1","2","113","8","349","yes","A"
+"1731194202543755609","3","The BBC confirmed Nazzal's fractures with X-rays reviewed by doctors","1; 4; 5","no","0","2","6","8","349","yes","A"
+"1731194202543755609","4","Nazzal used his arms normally on release; any injury came later","3","no","0","3","0","8","349","yes","E"
+"1731194202543755609","5","The BBC and the other sources cited are biased and unreliable","3","no","0","3","7","8","349","yes","B"
+"1731194202543755609","6","Palestinians stage fake injuries for the cameras ('Pallywood')","2","no","0","0","92","8","349","yes","B"
+"1731194202543755609","7","Hamas broke his arms","","no","0","0","12","8","349","yes","C"

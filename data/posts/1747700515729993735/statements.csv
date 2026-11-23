@@ -1,5 +1,5 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1747700515729993735","1","Holding your breath through the video shows your lungs are healthy","2","yes","0","0","44","4","374","yes"
-"1747700515729993735","2","No research shows this test proves healthy lungs","1","no","1","1","0","4","374","yes"
-"1747700515729993735","3","The video is bait to keep viewers watching","","no","0","1","8","4","374","yes"
-"1747700515729993735","4","Holding your breath too long can do harm","","no","0","1","11","4","374","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1747700515729993735","1","Holding your breath through the video shows your lungs are healthy","2","yes","0","0","44","4","374","yes","A"
+"1747700515729993735","2","No research shows this test proves healthy lungs","1","no","1","1","0","4","374","yes",""
+"1747700515729993735","3","The video is bait to keep viewers watching","","no","0","1","8","4","374","yes","C"
+"1747700515729993735","4","Holding your breath too long can do harm","","no","0","1","11","4","374","yes","B"

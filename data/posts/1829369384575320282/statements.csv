@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1829369384575320282","1","Muslims are sabotaging India's railway tracks","3","yes","0","0","53","3","343","yes"
-"1829369384575320282","2","Railway police should shoot such saboteurs","5","yes","0","0","50","3","343","yes"
-"1829369384575320282","3","The video is from Karachi, Pakistan, not India","1; 4","no","1","1","145","3","343","yes"
-"1829369384575320282","4","The post does not say the video is from India","3","no","0","1","17","3","343","yes"
-"1829369384575320282","5","The poster spreads hatred against a community and should be banned","2","no","0","1","50","3","343","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1829369384575320282","1","Muslims are sabotaging India's railway tracks","3","yes","0","0","53","3","343","yes","B"
+"1829369384575320282","2","Railway police should shoot such saboteurs","5","yes","0","0","50","3","343","yes","B"
+"1829369384575320282","3","The video is from Karachi, Pakistan, not India","1; 4","no","1","1","145","3","343","yes","A"
+"1829369384575320282","4","The post does not say the video is from India","3","no","0","1","17","3","343","yes","A"
+"1829369384575320282","5","The poster spreads hatred against a community and should be banned","2","no","0","1","50","3","343","yes","C"

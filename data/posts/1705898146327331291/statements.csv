@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1705898146327331291","1","Assange said the goal in Ukraine is an endless war to launder money for a transnational elite","2","yes","0","0","18","3","207","yes"
-"1705898146327331291","2","The clip is from 2011 and is about Afghanistan, not Ukraine","1","no","1","2","13","3","207","yes"
-"1705898146327331291","3","Even if the clip is old, it applies to Ukraine today","","no","0","0","27","3","207","yes"
-"1705898146327331291","4","Assange is persecuted for exposing war crimes and should be freed","","no","0","0","19","3","207","yes"
-"1705898146327331291","5","Wars serve the arms industry and money","","no","0","0","15","3","207","yes"
-"1705898146327331291","6","US aid to Ukraine is unaccountable and should stop","","no","0","0","4","3","207","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1705898146327331291","1","Assange said the goal in Ukraine is an endless war to launder money for a transnational elite","2","yes","0","0","18","3","207","yes","C"
+"1705898146327331291","2","The clip is from 2011 and is about Afghanistan, not Ukraine","1","no","1","2","13","3","207","yes","A"
+"1705898146327331291","3","Even if the clip is old, it applies to Ukraine today","","no","0","0","27","3","207","yes","A"
+"1705898146327331291","4","Assange is persecuted for exposing war crimes and should be freed","","no","0","0","19","3","207","yes","B"
+"1705898146327331291","5","Wars serve the arms industry and money","","no","0","0","15","3","207","yes","D"
+"1705898146327331291","6","US aid to Ukraine is unaccountable and should stop","","no","0","0","4","3","207","yes","E"

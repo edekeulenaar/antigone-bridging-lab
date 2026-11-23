@@ -1,8 +1,8 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1807991703904702861","1","Zelensky is corrupt and enriches himself with aid money","6","yes","0","0","81","5","247","yes"
-"1807991703904702861","2","The image is doctored from a photo of Floyd Mayweather","","no","1","4","8","5","247","yes"
-"1807991703904702861","3","The image is a joke edit, but the point stands","7","no","0","0","15","5","247","yes"
-"1807991703904702861","4","The Bugatti receipt is fake","5","no","0","1","1","5","247","yes"
-"1807991703904702861","5","Zelensky's wife bought a Bugatti with US money","4","no","0","0","19","5","247","yes"
-"1807991703904702861","6","This is Russian propaganda","1","no","0","0","23","5","247","yes"
-"1807991703904702861","7","Calling it satire is no excuse for a doctored image","3","no","0","1","0","5","247","no"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1807991703904702861","1","Zelensky is corrupt and enriches himself with aid money","6","yes","0","0","81","5","247","yes","A"
+"1807991703904702861","2","The image is doctored from a photo of Floyd Mayweather","","no","1","4","8","5","247","yes","E"
+"1807991703904702861","3","The image is a joke edit, but the point stands","7","no","0","0","15","5","247","yes","D"
+"1807991703904702861","4","The Bugatti receipt is fake","5","no","0","1","1","5","247","yes","E"
+"1807991703904702861","5","Zelensky's wife bought a Bugatti with US money","4","no","0","0","19","5","247","yes","C"
+"1807991703904702861","6","This is Russian propaganda","1","no","0","0","23","5","247","yes","B"
+"1807991703904702861","7","Calling it satire is no excuse for a doctored image","3","no","0","1","0","5","247","no",""

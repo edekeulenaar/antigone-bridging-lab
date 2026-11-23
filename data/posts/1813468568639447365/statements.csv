@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1813468568639447365","1","O'Brien called for shooting Trump on air","3; 5","yes","0","1","90","4","314","yes"
-"1813468568639447365","2","Ofcom applies double standards","","yes","0","0","70","4","314","yes"
-"1813468568639447365","3","The audio is fake; the original broadcast was about Biden's health","1; 4","no","1","3","0","4","314","yes"
-"1813468568639447365","4","There is no evidence it is fake; LBC cut the segment","3","no","0","1","0","4","314","no"
-"1813468568639447365","5","O'Brien said 'not literally' and meant it politically","1","no","0","0","3","4","314","yes"
-"1813468568639447365","6","O'Brien is divisive and hateful","","no","0","0","84","4","314","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1813468568639447365","1","O'Brien called for shooting Trump on air","3; 5","yes","0","1","90","4","314","yes","B"
+"1813468568639447365","2","Ofcom applies double standards","","yes","0","0","70","4","314","yes","C"
+"1813468568639447365","3","The audio is fake; the original broadcast was about Biden's health","1; 4","no","1","3","0","4","314","yes","D"
+"1813468568639447365","4","There is no evidence it is fake; LBC cut the segment","3","no","0","1","0","4","314","no",""
+"1813468568639447365","5","O'Brien said 'not literally' and meant it politically","1","no","0","0","3","4","314","yes","E"
+"1813468568639447365","6","O'Brien is divisive and hateful","","no","0","0","84","4","314","yes","A"

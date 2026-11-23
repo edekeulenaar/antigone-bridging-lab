@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1813545363187663201","1","A man in France destroyed a nude statue for religious reasons","3","yes","0","0","0","4","366","yes"
-"1813545363187663201","2","Europe is importing people incompatible with its values","5","yes","0","0","151","4","366","yes"
-"1813545363187663201","3","The photo is from Algeria in 2017, not France","1","no","1","4","5","4","366","yes"
-"1813545363187663201","4","Even if it happened in Algeria, it shows what Europe is importing","","no","0","0","4","4","366","yes"
-"1813545363187663201","5","The man was mentally ill, and the post is racist","2; 6","no","0","1","3","4","366","yes"
-"1813545363187663201","6","Muslims are barbaric","5","no","0","0","60","4","366","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1813545363187663201","1","A man in France destroyed a nude statue for religious reasons","3","yes","0","0","0","4","366","yes","A"
+"1813545363187663201","2","Europe is importing people incompatible with its values","5","yes","0","0","151","4","366","yes","A"
+"1813545363187663201","3","The photo is from Algeria in 2017, not France","1","no","1","4","5","4","366","yes","C"
+"1813545363187663201","4","Even if it happened in Algeria, it shows what Europe is importing","","no","0","0","4","4","366","yes","C"
+"1813545363187663201","5","The man was mentally ill, and the post is racist","2; 6","no","0","1","3","4","366","yes","B"
+"1813545363187663201","6","Muslims are barbaric","5","no","0","0","60","4","366","yes","B"

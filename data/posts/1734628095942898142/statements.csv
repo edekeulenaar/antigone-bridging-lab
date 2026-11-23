@@ -1,5 +1,5 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1734628095942898142","1","Italy's former health minister ordered vaccine deaths hidden and is under investigation for murder","2","yes","0","1","40","5","198","yes"
-"1734628095942898142","2","Speranza was investigated over the slow early pandemic response, not vaccines, and was cleared","1; 3","no","1","3","0","5","198","yes"
-"1734628095942898142","3","Officials and drug companies hid vaccine harms around the world","2","no","0","0","71","5","198","yes"
-"1734628095942898142","4","Fauci should be prosecuted too","","no","0","0","5","5","198","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1734628095942898142","1","Italy's former health minister ordered vaccine deaths hidden and is under investigation for murder","2","yes","0","1","40","5","198","yes","A"
+"1734628095942898142","2","Speranza was investigated over the slow early pandemic response, not vaccines, and was cleared","1; 3","no","1","3","0","5","198","yes","D"
+"1734628095942898142","3","Officials and drug companies hid vaccine harms around the world","2","no","0","0","71","5","198","yes","A"
+"1734628095942898142","4","Fauci should be prosecuted too","","no","0","0","5","5","198","yes","C"

@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1853205573258637719","1","A CNN screenshot shows Harris leading Trump in Texas","3","yes","0","0","10","6","382","yes"
-"1853205573258637719","2","They are stealing the Texas election","3","yes","0","0","42","6","382","yes"
-"1853205573258637719","3","The image is doctored; CNN never aired these numbers","1; 2; 4","no","1","5","60","6","382","yes"
-"1853205573258637719","4","The post is commentary on fraud claims and needs no note","3","no","0","1","3","6","382","yes"
-"1853205573258637719","5","Fake polls are meant to discourage Republican voters, so go and vote","","no","0","0","65","6","382","yes"
-"1853205573258637719","6","Texas will not turn blue","","no","0","0","77","6","382","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1853205573258637719","1","A CNN screenshot shows Harris leading Trump in Texas","3","yes","0","0","10","6","382","yes","E"
+"1853205573258637719","2","They are stealing the Texas election","3","yes","0","0","42","6","382","yes","D"
+"1853205573258637719","3","The image is doctored; CNN never aired these numbers","1; 2; 4","no","1","5","60","6","382","yes","B"
+"1853205573258637719","4","The post is commentary on fraud claims and needs no note","3","no","0","1","3","6","382","yes","B"
+"1853205573258637719","5","Fake polls are meant to discourage Republican voters, so go and vote","","no","0","0","65","6","382","yes","C"
+"1853205573258637719","6","Texas will not turn blue","","no","0","0","77","6","382","yes","A"

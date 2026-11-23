@@ -1,5 +1,5 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1853209936337178727","1","Ballots in Kentucky carry pre-marked dots that could void votes","3","yes","0","1","53","2","374","yes"
-"1853209936337178727","2","The markings favour Democrats and are an attempt to cheat","3","no","0","0","281","2","374","yes"
-"1853209936337178727","3","Officials found no pre-printed dots, and a stray dot would not void a vote","1; 2","no","1","1","1","2","374","yes"
-"1853209936337178727","4","Voters should check their ballots and ask for a new one if it is marked","","yes","0","1","52","2","374","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1853209936337178727","1","Ballots in Kentucky carry pre-marked dots that could void votes","3","yes","0","1","53","2","374","yes","A"
+"1853209936337178727","2","The markings favour Democrats and are an attempt to cheat","3","no","0","0","281","2","374","yes","A"
+"1853209936337178727","3","Officials found no pre-printed dots, and a stray dot would not void a vote","1; 2","no","1","1","1","2","374","yes","C"
+"1853209936337178727","4","Voters should check their ballots and ask for a new one if it is marked","","yes","0","1","52","2","374","yes","B"

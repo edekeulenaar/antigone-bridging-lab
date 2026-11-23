@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1887706555111366874","1","A court ruled a wife eligible for a family pension even after murdering her husband","","yes","0","1","10","4","370","yes"
-"1887706555111366874","2","The pension was stopped once she was convicted of murder","5","no","1","2","6","4","370","yes"
-"1887706555111366874","3","The headline is from 2021 and has been debunked","4","no","0","2","2","4","370","yes"
-"1887706555111366874","4","The fact-check does not dispute the original ruling","3","no","0","1","6","4","370","yes"
-"1887706555111366874","5","Indian laws and courts are absurd and unfair to men","2","yes","0","0","280","4","370","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1887706555111366874","1","A court ruled a wife eligible for a family pension even after murdering her husband","","yes","0","1","10","4","370","yes","C"
+"1887706555111366874","2","The pension was stopped once she was convicted of murder","5","no","1","2","6","4","370","yes","B"
+"1887706555111366874","3","The headline is from 2021 and has been debunked","4","no","0","2","2","4","370","yes","D"
+"1887706555111366874","4","The fact-check does not dispute the original ruling","3","no","0","1","6","4","370","yes","C"
+"1887706555111366874","5","Indian laws and courts are absurd and unfair to men","2","yes","0","0","280","4","370","yes","A"

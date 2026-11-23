@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Code with an LLM · Bridging lab</title>
-<meta name="description" content="Turn a codebook of statements into prompts for a chat model, paste its answers back, and check them against hand coding.">
+<title>Code · Bridging</title>
+<meta name="description" content="Code each comment by the statement it makes, then read the thread closely.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
@@ -12,224 +12,77 @@
 </head>
 <body>
 <div class="top"><div class="in">
-  <a class="brand" href="index.html">Bridging lab <small>ANTIGONE</small></a>
-  <nav class="nav" aria-label="Tools">
-    <a href="index.html">Posts</a>
-    <a href="sample.html">Sample</a>
-    <a href="code.html" aria-current="page">Code with an LLM</a>
-    <a href="reorder.html">Reorder</a>
-    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">ANTIGONE website ↗</a>
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Sections">
+    <a href="index.html">1 Instructions</a>
+    <a href="posts.html">2 Posts</a>
+    <a href="sample.html">3 Sample</a>
+    <a href="code.html" aria-current="page">4 Code</a>
+    <a href="llm.html">5 Expand with an LLM</a>
+    <a href="bridge.html">6 Bridge</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
-<main class="wrap">
-  <h1>Code a sample with an LLM</h1>
-  <p class="lede">You have no API, so the model is a chat window: this page turns your codebook and your sample into prompts you paste
-  into a chat model, a batch at a time, and reads its answers back into your sample. Then it checks the model's coding against items
-  you coded by hand, because <b>a coding you have not validated is not a finding</b>.</p>
-  <div class="callout">Any chat model available to you will do (ChatGPT, Claude, Gemini, Mistral, DeepSeek…). Free versions take
-  shorter prompts and may stop part-way: keep batches small, start a new chat for each batch, and check that every ID came back.
-  Use the same model for every batch, and note which one you used.</div>
+<main class="wrap"><div class="prose">
+  <h1>Code the thread, then read it closely</h1>
+  <p class="lede">Users — fact-checkers, community notes and commenters — disagree around competing <b>statements</b>: expressions of
+  an attitude, belief or opinion. In this step you write, for every comment of your CSV, the statement it makes.</p>
 
-  <section class="step" id="s1">
-    <header><span class="n">1</span><h2>Your sample</h2><span class="sub">the CSV from the sampler, with your hand coding in <code>my_statements</code> if you have any</span></header>
-    <div id="drop"></div>
-    <p class="msg" id="items-msg"></p>
-  </section>
+  <blockquote>In the Tucker Carlson interview thread, at least eighteen statements can be told apart, among them:
+  <i>4. Western populations are misinformed by their media, which tend to ignore Russian opinions.</i>
+  <i>12. Western media has never suppressed Russian or Putin's viewpoints</i> (contradicts 4).
+  <i>15. What Tucker expresses is an opinion and does not need to be verified.</i>
+  The fact-checker and the commenters are not disagreeing about what happened in the interview, but about <b>what journalism is for</b>.</blockquote>
 
-  <section class="step" id="s2">
-    <header><span class="n">2</span><h2>Your codebook</h2><span class="sub">one statement per line: its number, then its wording</span></header>
-    <div class="row" style="margin-bottom:10px">
-      <label class="field"><span>Post</span><input type="text" id="post" placeholder="post ID, to load its statements" size="24"></label>
-      <button type="button" class="btn" id="load-st">Load the website's statements</button>
-      <span class="msg" id="st-msg"></span>
-    </div>
-    <textarea id="codebook" rows="9" spellcheck="false" placeholder="1. The video shows Americans celebrating Trump's arrest&#10;2. The video is an edited clip of football fans&#10;3. …"></textarea>
-    <div class="field" style="margin-top:14px"><span>Coding rules the model must follow</span>
-      <textarea id="rules" rows="6" spellcheck="false">- A comment makes a statement when it asserts it, argues for it, or clearly takes it for granted. Quoting a statement to mock or reject it does not count as making it.
-- A comment can make several statements, or none.
-- Answer 0 when the comment makes none of the statements: jokes, insults, off-topic or unclear comments.
-- Code what the comment says, not whether it is true, and not what you think the author believes.</textarea>
-      <small>Edit these: they are part of your codebook and belong in your method section.</small></div>
-  </section>
+  <h2>A. Write your codebook</h2>
+  <ol>
+    <li><b>Start from the Datasets, or from scratch.</b> If you downloaded your thread <i>with</i> statements, the <code>Statement</code>
+      column already holds the statements the Datasets distilled: list the distinct ones, and check them against the comments. Keep,
+      merge, split or reword them. Otherwise read the post, the fact-check, the notes and some fifty replies, and write down each new
+      statement you meet; stop when new comments stop producing new statements.</li>
+    <li><b>Aim for 10 to 25 statements.</b> Give each a number and one sentence. Add what counts as making it and what does not.</li>
+    <li><b>Keep the subject apart from the process.</b> "The video is from 2016" is about the post; "this needs no note" is about
+      classifying it. Both can be statements, but not the same one.</li>
+  </ol>
+  <div class="tw"><table>
+    <thead><tr><th>#</th><th>statement</th><th>counts</th><th>does not count</th></tr></thead>
+    <tbody><tr><td>3</td><td>The video is an edited clip of football fans, not Americans celebrating</td>
+      <td>says or shows where the video is really from</td><td>only calls the video fake, without saying what it is</td></tr></tbody>
+  </table></div>
 
-  <section class="step off" id="s3">
-    <header><span class="n">3</span><h2>The prompts</h2><span class="sub" id="pr-sub"></span></header>
-    <div class="row">
-      <label class="field"><span>Items per batch</span><input type="number" id="bs" value="25" min="5" max="200"></label>
-      <label class="field"><span>Code</span><select id="which"><option value="all">every item in the sample</option><option value="replies">replies and notes only</option><option value="uncoded">only items without hand coding</option></select></label>
-      <label class="field"><span>Text</span><select id="txtcol"><option value="en">English translation where there is one</option><option value="orig">original wording</option></select></label>
-      <button type="button" class="btn primary" id="make">Make the prompts</button>
-    </div>
-    <div id="batches"></div>
-  </section>
+  <h2>B. Code your CSV</h2>
+  <ol>
+    <li><b>Open the CSV in a spreadsheet.</b> Google Sheets: <i>File → Import</i>. Excel: <i>Data → From Text/CSV</i>, with
+      <i>UTF-8</i> as the file origin (a plain double-click can garble accents and emoji).</li>
+    <li><b>Fill the <code>Statement</code> column.</b> For each row, write the statement it makes: its number from your codebook
+      (<code>3</code>) or its exact wording. If a row makes several, separate them with a vertical bar: <code>3 | 7</code>. If it
+      makes none — a joke, an insult, something off-topic — leave the cell empty.</li>
+    <li><b>Code the original post and the fact-check too.</b> Bridge uses them to tell which statements belong to which side.</li>
+    <li><b>Optional: add a <code>Context</code> column</b> with <code>yes</code> for comments that explain, contextualise or give a
+      source for a statement (theirs or someone else's), and <code>no</code> otherwise. Bridge's <i>Context</i> option uses it.</li>
+    <li><b>Code in pairs, at first.</b> Two of you code the same 30 rows without looking at each other's codes, then compare. Where
+      you disagree, the statement is badly defined: reword it in the codebook and code again.</li>
+    <li><b>Save as CSV (UTF-8)</b>, and leave the other columns as they are.</li>
+  </ol>
+  <p>If you will use an LLM in the next step, code at least 20 to 30 rows by hand first: they are what you will check the model against.</p>
 
-  <section class="step off" id="s4">
-    <header><span class="n">4</span><h2>Paste the answers</h2><span class="sub">all batches, in any order</span></header>
-    <textarea id="answers" rows="10" spellcheck="false" placeholder="S001; 2, 5&#10;S002; 0&#10;…"></textarea>
-    <div class="row" style="margin-top:12px">
-      <button type="button" class="btn primary" id="read">Read the answers</button>
-      <span class="msg" id="ans-msg"></span>
-    </div>
-    <div class="row" style="margin-top:12px" id="out" hidden>
-      <button type="button" class="btn primary" id="dl">Download the coded sample (CSV)</button>
-      <button type="button" class="btn" id="to-reorder">Open it in the reorder tool →</button>
-    </div>
-  </section>
-
-  <section class="step off" id="s5">
-    <header><span class="n">5</span><h2>Check the coding</h2><span class="sub">the model's answers against a reference coding</span></header>
-    <div class="row">
-      <label class="field"><span>Reference</span><select id="ref"></select></label>
-      <span class="msg" id="ref-msg"></span>
-    </div>
-    <div id="agree" style="margin-top:14px"></div>
-  </section>
-</main>
-<script src="assets/lab.js"></script>
-<script>
-"use strict";
-const { $, el, NF, pct } = LAB;
-let ITEMS = null;   // { name, post, cols, rows }
-let CODED = null;   // rows with llm_statements
-let META = null;    // the post's entry in the index, for context
-
-const on = s => $(s).classList.remove("off");
-function setItems(obj) {
-  ITEMS = obj; CODED = null;
-  const id = obj.post || (obj.rows[0] && obj.rows[0].post_id) || "";
-  if (id) { $("#post").value = id; }
-  const hand = obj.rows.filter(r => String(r.my_statements || "").trim() !== "").length;
-  $("#items-msg").className = "msg ok";
-  $("#items-msg").textContent = `${obj.name}: ${NF.format(obj.rows.length)} items` + (hand ? `, ${hand} with hand coding` : "") +
-    (obj.rows[0] && !("sample_id" in obj.rows[0]) ? " · no sample_id column: IDs are made up from row numbers" : "");
-  obj.rows.forEach((r, k) => { if (!r.sample_id) r.sample_id = "S" + String(k + 1).padStart(3, "0"); });
-  on("#s3"); fillRefs();
-  if (id && !$("#codebook").value.trim()) loadStatements();
-}
-LAB.dropzone($("#drop"), (rows, name) => setItems({ name, post: null, cols: Object.keys(rows[0]), rows }));
-const handed = LAB.hand.take("sample");
-if (handed) { setItems(handed); }
-else if (LAB.param("post")) { $("#post").value = LAB.param("post"); loadStatements(); }
-
-async function loadStatements() {
-  const id = $("#post").value.trim(); if (!id) { $("#st-msg").textContent = "Give a post ID first."; return; }
-  $("#st-msg").className = "msg"; $("#st-msg").textContent = "Loading …";
-  try {
-    const d = await LAB.loadPost(id); META = d.meta;
-    $("#codebook").value = d.statements.map(s => `${s.statement}. ${s.text}`).join("\n");
-    $("#st-msg").className = "msg ok"; $("#st-msg").textContent = `${d.statements.length} statements loaded. Edit them, merge them, add your own.`;
-  } catch (e) { $("#st-msg").className = "msg err"; $("#st-msg").textContent = "No statements for that post: " + e.message; }
-}
-$("#load-st").onclick = loadStatements;
-
-function codebook() {
-  return $("#codebook").value.split("\n").map(l => l.trim()).filter(Boolean).map(l => {
-    const m = l.match(/^#?\s*(\d+)\s*[.):\-–]?\s*(.+)$/); return m ? { n: +m[1], t: m[2].trim() } : null; }).filter(Boolean);
-}
-const oneLine = (s, max = 700) => { s = String(s || "").replace(/\s+/g, " ").trim(); return s.length > max ? s.slice(0, max - 1) + "…" : s; };
-
-$("#make").onclick = () => {
-  const cb = codebook(); if (!ITEMS) { alert("Load your sample first (step 1)."); return; }
-  if (!cb.length) { alert("Write or load the codebook first (step 2): one statement per line, starting with its number."); return; }
-  const which = $("#which").value, en = $("#txtcol").value === "en";
-  const rows = ITEMS.rows.filter(r => which === "all" ? true : which === "replies" ? /reply|note/i.test(r.Type || "") : !String(r.my_statements || "").trim());
-  const bs = Math.max(5, +$("#bs").value || 25), B = [];
-  for (let i = 0; i < rows.length; i += bs) B.push(rows.slice(i, i + bs));
-  const ctx = META && META.checked ? `The thread is about an X post that was fact-checked. The claim checked: "${oneLine(META.checked, 300)}" (posted by @${META.poster}; rated ${META.verdict}).\n\n` : "";
-  const head = `You are coding comments from an X (Twitter) thread for a research project on how people disagree.\n\n${ctx}` +
-    `CODEBOOK — each number is one statement that people in this thread make:\n${cb.map(c => `${c.n}. ${c.t}`).join("\n")}\n\n` +
-    `RULES\n${$("#rules").value.trim()}\n\n` +
-    `OUTPUT\nAnswer with exactly one line per comment, in this form, and nothing else:\nS001; 2, 5\nS002; 0\n` +
-    `Use the IDs given below, keep their order, and do not skip any comment. Use only the numbers in the codebook.\n\nCOMMENTS\n`;
-  $("#pr-sub").textContent = `${rows.length} items in ${B.length} batch${B.length === 1 ? "" : "es"} of up to ${bs}`;
-  $("#batches").replaceChildren(...B.map((b, k) => {
-    const text = head + b.map(r => `${r.sample_id} [${(r.Type || "item").toLowerCase()}]: ${oneLine(en ? (r.text_translated || r.text) : r.text)}`).join("\n");
-    const ta = el("textarea", { readonly: true, spellcheck: "false", "aria-label": `Prompt for batch ${k + 1}` }); ta.value = text;
-    const ok = el("span", { class: "msg" });
-    return el("div", { class: "batch" }, el("header", {}, el("b", { text: `Batch ${k + 1} of ${B.length}` }),
-      el("span", { class: "msg", text: `${b[0].sample_id}–${b[b.length - 1].sample_id} · ${NF.format(text.length)} characters` }),
-      el("button", { type: "button", class: "btn small", text: "Copy", style: "margin-left:auto", onclick: () => {
-        ta.select(); (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(() => ok.textContent = "Copied",
-          () => { try { document.execCommand("copy"); ok.textContent = "Copied"; } catch (e) { ok.textContent = "Select and copy by hand"; } }); } }), ok), ta);
-  }));
-  on("#s4");
-};
-
-$("#read").onclick = () => {
-  if (!ITEMS) return;
-  const cb = new Set(codebook().map(c => c.n)), got = new Map(), bad = new Set();
-  for (const line of $("#answers").value.split("\n")) {
-    const m = line.match(/\b(S\d{2,})\b[\s|*]*[;:,\t|\-–]?\s*(.*)$/i); if (!m) continue;
-    const nums = LAB.parseNums(m[2]); nums.forEach(n => { if (cb.size && !cb.has(n)) bad.add(n); });
-    got.set(m[1].toUpperCase(), nums.filter(n => !cb.size || cb.has(n)));
-  }
-  const ids = new Set(ITEMS.rows.map(r => r.sample_id.toUpperCase()));
-  const unknown = [...got.keys()].filter(k => !ids.has(k));
-  CODED = ITEMS.rows.map(r => { const v = got.get(r.sample_id.toUpperCase());
-    return Object.assign({}, r, { llm_statements: v === undefined ? "" : (v.length ? v.join("; ") : "0") }); });
-  const n = CODED.filter(r => r.llm_statements !== "").length, missing = CODED.filter(r => r.llm_statements === "").map(r => r.sample_id);
-  const msg = [`${n} of ${ITEMS.rows.length} items coded.`];
-  if (missing.length) msg.push(`Missing: ${missing.slice(0, 12).join(", ")}${missing.length > 12 ? ` and ${missing.length - 12} more` : ""} — send those again.`);
-  if (unknown.length) msg.push(`Not in the sample: ${unknown.slice(0, 8).join(", ")}.`);
-  if (bad.size) msg.push(`Numbers not in the codebook were dropped: ${[...bad].join(", ")}.`);
-  $("#ans-msg").className = "msg " + (missing.length ? "err" : "ok"); $("#ans-msg").textContent = msg.join(" ");
-  $("#out").hidden = !n; on("#s5"); fillRefs(); check();
-};
-const outName = () => (ITEMS.name || "sample.csv").replace(/\.csv$/i, "") + "_llm_coded.csv";
-$("#dl").onclick = () => { const cols = ITEMS.cols.filter(c => c !== "llm_statements").concat("llm_statements");
-  if (!cols.includes("sample_id")) cols.unshift("sample_id"); LAB.download(outName(), LAB.toCSV(cols, CODED)); };
-$("#to-reorder").onclick = () => { const cols = ITEMS.cols.filter(c => c !== "llm_statements").concat("llm_statements");
-  if (LAB.hand.put("coded", { name: outName(), post: $("#post").value.trim() || null, cols, rows: CODED, codebook: codebook() }))
-    location.href = "reorder.html" + ($("#post").value.trim() ? "?post=" + $("#post").value.trim() : "");
-  else alert("This browser would not hand the file over; download it and upload it in the reorder tool."); };
-
-function fillRefs() {
-  const rows = CODED || (ITEMS && ITEMS.rows) || [], r = rows[0] || {};
-  const filled = c => rows.some(x => String(x[c] ?? "").trim() !== "");
-  const opts = [["my_statements", "your hand coding (my_statements)"], ["statements", "the website's coding (statements)"]]
-    .filter(([c]) => c in r && (c === "statements" || filled(c)));
-  $("#ref").replaceChildren(...opts.map(([v, t]) => el("option", { value: v, text: t })));
-}
-$("#ref").onchange = check;
-function check() {
-  const host = $("#agree"); host.replaceChildren();
-  if (!CODED) return;
-  const ref = $("#ref").value; if (!ref) { $("#ref-msg").textContent = "No reference column: add hand coding in my_statements, or keep the website's coding in the sample."; return; }
-  const pairs = CODED.filter(r => r.llm_statements !== "" && String(r[ref] ?? "").trim() !== "" || (ref === "statements" && r.llm_statements !== ""));
-  if (!pairs.length) { $("#ref-msg").textContent = "No item has both codings yet."; return; }
-  $("#ref-msg").className = "msg";
-  $("#ref-msg").textContent = `${pairs.length} items with both codings.` + (ref === "statements" ? " The website's numbering only matches if you kept its statements as your codebook; an empty website coding counts as none." : "");
-  const cb = codebook(), label = new Map(cb.map(c => [c.n, c.t])), stats = new Map();
-  let exact = 0, jac = 0, TP = 0, FP = 0, FN = 0; const diffs = [];
-  for (const r of pairs) {
-    const a = new Set(LAB.parseNums(r.llm_statements)), b = new Set(LAB.parseNums(r[ref]));
-    const inter = [...a].filter(x => b.has(x)).length, uni = new Set([...a, ...b]).size;
-    if (inter === uni) exact++; jac += uni ? inter / uni : 1;
-    for (const n of new Set([...a, ...b])) { const s = stats.get(n) || { tp: 0, fp: 0, fn: 0 }; if (a.has(n) && b.has(n)) s.tp++; else if (a.has(n)) s.fp++; else s.fn++; stats.set(n, s); }
-    if (inter !== uni) diffs.push({ r, a: [...a], b: [...b] });
-  }
-  stats.forEach(s => { TP += s.tp; FP += s.fp; FN += s.fn; });
-  const P = TP / (TP + FP), R = TP / (TP + FN), F = 2 * P * R / (P + R);
-  host.append(el("div", { class: "grid3" },
-    el("div", { class: "card" }, el("span", { class: "opt", text: "Exact match" }), el("h2", { text: pct(exact / pairs.length) }), el("p", { text: "items where both codings give the same statements" })),
-    el("div", { class: "card" }, el("span", { class: "opt", text: "Precision · recall" }), el("h2", { text: `${pct(P)} · ${pct(R)}` }), el("p", { text: "of the model's codes, how many the reference has · of the reference's codes, how many the model found" })),
-    el("div", { class: "card" }, el("span", { class: "opt", text: "Mean overlap (Jaccard)" }), el("h2", { text: (jac / pairs.length).toFixed(2) }), el("p", { text: `F1 ${isFinite(F) ? F.toFixed(2) : "–"}; 1 = identical codings` }))));
-  const rows = [...stats].sort((a, b) => a[0] - b[0]).map(([n, s]) => { const p = s.tp / (s.tp + s.fp), rc = s.tp / (s.tp + s.fn);
-    return el("tr", {}, el("td", { class: "num", text: n }), el("td", { class: "txt", text: label.get(n) || "" }), el("td", { class: "num", text: s.tp + s.fn }),
-      el("td", { class: "num", text: s.tp + s.fp }), el("td", { class: "num", text: s.tp }), el("td", { class: "num", text: pct(p) }), el("td", { class: "num", text: pct(rc) })); });
-  host.append(el("h3", { text: "Per statement", style: "margin-top:22px" }), el("div", { class: "tw" }, el("table", {},
-    el("thead", {}, el("tr", {}, ...["#", "statement", "reference", "model", "both", "precision", "recall"].map((t, k) => el("th", { class: k > 1 || k === 0 ? "num" : "", text: t })))),
-    el("tbody", {}, ...rows))));
-  if (diffs.length) {
-    const head = el("thead", {}, el("tr", {}, ...["id", "text", "reference", "model"].map(t => el("th", { text: t }))));
-    const body = el("tbody", {}, ...diffs.slice(0, 200).map(d => el("tr", {},
-      el("td", { text: d.r.sample_id }), el("td", { class: "txt", text: oneLine(d.r.text_translated || d.r.text, 400) }),
-      el("td", { text: d.b.join(", ") || "0" }), el("td", { text: d.a.join(", ") || "0" }))));
-    host.append(el("details", { class: "more" }, el("summary", { text: `Read the ${diffs.length} items where they differ` }),
-      el("div", { class: "tw", style: "margin-top:10px" }, el("table", {}, head, body))));
-  }
-}
-</script>
+  <h2>C. Read the thread closely</h2>
+  <p>With the statements coded, read the thread again, statement by statement, and answer:</p>
+  <ol>
+    <li><b>What is the majority opinion?</b> Which statements do most comments make, and which kinds of users make them: the post,
+      the fact-checker, the notes, the replies?</li>
+    <li><b>What is the minority opinion?</b> Which statements do few comments make? Are they few because they are marginal, or because
+      the thread drowns them out?</li>
+    <li><b>Where do users misunderstand one another?</b> For instance, reading the other side's normative statement ("this should not be
+      platformed") as a factual one ("this is false"), or the reverse.</li>
+    <li><b>Where do they misrepresent one another?</b> Attributing to the other side a position it does not hold.</li>
+    <li><b>What does each side ignore?</b> Statements of the other side that get no reply at all.</li>
+    <li><b>What premise would both sides need to share</b> to be arguing about the same thing — and do they share it?</li>
+  </ol>
+  <p>For every answer, keep two or three quotes with their <code>sample_id</code> or <code>url</code>: they are your evidence.
+  <a href="bridge.html">Bridge</a> shows the share of comments that make each statement, which helps with the first two questions.</p>
+  <p style="margin-top:24px"><a class="btn" href="llm.html">Next: expand your coding with an LLM →</a> <a class="btn" href="bridge.html">Skip to Bridge →</a></p>
+</div></main>
 </body>
 </html>

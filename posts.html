@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Disputed posts · Bridging</title>
+<meta name="description" content="The disputed posts: where the professional fact-checker and the community notes reached opposite conclusions. Download each thread as a CSV.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Sections">
+    <a href="index.html">1 Instructions</a>
+    <a href="posts.html" aria-current="page">2 Posts</a>
+    <a href="sample.html">3 Sample</a>
+    <a href="code.html">4 Code</a>
+    <a href="llm.html">5 Expand with an LLM</a>
+    <a href="bridge.html">6 Bridge</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>Disputed posts</h1>
+  <p class="lede">The posts where the professional fact-checker and the community notes reached <b>opposite conclusions</b>: a verdict
+  of false or misleading while the notes say the post is fine, or a verdict of true while the notes call it misleading. Pick one, and
+  download its thread: the original post, the fact-check, every community note and every collected reply, one row each.</p>
+  <p class="small muted" style="max-width:80ch">A post's language here is the language most of its replies are in. The <i>Statement</i>
+  column holds the statements the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets</a>
+  distilled for the post: several in one cell are separated by <code>|</code>. Statements exist only for the posts whose replies were collected.</p>
+
+  <div class="toolbar" style="margin-top:18px">
+    <div class="field"><span>Count a post as disputed when its verdict is contradicted by</span><div class="seg" id="mode" role="group" aria-label="Disputed by"></div></div>
+    <div class="field"><span>Language</span><div class="seg" id="langs" role="group" aria-label="Language"></div></div>
+    <label class="field"><span>Search</span><input type="search" id="q" placeholder="claim, poster, fact-checker…"></label>
+    <label class="ck" style="align-self:center"><input type="checkbox" id="only-st"> only posts with statements</label>
+    <div class="field"><span>Statement column in downloads</span>
+      <div class="seg" id="stmode" role="group" aria-label="Statement column">
+        <button type="button" data-v="with" aria-pressed="true">with the Datasets' statements</button>
+        <button type="button" data-v="without" aria-pressed="false">empty, to code yourself</button>
+      </div></div>
+  </div>
+  <p class="lede" id="lede" style="font-size:15px;margin-top:18px"></p>
+  <div id="list"></div>
+  <button type="button" class="btn" id="more" style="margin:18px auto 0;display:flex" hidden></button>
+  <footer class="foot" id="foot"></footer>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF } = LAB;
+const S = { mode: "majority", lang: "all", q: "", onlySt: false, st: "with", shown: 20 };
+let DATA = null;
+const want = LAB.param("post");
+
+function seg(host, items, cur, onPick) {
+  host.replaceChildren(...items.map(([v, t]) => el("button", { type: "button", "aria-pressed": String(v === cur), onclick: () => onPick(v) }, t)));
+}
+function inMode(p) { return S.mode === "any" || p.majority; }
+function filtered() {
+  const q = S.q.toLowerCase();
+  return DATA.posts.filter(p => inMode(p) && (S.lang === "all" || p.lang === S.lang) && (!S.onlySt || p.statements > 0)
+    && (!q || [p.checked, p.post_text, p.poster, p.topic, p.verdict, p.id, ...p.verdicts.map(v => v.by + " " + v.rating)].join(" ").toLowerCase().includes(q)));
+}
+function render() {
+  const inM = DATA.posts.filter(inMode);
+  seg($("#mode"), [["majority", `The notes' majority ${DATA.posts.filter(p => p.majority).length}`], ["any", `Any single note ${DATA.posts.length}`]], S.mode,
+    v => { S.mode = v; S.shown = 20; render(); });
+  seg($("#langs"), DATA.langs.map(([k, n]) => [k, `${k === "all" ? "All" : n} ${k === "all" ? inM.length : inM.filter(p => p.lang === k).length}`]), S.lang,
+    v => { S.lang = v; S.shown = 20; render(); });
+  const list = filtered(), lname = S.lang === "all" ? "all languages" : (DATA.langs.find(l => l[0] === S.lang) || [0, S.lang])[1];
+  $("#lede").innerHTML = list.length ? `<b>${list.length}</b> post${list.length === 1 ? "" : "s"} in ${LAB.esc(lname)} where `
+    + (S.mode === "majority" ? "the fact-checker's verdict and the notes' majority point opposite ways" : "at least one note contradicts the fact-checker's verdict")
+    + `${S.onlySt ? ", with statements" : ""}. Most-rated first.` : "No post matches.";
+  $("#list").replaceChildren(...list.slice(0, S.shown).map(card));
+  const more = $("#more"); more.hidden = list.length <= S.shown;
+  more.textContent = `Show ${Math.min(20, list.length - S.shown)} more (${list.length - S.shown} left)`;
+}
+$("#more").onclick = () => { S.shown += 20; render(); };
+$("#q").oninput = () => { S.q = $("#q").value.trim(); S.shown = 20; render(); };
+$("#only-st").onchange = () => { S.onlySt = $("#only-st").checked; S.shown = 20; render(); };
+$("#stmode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  [...$("#stmode").children].forEach(x => x.setAttribute("aria-pressed", String(x === b))); S.st = b.dataset.v; render(); });
+
+function card(p) {
+  const pc = (a, b) => b ? (100 * a / b) : 0;
+  const box = el("article", { class: "pcard" + (p.id === want ? " hl" : ""), id: "p" + p.id });
+  box.append(el("div", { class: "k", text: `${NF.format(p.ratings)} ratings` + (p.majority ? " · disputed by the notes' majority" : " · disputed by a note") }),
+    el("div", { class: "claim", text: p.checked || "(the checked claim was not recorded)" }),
+    el("div", { class: "meta", text: [`@${p.poster}`, p.date, p.topic, p.lang_name].filter(Boolean).join(" · ") + (p.translated ? " · claim translated into English" : "") }));
+  if (p.post_text) box.append(el("details", { class: "more" }, el("summary", { text: "The post's text" }), el("p", { class: "small", style: "margin-top:6px", text: p.post_text })));
+  for (const v of p.verdicts) box.append(el("div", { class: "vline" }, el("b", { text: "Fact-checker " }), `${v.by} rated it `,
+    el("b", { text: v.rating && v.rating.toLowerCase() !== v.verdict.toLowerCase() ? `“${v.rating}” (${v.verdict})` : v.verdict }),
+    v.date ? ` · ${v.date}` : "", v.url ? [" · ", el("a", { href: v.url, target: "_blank", rel: "noopener", text: "read the article ↗" })] : null));
+  box.append(el("div", { class: "nbar", title: `${p.notes_misleading} say misleading, ${p.notes_not} say not misleading` },
+      el("span", { style: `width:${pc(p.notes_misleading, p.notes)}%;background:var(--bad)` }), el("span", { style: `width:${pc(p.notes_not, p.notes)}%;background:var(--good)` })),
+    el("div", { class: "meta", text: `${p.notes} community note${p.notes === 1 ? "" : "s"}: ${p.notes_misleading} say misleading, ${p.notes_not} say not misleading · `
+      + `${p.notes_nmr} still need ratings · status: ${p.status || "unknown"} · ${p.replies ? NF.format(p.replies) + " replies collected" : "no replies collected"}` }));
+  if (p.agree) box.append(el("p", { class: "sum" }, el("b", { text: "Where they agree. " }), p.agree));
+  if (p.disagree) box.append(el("p", { class: "sum" }, el("b", { text: "Where they disagree. " }), p.disagree));
+  const msg = el("span", { class: "msg" });
+  const withSt = S.st === "with" && p.statements > 0;
+  const dl = el("button", { type: "button", class: "btn primary small", text: withSt ? "Download CSV with statements" : "Download CSV" });
+  dl.onclick = async () => { msg.className = "msg"; msg.textContent = "Preparing …";
+    try { const rows = await LAB.threadRows(p.id, withSt);
+      LAB.download(`post_${p.id}_${withSt ? "with" : "without"}_statements.csv`, LAB.toCSV(LAB.OUT_COLS, rows)); msg.textContent = `${NF.format(rows.length)} rows`; }
+    catch (e) { msg.className = "msg err"; msg.textContent = "Could not prepare the file: " + e.message; } };
+  box.append(el("div", { class: "acts" }, dl,
+    p.statements ? el("span", { class: "pill ok", text: `${p.statements} statements` }) : el("span", { class: "pill", text: "no statements: the Statement column will be empty" }),
+    el("a", { href: p.url, target: "_blank", rel: "noopener", text: "Open the post on X ↗" }), msg));
+  return box;
+}
+
+LAB.loadDisputed().then(d => {
+  DATA = d;
+  if (want) { const p = d.posts.find(x => x.id === want); if (p) { if (!p.majority) S.mode = "any"; S.shown = Math.max(20, filtered().indexOf(p) + 5); } }
+  render();
+  if (want) { const n = document.getElementById("p" + want); if (n) setTimeout(() => n.scrollIntoView({ block: "center" }), 50); }
+  $("#foot").textContent = `Built from the Datasets on ${d.built}. Fact-checks: ClaimReview via Fact-Check Insights; community notes and ratings: X's public exports; replies collected from X.`;
+}).catch(e => { $("#list").replaceChildren(el("p", { class: "msg err", text: "The posts could not be loaded: " + e.message })); });
+</script>
+</body>
+</html>

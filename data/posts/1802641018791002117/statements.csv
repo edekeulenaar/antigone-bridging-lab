@@ -1,5 +1,5 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1802641018791002117","1","A 'dead' child in Gaza was filmed checking his phone, so Palestinian casualties are staged","2","yes","0","0","37","1","151","yes"
-"1802641018791002117","2","The photo comes from a costume contest or Halloween party, not Gaza","1; 3","no","1","0","7","1","151","yes"
-"1802641018791002117","3","The post is a joke and needs no note","2","no","0","1","3","1","151","yes"
-"1802641018791002117","4","Jokes about martyrs and 72 virgins","","no","0","0","17","1","151","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1802641018791002117","1","A 'dead' child in Gaza was filmed checking his phone, so Palestinian casualties are staged","2","yes","0","0","37","1","151","yes","A"
+"1802641018791002117","2","The photo comes from a costume contest or Halloween party, not Gaza","1; 3","no","1","0","7","1","151","yes","C"
+"1802641018791002117","3","The post is a joke and needs no note","2","no","0","1","3","1","151","yes","D"
+"1802641018791002117","4","Jokes about martyrs and 72 virgins","","no","0","0","17","1","151","yes","B"

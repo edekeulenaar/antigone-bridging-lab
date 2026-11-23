@@ -1,5 +1,5 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1776914253133275187","1","NATO headquarters is shaped like the SS emblem","2; 3","yes","0","1","146","4","278","yes"
-"1776914253133275187","2","The photo was digitally altered to resemble the SS emblem","1","no","1","2","55","4","278","yes"
-"1776914253133275187","3","The aerial view is real, but the angle and highlighting create the resemblance","1","no","0","1","8","4","278","yes"
-"1776914253133275187","4","Nazism lives on in NATO and global institutions","","no","0","0","29","4","278","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1776914253133275187","1","NATO headquarters is shaped like the SS emblem","2; 3","yes","0","1","146","4","278","yes","A"
+"1776914253133275187","2","The photo was digitally altered to resemble the SS emblem","1","no","1","2","55","4","278","yes","B"
+"1776914253133275187","3","The aerial view is real, but the angle and highlighting create the resemblance","1","no","0","1","8","4","278","yes","A"
+"1776914253133275187","4","Nazism lives on in NATO and global institutions","","no","0","0","29","4","278","yes","A"

@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1892851298824814766","1","Kivuitu and Chebukati each died about 2 years 7 months after announcing election results","2","yes","0","0","36","2","377","yes"
-"1892851298824814766","2","Kivuitu died more than five years after the 2007 election","1","no","1","1","84","2","377","yes"
-"1892851298824814766","3","Both chairs subverted elections and suffered the same fate","","no","0","1","14","2","377","yes"
-"1892851298824814766","4","Future electoral chairs should respect the will of the people","","no","0","0","35","2","377","yes"
-"1892851298824814766","5","They were deliberately killed","","no","0","0","9","2","377","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1892851298824814766","1","Kivuitu and Chebukati each died about 2 years 7 months after announcing election results","2","yes","0","0","36","2","377","yes","A"
+"1892851298824814766","2","Kivuitu died more than five years after the 2007 election","1","no","1","1","84","2","377","yes","A"
+"1892851298824814766","3","Both chairs subverted elections and suffered the same fate","","no","0","1","14","2","377","yes","C"
+"1892851298824814766","4","Future electoral chairs should respect the will of the people","","no","0","0","35","2","377","yes","B"
+"1892851298824814766","5","They were deliberately killed","","no","0","0","9","2","377","yes","D"

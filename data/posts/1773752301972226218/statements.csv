@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1773752301972226218","1","Juan Pablo Luna, a former Democracia Viva director, is part of CIPER's team, which explains its biased reports","2","yes","0","0","1","3","6","yes"
-"1773752301972226218","2","Luna is not part of CIPER's team; he has only written opinion columns there","1","no","1","2","1","3","6","yes"
-"1773752301972226218","3","Notes should not be used for personal defence","","no","0","1","0","3","6","no"
-"1773752301972226218","4","The senator is being attacked for fighting corruption","5","yes","0","0","2","3","6","yes"
-"1773752301972226218","5","CIPER's reporting on the senator's conflicts of interest stands","4","no","0","0","1","3","6","no"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1773752301972226218","1","Juan Pablo Luna, a former Democracia Viva director, is part of CIPER's team, which explains its biased reports","2","yes","0","0","1","3","6","yes",""
+"1773752301972226218","2","Luna is not part of CIPER's team; he has only written opinion columns there","1","no","1","2","1","3","6","yes","A"
+"1773752301972226218","3","Notes should not be used for personal defence","","no","0","1","0","3","6","no",""
+"1773752301972226218","4","The senator is being attacked for fighting corruption","5","yes","0","0","2","3","6","yes",""
+"1773752301972226218","5","CIPER's reporting on the senator's conflicts of interest stands","4","no","0","0","1","3","6","no",""

@@ -1,8 +1,8 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1749063209019953447","1","Putin signed a decree declaring the sale of Alaska illegal","2; 3","yes","0","1","2","8","36","yes"
-"1749063209019953447","2","The decree concerns Russian property abroad and does not mention Alaska","1","no","1","2","2","8","36","yes"
-"1749063209019953447","3","No such decree exists","1","no","0","3","0","8","36","yes"
-"1749063209019953447","4","Russia wants to reclaim territory and property it lost","7","no","0","2","6","8","36","yes"
-"1749063209019953447","5","Russia could never take Alaska","","no","0","0","4","8","36","yes"
-"1749063209019953447","6","The West should back Ukraine and isolate Russia","","no","0","0","5","8","36","yes"
-"1749063209019953447","7","Alaska was sold fairly","4","no","0","0","2","8","36","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1749063209019953447","1","Putin signed a decree declaring the sale of Alaska illegal","2; 3","yes","0","1","2","8","36","yes","D"
+"1749063209019953447","2","The decree concerns Russian property abroad and does not mention Alaska","1","no","1","2","2","8","36","yes","B"
+"1749063209019953447","3","No such decree exists","1","no","0","3","0","8","36","yes","F"
+"1749063209019953447","4","Russia wants to reclaim territory and property it lost","7","no","0","2","6","8","36","yes","A"
+"1749063209019953447","5","Russia could never take Alaska","","no","0","0","4","8","36","yes","E"
+"1749063209019953447","6","The West should back Ukraine and isolate Russia","","no","0","0","5","8","36","yes","C"
+"1749063209019953447","7","Alaska was sold fairly","4","no","0","0","2","8","36","yes",""

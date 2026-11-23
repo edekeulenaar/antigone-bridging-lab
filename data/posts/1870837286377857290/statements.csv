@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1870837286377857290","1","Kejriwal said Ambedkar was drunk when he wrote the Constitution","2","yes","0","0","39","3","376","yes"
-"1870837286377857290","2","Kejriwal was joking about the Congress party's constitution; the 12-year-old clip is cropped","1; 4","no","1","2","169","3","376","yes"
-"1870837286377857290","3","A public figure should not say such things","","no","0","1","4","3","376","yes"
-"1870837286377857290","4","Kejriwal should be arrested","2","yes","0","0","24","3","376","yes"
-"1870837286377857290","5","The BJP spreads fake videos","","no","0","0","53","3","376","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1870837286377857290","1","Kejriwal said Ambedkar was drunk when he wrote the Constitution","2","yes","0","0","39","3","376","yes","B"
+"1870837286377857290","2","Kejriwal was joking about the Congress party's constitution; the 12-year-old clip is cropped","1; 4","no","1","2","169","3","376","yes","A"
+"1870837286377857290","3","A public figure should not say such things","","no","0","1","4","3","376","yes","C"
+"1870837286377857290","4","Kejriwal should be arrested","2","yes","0","0","24","3","376","yes","B"
+"1870837286377857290","5","The BJP spreads fake videos","","no","0","0","53","3","376","yes","A"

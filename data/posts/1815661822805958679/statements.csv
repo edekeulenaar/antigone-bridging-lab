@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1815661822805958679","1","Jimmy Carter has died","2","yes","0","0","39","5","275","yes"
-"1815661822805958679","2","Carter is still alive; the death letter is fake","1; 4","no","1","3","20","5","275","yes"
-"1815661822805958679","3","The post was a test of who shares headlines without reading them","","no","0","2","39","5","275","yes"
-"1815661822805958679","4","It is clearly a joke and needs no note","2","no","0","2","0","5","275","yes"
-"1815661822805958679","5","The poster should be reported","","no","0","0","12","5","275","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1815661822805958679","1","Jimmy Carter has died","2","yes","0","0","39","5","275","yes","B"
+"1815661822805958679","2","Carter is still alive; the death letter is fake","1; 4","no","1","3","20","5","275","yes","C"
+"1815661822805958679","3","The post was a test of who shares headlines without reading them","","no","0","2","39","5","275","yes","A"
+"1815661822805958679","4","It is clearly a joke and needs no note","2","no","0","2","0","5","275","yes",""
+"1815661822805958679","5","The poster should be reported","","no","0","0","12","5","275","yes","D"

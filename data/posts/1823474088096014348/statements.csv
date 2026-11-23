@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1823474088096014348","1","The photo shows Trump with Epstein","3","yes","0","0","13","1","365","yes"
-"1823474088096014348","2","Trump took part in Epstein's abuse of girls","5","yes","0","0","36","1","365","yes"
-"1823474088096014348","3","The image is fake or AI-generated","1","no","1","0","135","1","365","yes"
-"1823474088096014348","4","Whatever the image, Trump and Epstein were close friends and flew together","","no","0","1","91","1","365","yes"
-"1823474088096014348","5","Sharing fake images is defamation; liberals fall for AI","2","no","0","0","12","1","365","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1823474088096014348","1","The photo shows Trump with Epstein","3","yes","0","0","13","1","365","yes","B"
+"1823474088096014348","2","Trump took part in Epstein's abuse of girls","5","yes","0","0","36","1","365","yes","C"
+"1823474088096014348","3","The image is fake or AI-generated","1","no","1","0","135","1","365","yes","A"
+"1823474088096014348","4","Whatever the image, Trump and Epstein were close friends and flew together","","no","0","1","91","1","365","yes","B"
+"1823474088096014348","5","Sharing fake images is defamation; liberals fall for AI","2","no","0","0","12","1","365","yes","A"

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Expand your coding with an LLM · Bridging</title>
+<meta name="description" content="Turn your codebook into one prompt for your own chatbot, and check its coding against yours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Sections">
+    <a href="index.html">1 Instructions</a>
+    <a href="posts.html">2 Posts</a>
+    <a href="sample.html">3 Sample</a>
+    <a href="code.html">4 Code</a>
+    <a href="llm.html" aria-current="page">5 Expand with an LLM</a>
+    <a href="bridge.html">6 Bridge</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>Expand your coding with an LLM <span class="pill" style="vertical-align:middle">optional</span></h1>
+  <p class="lede">Let a chatbot code the rows you have not coded, with your codebook — then check, on the rows you coded yourself,
+  how often it agrees with you. A coding you have not checked is not a finding.</p>
+
+  <section class="step">
+    <header><span class="n">1</span><h2>Paste your codebook</h2><span class="sub">one statement per line; numbers are added where missing</span></header>
+    <textarea id="cb" rows="10" spellcheck="false" placeholder="1. The video shows Americans celebrating Trump's arrest
+2. The video is an edited clip of football fans watching Euro 2016 — counts: says where the video is from; does not count: only calls it fake
+3. It is a well-known meme and needs no note"></textarea>
+    <div class="row" style="margin-top:10px">
+      <label class="ck"><input type="checkbox" id="ctx"> also ask for a <code>Context</code> column</label>
+      <span class="msg" id="cb-msg"></span>
+    </div>
+  </section>
+
+  <section class="step">
+    <header><span class="n">2</span><h2>Your prompt</h2></header>
+    <textarea id="prompt" rows="16" readonly spellcheck="false" aria-label="The prompt"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button type="button" class="btn primary" id="copy">Copy the prompt</button>
+      <button type="button" class="btn" id="dl">Download it as a text file</button>
+      <span class="msg" id="copy-msg"></span>
+    </div>
+  </section>
+
+  <section class="step"><div class="prose">
+    <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">3</span><h2 style="margin:0">Run it in your chatbot</h2></header>
+    <ol>
+      <li><b>Open the chatbot you use</b> — ChatGPT, Claude, Gemini, Mistral, DeepSeek or another — in a new conversation.</li>
+      <li><b>Attach your CSV</b> (the sample, or the whole thread) with the paperclip or <i>+</i> button, and <b>paste the prompt</b> in
+        the same message. Send it.</li>
+      <li><b>Get the file back.</b> Download the CSV it returns. If it prints the CSV as text instead, copy all of it into a plain-text
+        editor and save it with the extension <code>.csv</code>.</li>
+      <li><b>Check that nothing went missing:</b> the returned file must have as many rows as yours, with a new <code>LLM_Statement</code>
+        column. Free versions often stop part-way through long files: if rows are missing, split your CSV into parts of about 100 rows and
+        send each part with the same prompt, in a new conversation each time.</li>
+      <li><b>Note the model's name and the date.</b> Use the same model for every part.</li>
+    </ol>
+  </div></section>
+
+  <section class="step"><div class="prose">
+    <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">4</span><h2 style="margin:0">Verify the results</h2></header>
+    <p>The model writes its codes in <code>LLM_Statement</code> and leaves your <code>Statement</code> column as it was, so the two sit
+    side by side.</p>
+    <ol>
+      <li><b>Take the rows you coded by hand</b> (20 to 30 at least) and compare <code>Statement</code> with <code>LLM_Statement</code>,
+        row by row. In a spreadsheet, a new column with <code>=IF(TRIM(A2)=TRIM(B2), 1, 0)</code> (with your two columns in place of A and B)
+        marks the rows where they agree; its average is the share of rows on which you agree.</li>
+      <li><b>Look statement by statement.</b> For each statement, count how often the model gave it where you did not (it over-assigns),
+        and how often it missed it where you gave it (it under-assigns). One overall share hides which statements the model cannot see.</li>
+      <li><b>Read every disagreement.</b> Look for patterns: irony and sarcasm, replies that only make sense against the comment they answer,
+        translations, statements whose definitions overlap.</li>
+      <li><b>Improve and run again.</b> If you agree on fewer than about seven rows in ten, sharpen the definitions in your codebook (what
+        counts, what does not), make the prompt again, and re-run it.</li>
+      <li><b>Report it:</b> the model, the share of agreement, the statements it gets wrong, and what you changed.</li>
+    </ol>
+    <p>When you are satisfied, open the file in <a href="bridge.html">Bridge</a> and choose <code>LLM_Statement</code> as the statement column.
+    Your codebook is remembered in this browser, so Bridge can show your statements' wording.</p>
+  </div></section>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $ } = LAB;
+const saved = LAB.store.get("codebook"); if (saved) $("#cb").value = saved;
+function numbered() {
+  let k = 0; const used = new Set();
+  const lines = $("#cb").value.split("\n").map(l => l.trim()).filter(Boolean);
+  lines.forEach(l => { const m = l.match(/^#?\s*(\d+)\s*[.):\-–]/); if (m) used.add(+m[1]); });
+  return lines.map(l => { const m = l.match(/^#?\s*(\d+)\s*[.):\-–]\s*(.*)$/);
+    if (m) return `${+m[1]}. ${m[2]}`; do { k++; } while (used.has(k)); used.add(k); return `${k}. ${l}`; });
+}
+function build() {
+  const cb = numbered(), ctx = $("#ctx").checked;
+  LAB.store.set("codebook", $("#cb").value);
+  $("#cb-msg").textContent = cb.length ? `${cb.length} statement${cb.length === 1 ? "" : "s"}` : "";
+  $("#prompt").value = [
+    "You are helping with a research project on disagreement in X (Twitter) threads.",
+    "",
+    "I attach a CSV file. Each row is one item of a thread: the original post, a fact-check, a community note or a reply (column \"Type\"). The text of each item is in the column \"text_translated\" (an English translation) or, where that is empty, in \"text\".",
+    "",
+    "TASK",
+    "Add a new column called \"LLM_Statement\". In it, write which statements from the codebook below each row makes:",
+    "- write the statement numbers only, for example: 3",
+    "- if a row makes several statements, separate their numbers with \" | \", for example: 3 | 7",
+    "- if a row makes none of the statements, leave the cell empty.",
+    ...(ctx ? ["Also add a column called \"LLM_Context\": write yes if the row explains, contextualises or gives a source for a statement (its own or someone else's), and no otherwise."] : []),
+    "",
+    "CODEBOOK",
+    ...(cb.length ? cb : ["(paste your codebook on the page to fill this in)"]),
+    "",
+    "RULES",
+    "- A row makes a statement when it asserts it, argues for it, or clearly takes it for granted. Quoting a statement only to mock or reject it does not count.",
+    "- Code what the row says, not whether it is true.",
+    "- Code every row, including the original post and the fact-check.",
+    "- Do not change, reorder, add or delete any other row or column. Keep the \"Statement\" column exactly as it is.",
+    "",
+    "OUTPUT",
+    "Return the complete CSV file with the new column" + (ctx ? "s" : "") + " as a file I can download. If you cannot create files, print the whole CSV in a single code block. Do not summarise, shorten or skip rows.",
+  ].join("\n");
+}
+$("#cb").addEventListener("input", build); $("#ctx").addEventListener("change", build); build();
+$("#copy").onclick = () => { const t = $("#prompt").value, m = $("#copy-msg");
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => m.textContent = "Copied.",
+    () => { $("#prompt").select(); try { document.execCommand("copy"); m.textContent = "Copied."; } catch (e) { m.textContent = "Select the prompt and copy it by hand."; } }); };
+$("#dl").onclick = () => LAB.download("coding_prompt.txt", $("#prompt").value, "text/plain");
+</script>
+</body>
+</html>

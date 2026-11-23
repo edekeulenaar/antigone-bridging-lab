@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1691395253918380033","1","California decriminalised shoplifting under $400 and bars employees from stopping thieves","2","yes","0","0","65","3","371","yes"
-"1691395253918380033","2","Shoplifting under $950 is still a crime punishable by jail and fines","1","no","1","2","9","3","371","yes"
-"1691395253918380033","3","Only police may intervene, so employees can do nothing","","no","0","1","1","3","371","yes"
-"1691395253918380033","4","Democratic policies are destroying California","","no","0","0","78","3","371","yes"
-"1691395253918380033","5","Stealing is a crime whatever the amount","","no","0","0","18","3","371","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1691395253918380033","1","California decriminalised shoplifting under $400 and bars employees from stopping thieves","2","yes","0","0","65","3","371","yes","B"
+"1691395253918380033","2","Shoplifting under $950 is still a crime punishable by jail and fines","1","no","1","2","9","3","371","yes","D"
+"1691395253918380033","3","Only police may intervene, so employees can do nothing","","no","0","1","1","3","371","yes",""
+"1691395253918380033","4","Democratic policies are destroying California","","no","0","0","78","3","371","yes","A"
+"1691395253918380033","5","Stealing is a crime whatever the amount","","no","0","0","18","3","371","yes","C"

@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1680658144400121858","1","Higher CO2 helps plants and reforestation, so CO2 is not bad for the planet","4; 5","yes","0","1","132","2","289","yes"
-"1680658144400121858","2","Growers pump CO2 into greenhouses because plants grow better","3","yes","1","1","80","2","289","yes"
-"1680658144400121858","3","Greenhouses are controlled environments; too much CO2 can harm plant nutrition","2","no","0","1","18","2","289","yes"
-"1680658144400121858","4","Benefits to plant growth do not outweigh the climate harms of rising CO2","1; 6","no","1","0","3","2","289","yes"
-"1680658144400121858","5","Rising CO2 acidifies the oceans, and warming causes desertification","1","no","0","0","9","2","289","yes"
-"1680658144400121858","6","Climate change claims are exaggerated","4","no","0","0","34","2","289","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1680658144400121858","1","Higher CO2 helps plants and reforestation, so CO2 is not bad for the planet","4; 5","yes","0","1","132","2","289","yes","A"
+"1680658144400121858","2","Growers pump CO2 into greenhouses because plants grow better","3","yes","1","1","80","2","289","yes","A"
+"1680658144400121858","3","Greenhouses are controlled environments; too much CO2 can harm plant nutrition","2","no","0","1","18","2","289","yes","A"
+"1680658144400121858","4","Benefits to plant growth do not outweigh the climate harms of rising CO2","1; 6","no","1","0","3","2","289","yes","A"
+"1680658144400121858","5","Rising CO2 acidifies the oceans, and warming causes desertification","1","no","0","0","9","2","289","yes","C"
+"1680658144400121858","6","Climate change claims are exaggerated","4","no","0","0","34","2","289","yes","B"

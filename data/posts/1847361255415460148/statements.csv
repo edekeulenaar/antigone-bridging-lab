@@ -1,8 +1,8 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1847361255415460148","1","Dominion machines are flipping votes in Whitfield County, Georgia","3; 6","yes","0","0","14","5","365","yes"
-"1847361255415460148","2","This is the same fraud as in 2020","4","yes","0","0","50","5","365","yes"
-"1847361255415460148","3","Election officials found no machine problem; it was voter error, quickly resolved","1; 5","no","1","2","2","5","365","yes"
-"1847361255415460148","4","Dominion vote-flipping claims were debunked and cost Fox News $787 million","2","no","0","2","4","5","365","yes"
-"1847361255415460148","5","The post relays 'reports' and needs no note","3","no","0","1","0","5","365","no"
-"1847361255415460148","6","Greene is lying and will be sued by Dominion","1","no","0","0","166","5","365","yes"
-"1847361255415460148","7","Georgia should get rid of Dominion and count by hand","","no","0","0","15","5","365","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1847361255415460148","1","Dominion machines are flipping votes in Whitfield County, Georgia","3; 6","yes","0","0","14","5","365","yes","C"
+"1847361255415460148","2","This is the same fraud as in 2020","4","yes","0","0","50","5","365","yes","B"
+"1847361255415460148","3","Election officials found no machine problem; it was voter error, quickly resolved","1; 5","no","1","2","2","5","365","yes","D"
+"1847361255415460148","4","Dominion vote-flipping claims were debunked and cost Fox News $787 million","2","no","0","2","4","5","365","yes","A"
+"1847361255415460148","5","The post relays 'reports' and needs no note","3","no","0","1","0","5","365","no",""
+"1847361255415460148","6","Greene is lying and will be sued by Dominion","1","no","0","0","166","5","365","yes","A"
+"1847361255415460148","7","Georgia should get rid of Dominion and count by hand","","no","0","0","15","5","365","yes","B"

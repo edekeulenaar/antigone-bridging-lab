@@ -1,5 +1,5 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1728969335170011355","1","The video shows Black Friday looting","2","yes","0","0","46","2","377","yes"
-"1728969335170011355","2","The video shows looting in Chicago during the 2020 George Floyd protests","1; 3","no","1","1","13","2","377","yes"
-"1728969335170011355","3","Woods was being sarcastic; no note is needed","2","no","0","1","0","2","377","no"
-"1728969335170011355","4","Looting is a product of Democratic cities and policies","","no","0","0","22","2","377","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1728969335170011355","1","The video shows Black Friday looting","2","yes","0","0","46","2","377","yes","A"
+"1728969335170011355","2","The video shows looting in Chicago during the 2020 George Floyd protests","1; 3","no","1","1","13","2","377","yes","C"
+"1728969335170011355","3","Woods was being sarcastic; no note is needed","2","no","0","1","0","2","377","no",""
+"1728969335170011355","4","Looting is a product of Democratic cities and policies","","no","0","0","22","2","377","yes","B"

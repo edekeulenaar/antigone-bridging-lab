@@ -1,7 +1,7 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1697308423824486661","1","New York looks worse than a third-world country","3; 4","yes","0","1","59","5","371","yes"
-"1697308423824486661","2","This is the result of Biden's and the Democrats' policies","","yes","0","0","75","5","371","yes"
-"1697308423824486661","3","The video shows the aftermath of a chaotic influencer giveaway, not everyday life","1; 5","no","1","1","16","5","371","yes"
-"1697308423824486661","4","New York is not worse than a third-world country; the poster is a foreign troll","1","no","0","1","11","5","371","yes"
-"1697308423824486661","5","It was a real, recent event and needs no note","3","no","0","2","1","5","371","yes"
-"1697308423824486661","6","Governments incite unrest on purpose","","no","0","1","11","5","371","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1697308423824486661","1","New York looks worse than a third-world country","3; 4","yes","0","1","59","5","371","yes","B"
+"1697308423824486661","2","This is the result of Biden's and the Democrats' policies","","yes","0","0","75","5","371","yes","A"
+"1697308423824486661","3","The video shows the aftermath of a chaotic influencer giveaway, not everyday life","1; 5","no","1","1","16","5","371","yes","C"
+"1697308423824486661","4","New York is not worse than a third-world country; the poster is a foreign troll","1","no","0","1","11","5","371","yes","B"
+"1697308423824486661","5","It was a real, recent event and needs no note","3","no","0","2","1","5","371","yes","C"
+"1697308423824486661","6","Governments incite unrest on purpose","","no","0","1","11","5","371","yes","D"

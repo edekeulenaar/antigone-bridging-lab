@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bridge · Bridging</title>
+<meta name="description" content="Define three bridging metrics, see a thread reordered by each, and put it in your own bridging order by hand.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
+<link rel="stylesheet" href="assets/lab.css">
+</head>
+<body>
+<div class="top"><div class="in">
+  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <nav class="nav" aria-label="Sections">
+    <a href="index.html">1 Instructions</a>
+    <a href="posts.html">2 Posts</a>
+    <a href="sample.html">3 Sample</a>
+    <a href="code.html">4 Code</a>
+    <a href="llm.html">5 Expand with an LLM</a>
+    <a href="bridge.html" aria-current="page">6 Bridge</a>
+    <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <h1>Bridge</h1>
+  <p class="lede">X orders a thread mostly by engagement. A bridging metric orders it by what helps one side understand the other.
+  Open your coded CSV, define three metrics, and see the thread reordered by each. Your work stays in this browser only.</p>
+
+  <section class="step" id="s-file">
+    <header><span class="n">1</span><h2>Your thread</h2><span class="sub">your coded CSV — or a post as the Datasets coded it</span></header>
+    <div id="drop"></div>
+    <div class="row" style="margin-top:12px">
+      <label class="field" style="flex:1 1 360px"><span>Or use a post with the Datasets' statements</span><select id="post-sel"><option value="">Loading the posts…</option></select></label>
+      <button type="button" class="btn" id="post-go">Use this post</button>
+    </div>
+    <div id="found" class="found" style="margin-top:14px"></div>
+  </section>
+
+  <section class="step off" id="s-metrics">
+    <header><span class="n">2</span><h2>Define your bridging metrics</h2><span class="sub">name each, say what it rewards and why; optionally build it from the options</span></header>
+    <div class="grid3" id="metrics"></div>
+  </section>
+
+  <section class="step off" id="s-view">
+    <header><span class="n">3</span><h2>The thread, reordered</h2><span class="sub" id="view-sub"></span></header>
+    <div class="row" style="margin-bottom:14px">
+      <label class="field"><span>Compare with</span><select id="base"><option value="likes">X's order: most liked first</option><option value="file">the order of your file</option></select></label>
+      <label class="field"><span>Show</span><select id="topk"><option value="10">top 10</option><option value="20" selected>top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
+      <span style="flex:1"></span>
+      <button type="button" class="btn" id="dl-csv">Download the reordered thread (CSV)</button>
+      <button type="button" class="btn" id="dl-md">Download your metric definitions</button>
+    </div>
+    <div id="view"></div>
+    <details class="more" id="cl-box" style="margin-top:22px"><summary>Statements and clusters</summary>
+      <p class="small muted" style="margin:10px 0">How many comments make each statement, and the cluster each belongs to. Clusters group the
+      statements that go together — one side's statements in one cluster, the other side's in another. <i>Cross-cutting</i> uses them. They are
+      filled in from the Datasets' opinion groups when your file is one of its posts, and otherwise from the post and the fact-check: what the
+      post says is cluster A, what the fact-check says is cluster B, the rest C. Change them if they do not fit.</p>
+      <div class="tw"><table class="cltab" id="cltab"></table></div>
+      <div id="cb-wrap" hidden style="margin-top:14px"><div class="field"><span>Your codebook, to show your statements' wording (one per line, numbered)</span>
+        <textarea id="cb" rows="5" spellcheck="false"></textarea></div></div>
+    </details>
+  </section>
+
+  <section class="step off" id="s-hand">
+    <header><span class="n">4</span><h2>Your bridging order, by hand</h2><span class="sub">drag the comments, or use the arrows</span></header>
+    <p class="small muted">Put the comments in the order you would want readers to meet them. Start from one of the orders above and
+    adjust it; this works best on a sample.</p>
+    <div class="row" style="margin-bottom:12px">
+      <label class="field"><span>Start from</span><select id="hand-from"></select></label>
+      <button type="button" class="btn" id="hand-start">Start from this order</button>
+      <span class="msg" id="hand-msg"></span>
+      <span style="flex:1"></span>
+      <button type="button" class="btn primary" id="dl-hand">Download your bridging order (CSV)</button>
+    </div>
+    <ol class="mlist" id="hand"></ol>
+  </section>
+</main>
+<script src="assets/lab.js"></script>
+<script>
+"use strict";
+const { $, el, NF } = LAB;
+const GCOL = ["var(--g1)", "var(--g2)", "var(--g3)", "var(--g4)", "var(--g5)", "var(--g7)"];
+const LETTERS = ["A", "B", "C", "D", "E", "F"];
+const OPTS = [
+  ["breadth", "Breadth", "Comments that make more than one statement. 0 for a comment with one statement or none; it rises with each extra statement, up to 1 for the comment that makes the most."],
+  ["cross", "Cross-cutting", "Comments that take up statements from a cluster other than their own: 1 when a comment makes statements from at least two different clusters, otherwise 0. See ‘Statements and clusters’ under the reordered thread: you can change which statement belongs to which cluster."],
+  ["context", "Context", "Comments that contextualise or explain statements, their own or others'. If your CSV has a Context column (yes or no for each comment), it is used. Otherwise a comment counts as giving context when it contains a link, or wording such as ‘because’, ‘according to’, ‘in fact’, ‘the source’, ‘for example’, ‘which means’. 1 or 0."],
+  ["majority", "Majority", "Comments that make widely shared statements: the average share of comments that make each of its statements, scaled so that the most majority-like comment is 1. Comments with no statement get 0."],
+  ["minority", "Minority", "Comments that make rare statements: one minus that average share, scaled so that the most minority-like comment is 1. Comments with no statement get 0."],
+  ["length", "Length", "Longer comments score higher, on a log scale (1 = the longest comment)."],
+  ["engagement", "Engagement", "Likes (ratings, for community notes), on a log scale: 1 = the most engaged comment. This is roughly how X already orders a thread."],
+  ["own", "Your own", "A criterion of your own. Add a column to your CSV with a value for each comment — yes or no, or a number (for example ‘acknowledges the other side’) — open the file again, and pick the column here. Yes = 1, no = 0; numbers are scaled from 0 to 1."],
+];
+const WEIGHTS = [["1", "×1"], ["2", "×2"], ["3", "×3"], ["-1", "×−1 (penalise)"]];
+const CTX_RE = /(https?:\/\/|www\.|\bbecause\b|\bsince\b|\baccording to\b|\bin fact\b|\bactually\b|\bsource\b|\bfor example\b|\be\.g\.|\bi\.e\.|\bwhich means\b|\bthat means\b|\bthe reason\b|\bcontext\b|\bto be clear\b|\boriginally\b)/i;
+const YES = /^(y|yes|true|1|ja|oui|si|sí|x|✓)$/i, NO = /^(n|no|false|0|nee|non|nein)$/i;
+const blankMetric = k => ({ name: `Metric ${k + 1}`, def: "", opts: Object.fromEntries(OPTS.map(([o]) => [o, { on: false, w: "1" }])), ownCol: "", ownLabel: "" });
+
+let F = null;         // { name, cols, rows, key, desc, postId, web }
+let ST = { stCol: "", ctxCol: "", base: "likes", topk: 20 };
+let METRICS = [0, 1, 2].map(blankMetric), CLUSTER = {}, HAND = [];
+let ITEMS = [], COMMENTS = [], STMTS = new Map(), ORDERS = {};
+
+const save = () => { if (F) LAB.store.set(F.key, { st: ST, metrics: METRICS, cluster: CLUSTER, hand: HAND }); };
+
+/* ---------- 1. the file ---------- */
+LAB.dropzone($("#drop"), (p, name) => setFile(p.cols, p.rows, name));
+LAB.loadDisputed().then(d => {
+  const ps = d.posts.filter(p => p.statements > 0).sort((a, b) => b.ratings - a.ratings);
+  $("#post-sel").replaceChildren(el("option", { value: "", text: `— ${ps.length} posts with statements —` }),
+    ...ps.map(p => el("option", { value: p.id, text: `${p.checked.slice(0, 90)}${p.checked.length > 90 ? "…" : ""} (@${p.poster}, ${p.replies} replies)` })));
+  const want = LAB.param("post"); if (want && ps.some(p => p.id === want)) { $("#post-sel").value = want; $("#post-go").click(); }
+}).catch(() => $("#post-sel").replaceChildren(el("option", { value: "", text: "The posts could not be loaded" })));
+$("#post-go").onclick = async () => { const id = $("#post-sel").value; if (!id) return;
+  $("#found").textContent = "Loading the post …";
+  try { const rows = await LAB.threadRows(id, true); setFile(LAB.OUT_COLS, rows, `post_${id}_with_statements.csv`); }
+  catch (e) { $("#found").innerHTML = `<span class="err">The post could not be loaded: ${LAB.esc(e.message)}</span>`; } };
+
+async function setFile(cols, rows, name) {
+  const desc = LAB.describe(cols, rows);
+  const postCol = LAB.findCol(cols, ["post_id"]);
+  const postId = postCol ? (rows.map(r => String(r[postCol] || "").trim()).find(v => /^\d{6,}$/.test(v)) || null) : null;
+  const key = "bridge:" + LAB.hash(name + "|" + rows.length + "|" + rows.slice(0, 30).map(r => String(r[desc.textCol] || "").slice(0, 60)).join("|"));
+  F = { name, cols, rows, key, desc, postId, web: null };
+  const saved = LAB.store.get(key);
+  METRICS = saved && saved.metrics ? saved.metrics : [0, 1, 2].map(blankMetric);
+  CLUSTER = (saved && saved.cluster) || {}; HAND = (saved && saved.hand) || [];
+  ST = Object.assign({ stCol: "", ctxCol: "", base: "likes", topk: 20 }, saved && saved.st);
+  const isComment = r => !desc.typeCol || !["post", "factcheck"].includes(LAB.kindOf(r[desc.typeCol]));
+  const filled = c => rows.filter(r => isComment(r) && String(r[c] ?? "").trim() !== "").length;
+  if (!ST.stCol || !cols.includes(ST.stCol)) ST.stCol = desc.stCands.slice().sort((a, b) => filled(b) - filled(a))[0] || "";
+  if (ST.ctxCol && !cols.includes(ST.ctxCol)) ST.ctxCol = "";
+  if (!saved) ST.ctxCol = desc.contextCols.slice().sort((a, b) => filled(b) - filled(a)).find(c => filled(c) > 0) || "";
+  if (postId) F.web = await LAB.websiteStatements(postId);
+  $("#base").value = ST.base; $("#topk").value = String(ST.topk);
+  ["#s-metrics", "#s-view", "#s-hand"].forEach(s => $(s).classList.remove("off"));
+  compute(); drawFound(); drawMetrics(); render(); drawClusters(); drawHand();
+}
+
+function drawFound() {
+  const d = F.desc, rows = F.rows, kinds = rows.map(r => d.typeCol ? LAB.kindOf(r[d.typeCol]) : "comment");
+  const coded = COMMENTS.filter(x => x.st.length).length;
+  const stSel = el("select", { "aria-label": "Statement column" }, el("option", { value: "", text: "(none)" }),
+    ...F.cols.map(c => el("option", { value: c, text: c + (d.stCands.includes(c) ? "" : "") })));
+  stSel.value = ST.stCol; stSel.onchange = () => { ST.stCol = stSel.value; CLUSTER = {}; save(); compute(); drawFound(); drawMetrics(); render(); drawClusters(); drawHand(); };
+  const ctxSel = el("select", { "aria-label": "Context column" }, el("option", { value: "", text: "none: use the wording rule" }), ...F.cols.map(c => el("option", { value: c, text: c })));
+  ctxSel.value = ST.ctxCol; ctxSel.onchange = () => { ST.ctxCol = ctxSel.value; save(); compute(); render(); drawHand(); };
+  const warn = [];
+  if (!ST.stCol) warn.push("No statement column is chosen: Breadth, Cross-cutting, Majority and Minority will be 0 for every comment. Code the comments first (step 4), or choose the column that holds the statements.");
+  else if (!coded) warn.push(`The column “${ST.stCol}” is empty for every comment. Choose another column, or code the comments first (step 4).`);
+  if (!d.typeCol) warn.push("There is no Type column, so every row is treated as a comment, and clusters cannot be filled in from the post and the fact-check.");
+  if (!d.likeCol) warn.push("No likes column was found: Engagement is 0 for every comment, and X's order falls back to the order of your file.");
+  $("#found").replaceChildren(
+    el("p", {}, el("b", { text: F.name }), ` · ${NF.format(rows.length)} rows, of which `, el("b", { text: NF.format(COMMENTS.length) }), " comments",
+      d.typeCol ? ` (${kinds.filter(k => k === "reply" || k === "comment").length} replies, ${kinds.filter(k => k === "note").length} community notes) and ${kinds.filter(k => k === "post").length} original post, ${kinds.filter(k => k === "factcheck").length} fact-check` : "", "."),
+    el("div", { class: "row", style: "margin:8px 0" }, el("label", { class: "field" }, el("span", { text: "Statement column" }), stSel),
+      el("label", { class: "field" }, el("span", { text: "Context column (optional)" }), ctxSel)),
+    el("p", {}, ST.stCol ? [el("b", { text: NF.format(coded) }), ` of ${NF.format(COMMENTS.length)} comments make at least one statement; `, el("b", { text: String(STMTS.size) }), ` distinct statements. Text read from “${d.textCol}”.`] : ""),
+    ...warn.map(w => el("p", { class: "err", text: w })));
+}
+
+/* ---------- features ---------- */
+function compute() {
+  const d = F.desc;
+  ITEMS = F.rows.map((r, i) => ({ i, r, kind: d.typeCol ? LAB.kindOf(r[d.typeCol]) : "comment",
+    text: String(r[d.textCol] ?? "").trim() || String(r[d.origCol] ?? "").trim(), st: ST.stCol ? LAB.splitStatements(r[ST.stCol]) : [] }));
+  COMMENTS = ITEMS.filter(x => x.kind !== "post" && x.kind !== "factcheck");
+  // the statements: wording, counts
+  const codebook = new Map(); (LAB.store.get("codebook") || "").split("\n").forEach(l => { const m = l.trim().match(/^#?\s*(\d+)\s*[.):\-–]\s*(.+)$/); if (m) codebook.set("#" + +m[1], m[2]); });
+  const webByNum = new Map(), webByText = new Map();
+  (F.web || []).forEach(s => { webByNum.set("#" + +s.statement, s); webByText.set(LAB.normText(s.text), s); });
+  STMTS = new Map();
+  for (const x of ITEMS) for (const s of x.st) {
+    const e = STMTS.get(s.key) || { key: s.key, label: "", n: 0, web: null };
+    if (!e.label && s.label) e.label = s.label;
+    if (x.kind !== "post" && x.kind !== "factcheck") e.n++;
+    STMTS.set(s.key, e);
+  }
+  const postKeys = new Set(ITEMS.filter(x => x.kind === "post").flatMap(x => x.st.map(s => s.key)));
+  const fcKeys = new Set(ITEMS.filter(x => x.kind === "factcheck").flatMap(x => x.st.map(s => s.key)));
+  for (const e of STMTS.values()) {
+    e.web = webByNum.get(e.key) || webByText.get(LAB.normText(e.label || e.key)) || null;
+    if (!e.label) e.label = codebook.get(e.key) || (e.web && e.key.startsWith("#") ? e.web.text : "") || e.key;
+    e.auto = e.web && e.web.cluster ? e.web.cluster : (postKeys.has(e.key) ? "A" : fcKeys.has(e.key) ? "B" : "C");
+    e.cluster = CLUSTER[e.key] !== undefined ? CLUSTER[e.key] : e.auto;
+  }
+  $("#cb-wrap").hidden = ![...STMTS.keys()].some(k => k.startsWith("#"));
+  $("#cb").value = LAB.store.get("codebook") || "";
+  const N = COMMENTS.length || 1;
+  const share = k => (STMTS.get(k) || { n: 0 }).n / N;
+  const maxN = Math.max(2, ...COMMENTS.map(x => x.st.length));
+  const likes = x => { const c = x.kind === "note" ? (d.ratingCol || d.likeCol) : d.likeCol; return Math.max(0, +String(c ? x.r[c] : 0).replace(/[^\d.]/g, "") || 0); };
+  const maxE = Math.max(1e-9, ...COMMENTS.map(x => Math.log1p(likes(x)))), maxL = Math.max(1e-9, ...COMMENTS.map(x => Math.log1p(x.text.length)));
+  for (const x of COMMENTS) {
+    const n = x.st.length, mean = n ? x.st.reduce((a, s) => a + share(s.key), 0) / n : 0;
+    const cl = new Set(x.st.map(s => STMTS.get(s.key).cluster).filter(Boolean));
+    const ctxRaw = ST.ctxCol ? String(x.r[ST.ctxCol] ?? "").trim() : null;
+    x.likes = likes(x);
+    x.cluster = n ? STMTS.get(x.st.slice().sort((a, b) => share(b.key) - share(a.key))[0].key).cluster : "";
+    x.f = { breadth: n >= 2 ? (n - 1) / (maxN - 1) : 0, cross: cl.size >= 2 ? 1 : 0,
+      context: ctxRaw !== null ? (YES.test(ctxRaw) ? 1 : 0) : (CTX_RE.test(x.text) ? 1 : 0),
+      majority: n ? mean : 0, minority: n ? 1 - mean : 0, length: Math.log1p(x.text.length) / maxL, engagement: Math.log1p(x.likes) / maxE };
+  }
+  for (const k of ["majority", "minority"]) { const m = Math.max(1e-9, ...COMMENTS.map(x => x.f[k])); COMMENTS.forEach(x => x.f[k] /= m); }
+  score();
+}
+function ownValues(col) {   // a student's own column, as 0–1
+  if (!col) return new Map();
+  const raw = COMMENTS.map(x => String(x.r[col] ?? "").trim());
+  const nums = raw.map(v => YES.test(v) ? 1 : NO.test(v) || v === "" ? 0 : +v.replace(",", "."));
+  const ok = nums.map(v => isFinite(v) ? v : 0), lo = Math.min(...ok), hi = Math.max(...ok);
+  return new Map(COMMENTS.map((x, k) => [x.i, hi > lo ? (ok[k] - lo) / (hi - lo) : (ok[k] > 0 ? 1 : 0)]));
+}
+const active = m => OPTS.some(([o]) => m.opts[o] && m.opts[o].on && (o !== "own" || m.ownCol));
+function score() {
+  const base = COMMENTS.slice().sort(ST.base === "likes" && F.desc.likeCol ? (a, b) => b.likes - a.likes || a.i - b.i : (a, b) => a.i - b.i);
+  base.forEach((x, k) => x.r0 = k + 1);
+  ORDERS = { base };
+  METRICS.forEach((m, j) => {
+    const own = ownValues(m.opts.own && m.opts.own.on ? m.ownCol : "");
+    COMMENTS.forEach(x => { x["s" + j] = OPTS.reduce((a, [o]) => { const c = m.opts[o]; if (!c || !c.on) return a;
+      const v = o === "own" ? (own.get(x.i) || 0) : x.f[o]; return a + (+c.w || 0) * v; }, 0); });
+    const ord = active(m) ? COMMENTS.slice().sort((a, b) => b["s" + j] - a["s" + j] || a.r0 - b.r0) : null;
+    if (ord) ord.forEach((x, k) => x["r" + j] = k + 1); else COMMENTS.forEach(x => x["r" + j] = "");
+    ORDERS["m" + j] = ord;
+  });
+}
+
+/* ---------- 2. the metric boxes ---------- */
+function drawMetrics() {
+  const extra = F.cols.filter(c => !LAB.OUT_COLS.includes(c) && c !== ST.stCol && c !== "sample_id");
+  $("#metrics").replaceChildren(...METRICS.map((m, j) => {
+    const box = el("div", { class: "metric" });
+    const name = el("input", { type: "text", value: m.name, "aria-label": `Name of metric ${j + 1}`, placeholder: `Metric ${j + 1}` });
+    name.oninput = () => { m.name = name.value; save(); render(); fillHandFrom(); };
+    const def = el("textarea", { rows: 4, style: "font-family:var(--font-body);font-size:14px", "aria-label": `Definition of ${m.name}`,
+      placeholder: "What it rewards, why that helps the sides understand each other, and how it orders the comments." });
+    def.value = m.def; def.oninput = () => { m.def = def.value; save(); };
+    const opts = el("div", { class: "opts" });
+    for (const [o, label, help] of OPTS) {
+      const c = m.opts[o] || (m.opts[o] = { on: false, w: "1" });
+      const cb = el("input", { type: "checkbox", "aria-label": `Use ${label} in ${m.name}` }); cb.checked = c.on;
+      const w = el("select", { "aria-label": `Weight of ${label}` }, ...WEIGHTS.map(([v, t]) => el("option", { value: v, text: t }))); w.value = c.w; w.disabled = !c.on;
+      const row = el("div", { class: "opt" + (c.on ? "" : " off") }, cb, el("span", { class: "nm" }, label, LAB.help(help)), w);
+      cb.onchange = () => { c.on = cb.checked; w.disabled = !c.on; row.className = "opt" + (c.on ? "" : " off"); if (o === "own") ownBox.hidden = !c.on;
+        if (o === "cross" && c.on) $("#cl-box").open = true; save(); score(); render(); drawHand(); };
+      w.onchange = () => { c.w = w.value; save(); score(); render(); drawHand(); };
+      opts.append(row);
+      var ownBox;
+      if (o === "own") {
+        const colSel = el("select", { "aria-label": "Your own column" }, el("option", { value: "", text: extra.length ? "pick a column of your CSV" : "(add a column to your CSV first)" }),
+          ...extra.map(x => el("option", { value: x, text: x })));
+        colSel.value = m.ownCol; colSel.onchange = () => { m.ownCol = colSel.value; save(); score(); render(); drawHand(); };
+        const lab = el("input", { type: "text", value: m.ownLabel, placeholder: "what it measures" }); lab.oninput = () => { m.ownLabel = lab.value; save(); };
+        ownBox = el("div", { class: "own", hidden: !c.on }, colSel, lab); opts.append(ownBox);
+      }
+    }
+    box.append(el("div", { class: "mh" }, el("span", { class: "sw", style: `background:${GCOL[j]}` }), name),
+      el("div", { class: "field" }, el("span", { text: "Definition" }), def),
+      el("div", { class: "lab", style: "margin-top:14px", text: "Optionally, build it from" }), opts);
+    return box;
+  }));
+}
+
+/* ---------- 3. the reordered thread ---------- */
+function chips(x) {
+  return el("div", { class: "st" }, ...x.st.map(s => { const e = STMTS.get(s.key);
+      return el("span", { class: "chip", title: e.label, text: (s.key.startsWith("#") ? s.key + " " : "") + short(e.label, 46) }); }),
+    x.cluster ? el("span", { class: "chip g", style: `background:${GCOL[LETTERS.indexOf(x.cluster) % GCOL.length] || "var(--g8)"}`, title: "cluster", text: x.cluster }) : null,
+    x.st.length ? null : el("span", { class: "chip", text: "no statement" }));
+}
+const short = (s, n) => (s = String(s || "")).length > n ? s.slice(0, n - 1) + "…" : s;
+function card(x, rank, move, j) {
+  return el("article", { class: "cmt" },
+    el("div", { class: "cm" }, el("span", { class: "rk", text: rank }),
+      move == null ? null : move === 0 ? el("span", { class: "mv", text: "=" }) : el("span", { class: "mv " + (move > 0 ? "up" : "dn"), text: (move > 0 ? "▲" : "▼") + Math.abs(move) }),
+      el("span", { text: x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind] }), el("span", { text: `${NF.format(x.likes)} ${x.kind === "note" ? "ratings" : "likes"}` }),
+      j != null ? el("span", { text: `score ${x["s" + j].toFixed(2)}` }) : null),
+    el("div", { class: "cb", text: short(x.text || "(no text)", 500) }), chips(x));
+}
+function render() {
+  if (!F) return;
+  const cols = [{ t: ST.base === "likes" && F.desc.likeCol ? "X's order: most liked first" : "The order of your file", list: ORDERS.base, j: null, c: "var(--rule-2)" }]
+    .concat(METRICS.map((m, j) => ({ t: m.name || `Metric ${j + 1}`, list: ORDERS["m" + j], j, c: GCOL[j] })));
+  $("#view-sub").textContent = `${NF.format(COMMENTS.length)} comments · the arrows show how far a comment moved`;
+  $("#view").replaceChildren(el("div", { class: "cols", style: `--ncol:${cols.length}` }, ...cols.map(c => el("div", { class: "col" },
+    el("h3", {}, el("span", { class: "sw", style: `width:10px;height:10px;border-radius:2px;display:inline-block;background:${c.c}` }), c.t),
+    ...(c.list ? c.list.slice(0, ST.topk).map(x => card(x, c.j == null ? x.r0 : x["r" + c.j], c.j == null ? null : x.r0 - x["r" + c.j], c.j))
+      : [el("p", { class: "msg", text: "Tick an option in this metric's box to reorder the thread by it — or put the comments in your own order below." })])))));
+}
+$("#base").onchange = () => { ST.base = $("#base").value; save(); score(); render(); };
+$("#topk").onchange = () => { ST.topk = +$("#topk").value; save(); render(); };
+
+function drawClusters() {
+  const N = COMMENTS.length || 1, list = [...STMTS.values()].sort((a, b) => b.n - a.n);
+  $("#cltab").replaceChildren(el("thead", {}, el("tr", {}, el("th", { text: "Statement" }), el("th", { class: "num", text: "Comments" }), el("th", { text: "Cluster" }))),
+    el("tbody", {}, ...(list.length ? list.map(e => { const s = el("select", { "aria-label": `Cluster of ${short(e.label, 40)}` },
+        ...LETTERS.map(l => el("option", { value: l, text: l })), el("option", { value: "", text: "none" })); s.value = e.cluster;
+      s.onchange = () => { CLUSTER[e.key] = s.value; save(); compute(); render(); drawHand(); };
+      return el("tr", {}, el("td", { class: "txt" }, e.key.startsWith("#") ? el("b", { text: e.key + " " }) : null, e.label),
+        el("td", { class: "num", text: `${e.n} · ${(100 * e.n / N).toFixed(0)}%` }), el("td", {}, s)); })
+      : [el("tr", {}, el("td", { colspan: 3, class: "msg", text: "No statements in this file yet." }))])));
+}
+$("#cb").addEventListener("change", () => { LAB.store.set("codebook", $("#cb").value); compute(); render(); drawClusters(); drawHand(); });
+
+/* ---------- 4. the order by hand ---------- */
+function fillHandFrom() {
+  const cur = $("#hand-from").value;
+  $("#hand-from").replaceChildren(el("option", { value: "base", text: $("#base").selectedOptions[0].textContent }),
+    ...METRICS.map((m, j) => el("option", { value: "m" + j, text: (m.name || `Metric ${j + 1}`) + (ORDERS["m" + j] ? "" : " (no order yet)") })));
+  if (cur) $("#hand-from").value = cur;
+}
+function drawHand() {
+  fillHandFrom();
+  const byI = new Map(COMMENTS.map(x => [x.i, x]));
+  HAND = HAND.filter(i => byI.has(i));
+  if (!HAND.length) HAND = ORDERS.base.map(x => x.i);
+  for (const x of COMMENTS) if (!HAND.includes(x.i)) HAND.push(x.i);
+  const list = $("#hand"); list.replaceChildren();
+  HAND.forEach((i, k) => { const x = byI.get(i);
+    const mv = (to) => { const [it] = HAND.splice(k, 1); HAND.splice(Math.max(0, Math.min(HAND.length, to)), 0, it); save(); drawHand();
+      const n = list.children[Math.max(0, Math.min(HAND.length - 1, to))]; if (n) n.querySelector("button")?.focus(); };
+    const li = el("li", { class: "mitem", draggable: "true", "data-k": k },
+      el("span", { class: "rk", text: k + 1 }), el("div", {}, el("div", { class: "tx", text: short(x.text || "(no text)", 300) }), chips(x)),
+      el("span", { class: "mv" }, el("button", { type: "button", title: "Move to the top", "aria-label": "Move to the top", text: "⤒", onclick: () => mv(0) }),
+        el("button", { type: "button", title: "Move up", "aria-label": "Move up", text: "↑", onclick: () => mv(k - 1) }),
+        el("button", { type: "button", title: "Move down", "aria-label": "Move down", text: "↓", onclick: () => mv(k + 1) })));
+    li.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", String(k)); e.dataTransfer.effectAllowed = "move"; li.classList.add("drag"); });
+    li.addEventListener("dragend", () => li.classList.remove("drag"));
+    li.addEventListener("dragover", e => { e.preventDefault(); li.classList.add("over"); });
+    li.addEventListener("dragleave", () => li.classList.remove("over"));
+    li.addEventListener("drop", e => { e.preventDefault(); li.classList.remove("over"); const from = +e.dataTransfer.getData("text/plain");
+      if (!isFinite(from) || from === k) return; const [it] = HAND.splice(from, 1); HAND.splice(k, 0, it); save(); drawHand(); });
+    list.append(li); });
+}
+$("#hand-start").onclick = () => { const v = $("#hand-from").value, ord = ORDERS[v];
+  if (!ord) { $("#hand-msg").textContent = "That metric has no order yet: tick an option in its box first."; return; }
+  HAND = ord.map(x => x.i); save(); drawHand(); $("#hand-msg").textContent = "Done: now move the comments into your order."; };
+
+/* ---------- downloads ---------- */
+const base = () => F.name.replace(/\.(csv|tsv|txt)$/i, "");
+$("#dl-csv").onclick = () => {
+  const handRank = new Map(HAND.map((i, k) => [i, k + 1])), byI = new Map(COMMENTS.map(x => [x.i, x]));
+  const add = ["cluster", "rank_compared"].concat(...METRICS.map((m, j) => [`score_${j + 1}`, `rank_${j + 1}`]), ["hand_rank"]);
+  const cols = F.cols.filter(c => !add.includes(c)).concat(add);
+  const rows = ITEMS.map(it => { const x = byI.get(it.i), o = Object.assign({}, it.r);
+    add.forEach(c => o[c] = ""); if (x) { o.cluster = x.cluster; o.rank_compared = x.r0; o.hand_rank = handRank.get(x.i) || "";
+      METRICS.forEach((m, j) => { if (ORDERS["m" + j]) { o[`score_${j + 1}`] = x["s" + j].toFixed(4); o[`rank_${j + 1}`] = x["r" + j]; } }); }
+    return o; });
+  LAB.download(`${base()}_bridged.csv`, LAB.toCSV(cols, rows));
+};
+$("#dl-hand").onclick = () => {
+  const byI = new Map(COMMENTS.map(x => [x.i, x]));
+  const cols = ["hand_rank"].concat(F.cols.filter(c => c !== "hand_rank"));
+  LAB.download(`${base()}_my_bridging_order.csv`, LAB.toCSV(cols, HAND.map((i, k) => Object.assign({}, byI.get(i).r, { hand_rank: k + 1 }))));
+};
+$("#dl-md").onclick = () => {
+  const L = [`# Bridging metrics — ${F.name}`, "", `${COMMENTS.length} comments; statements read from the column “${ST.stCol || "none"}”; compared with ${$("#base").selectedOptions[0].textContent}.`, ""];
+  METRICS.forEach((m, j) => {
+    L.push(`## ${j + 1}. ${m.name || "Metric " + (j + 1)}`, "", m.def || "_(no definition written)_", "");
+    const on = OPTS.filter(([o]) => m.opts[o] && m.opts[o].on);
+    if (on.length) { L.push("Built from: " + on.map(([o, l]) => `${l}${o === "own" ? ` (column “${m.ownCol}”${m.ownLabel ? ": " + m.ownLabel : ""})` : ""} ×${m.opts[o].w}`).join(" + ") + ".", "");
+      L.push("Top ten:", ""); (ORDERS["m" + j] || []).slice(0, 10).forEach(x => L.push(`${x["r" + j]}. ${x.text.replace(/\s+/g, " ").slice(0, 220)} (was ${x.r0})`)); L.push(""); }
+    else L.push("Not built from the options.", "");
+  });
+  L.push("## Statements and clusters", "", ...[...STMTS.values()].sort((a, b) => b.n - a.n).map(e => `- ${e.cluster || "–"} · ${e.label} (${e.n} comments)`), "",
+    "## The options", "", ...OPTS.map(([, l, h]) => `- **${l}**: ${h}`), "");
+  LAB.download(`${base()}_bridging_metrics.md`, L.join("\n"), "text/markdown");
+};
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1749825475457798580","1","Teillier's diary reveals he ordered the execution of over a hundred comrades in 1973-78","2; 3","yes","0","0","19","2","372","yes"
-"1749825475457798580","2","No such diary exists; the claim is invented","1","no","1","1","150","2","372","yes"
-"1749825475457798580","3","Teillier was himself arrested and tortured under the dictatorship","1","no","0","0","1","2","372","no"
-"1749825475457798580","4","Teillier was involved in other wrongdoing","","no","0","1","0","2","372","no"
-"1749825475457798580","5","Communists kill their own","","no","0","0","21","2","372","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1749825475457798580","1","Teillier's diary reveals he ordered the execution of over a hundred comrades in 1973-78","2; 3","yes","0","0","19","2","372","yes","C"
+"1749825475457798580","2","No such diary exists; the claim is invented","1","no","1","1","150","2","372","yes","A"
+"1749825475457798580","3","Teillier was himself arrested and tortured under the dictatorship","1","no","0","0","1","2","372","no",""
+"1749825475457798580","4","Teillier was involved in other wrongdoing","","no","0","1","0","2","372","no",""
+"1749825475457798580","5","Communists kill their own","","no","0","0","21","2","372","yes","B"

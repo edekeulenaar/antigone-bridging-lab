@@ -1,8 +1,8 @@
-﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map
-"1770353816086499616","1","The photo shows Polish farmers protesting","3","yes","0","0","10","2","382","yes"
-"1770353816086499616","2","Farmers are fighting for everyone, so show solidarity","5","yes","0","0","10","2","382","yes"
-"1770353816086499616","3","The photo is AI-generated","1; 4","no","1","1","29","2","382","yes"
-"1770353816086499616","4","The image only illustrates the author's opinion","3","no","0","1","0","2","382","no"
-"1770353816086499616","5","Farmers are privileged and subsidised and do not deserve solidarity","2","no","0","0","76","2","382","yes"
-"1770353816086499616","6","The protests are pro-Russian or manipulated","","no","0","0","34","2","382","yes"
-"1770353816086499616","7","PiS is to blame","","no","0","0","3","2","382","yes"
+﻿post_id,statement,text,contradicts,post_makes_it,fact_checkers,notes,replies,notes_total,replies_total,in_statement_map,cluster
+"1770353816086499616","1","The photo shows Polish farmers protesting","3","yes","0","0","10","2","382","yes","D"
+"1770353816086499616","2","Farmers are fighting for everyone, so show solidarity","5","yes","0","0","10","2","382","yes","D"
+"1770353816086499616","3","The photo is AI-generated","1; 4","no","1","1","29","2","382","yes","B"
+"1770353816086499616","4","The image only illustrates the author's opinion","3","no","0","1","0","2","382","no",""
+"1770353816086499616","5","Farmers are privileged and subsidised and do not deserve solidarity","2","no","0","0","76","2","382","yes","A"
+"1770353816086499616","6","The protests are pro-Russian or manipulated","","no","0","0","34","2","382","yes","C"
+"1770353816086499616","7","PiS is to blame","","no","0","0","3","2","382","yes","E"
