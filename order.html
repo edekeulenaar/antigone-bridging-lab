@@ -27,7 +27,7 @@
 <main class="wrap">
   <h1>5–6 · Upload your coded thread, and order it</h1>
   <p class="lede">Upload the CSV the chatbot returned. Then decide how the thread is ordered: by engagement, by time, or by your metrics.
-  As on X, community notes and replies are shown separately, and each is ordered on its own. Your result is saved in this browser as you
+  Community notes and replies are shown separately, and each is ordered on its own; on X, notes also appear apart from the replies. Your result is saved in this browser as you
   work; download it to open it on another computer, or as a page to show in class.</p>
 
   <section class="step" id="saved-box" hidden>
@@ -47,7 +47,7 @@
     <p class="found" id="order-says" style="margin-top:10px"></p>
     <div class="row" id="counts" style="gap:8px;margin:6px 0 14px"></div>
     <div class="row" style="margin-bottom:6px">
-      <label class="field"><span>View</span><select id="viewmode"><option value="x">Your order next to X's order</option><option value="metrics">The three metrics side by side</option><option value="yours">Your order only</option></select></label>
+      <label class="field"><span>View</span><select id="viewmode"><option value="x">Your order next to the engagement order</option><option value="metrics">The three metrics side by side</option><option value="yours">Your order only</option></select></label>
       <label class="field"><span>Show</span><select id="topk"><option value="10">top 10</option><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
     </div>
     <p class="small muted" id="view-says" style="margin:0 0 6px;max-width:95ch"></p>
@@ -186,7 +186,7 @@ function build() {
       t: D.timeCol ? LAB.parseTime(x.r[D.timeCol]) : NaN, m: Object.fromEntries(L3.map(L => [L, !!(R.map[L] && LAB.yes(x.r[R.map[L]]))])),
       st: D.stCands[0] ? LAB.splitStatements(x.r[D.stCands[0]]) : [], sec: x.kind === "note" ? "note" : "reply" }));
 }
-/* community notes and replies are ordered separately, as on X */
+/* community notes and replies are ordered separately */
 function SECS() {
   const has = k => ITEMS.some(x => x.sec === k), notes = has("note");
   return [notes ? { key: "note", title: "Community notes", one: "note", many: "notes", eng: "most rated first", unit: "ratings" } : null,
@@ -255,11 +255,11 @@ function orders() {
 function columns(S, view) {
   if (view === "metrics") return L3.filter(L => R.map[L]).map(L => ({ title: `${mname(L)} first`, list: S.byM[L], rank: x => x["r" + L], move: x => x.rx - x["r" + L], c: COL[L], hex: HEX[L], L }));
   const cols = [{ title: "Your order", list: S.yours, rank: x => x.ry, move: view === "x" ? x => x.rx - x.ry : null, c: "var(--accent)", hex: "#2a78d6" }];
-  if (view === "x") cols.push({ title: `X's order: ${S.eng}`, list: S.x, rank: x => x.rx, move: null, c: "var(--rule-2)", hex: "#9a9a94" });
+  if (view === "x") cols.push({ title: `Engagement order: ${S.eng}`, list: S.x, rank: x => x.rx, move: null, c: "var(--rule-2)", hex: "#9a9a94" });
   return cols;
 }
-const VIEW_SAYS = { x: "Your order next to X's order. ▲ and ▼ show how far a note or reply moved compared with X's order.",
-  metrics: "One column per metric: the notes or replies coded yes for that metric come first, then the most rated (notes) or most liked (replies). ▲ and ▼ show how far each moved compared with X's order.",
+const VIEW_SAYS = { x: "Your order next to the engagement order. ▲ and ▼ show how far a note or reply moved compared with the engagement order. The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.",
+  metrics: "One column per metric: the notes or replies coded yes for that metric come first, then the most rated (notes) or most liked (replies). ▲ and ▼ show how far each moved compared with the engagement order.",
   yours: "Your order only." };
 function card(x, rank, move) {
   return el("article", { class: "cmt" },
@@ -341,8 +341,8 @@ $("#dl-docx").onclick = async () => {
     blocks.push({ type: "small", text: m.count }); });
   blocks.push({ type: "h1", text: "Order" }, { type: "p", text: d.order });
   d.sections.forEach(t => blocks.push({ type: "h1", text: `Bridged ranking: ${t.title}` },
-    { type: "small", text: `The first ${t.k} of ${nOf(t.N, t.S)}. “X's rank” is the position when they are ordered by engagement (${t.eng}).` },
-    { type: "table", widths: [700, 800, 2300, 900, 1200, 1700, 6970], head: ["Rank", "X's rank", "Metrics", t.unit, "Date", "Author", "Text"],
+    { type: "small", text: `The first ${t.k} of ${nOf(t.N, t.S)}. “Engagement rank” is the position when they are ordered by engagement (${t.eng}). The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.` },
+    { type: "table", widths: [700, 800, 2300, 900, 1200, 1700, 6970], head: ["Rank", "Engagement rank", "Metrics", t.unit, "Date", "Author", "Text"],
       rows: t.rows.map(r => [String(r.rank), String(r.xrank), r.metrics || "—", String(r.likes), r.date, r.author, r.text]) }));
   LAB.downloadBlob(`${fileBase()}_report.docx`, LAB.docx({ title: R.name || "Bridging", landscape: true, blocks }));
 };
@@ -359,9 +359,9 @@ ${d.meta ? `<h2>The post</h2><p>${esc(d.meta.checked)}</p><p class="s">${esc(pos
 <h2>Bridging codebook</h2>${d.metrics.map(m => `<h3>Metric ${m.L}: ${esc(m.name)}</h3><p><b>What it captures.</b> ${esc(m.def || "—")}</p>`
   + `<p><b>Coding rule.</b> ${esc(m.rule || "—")}</p>${m.example ? `<p><b>Example.</b> ${esc(m.example)}</p>` : ""}<p class="s">${esc(m.count)}</p>`).join("")}
 <h2>Order</h2><p>${esc(d.order)}</p>
-${d.sections.map(t => `<h2>Bridged ranking: ${esc(t.title)}</h2><p class="s">The first ${t.k} of ${esc(nOf(t.N, t.S))}. “X's rank” is the position when they are ordered by engagement (${esc(t.eng)}).</p>
+${d.sections.map(t => `<h2>Bridged ranking: ${esc(t.title)}</h2><p class="s">The first ${t.k} of ${esc(nOf(t.N, t.S))}. “Engagement rank” is the position when they are ordered by engagement (${esc(t.eng)}). The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.</p>
 <table><colgroup><col style="width:4%"><col style="width:5%"><col style="width:14%"><col style="width:5%"><col style="width:7%"><col style="width:11%"><col></colgroup>
-<thead><tr><th>Rank</th><th>X's rank</th><th>Metrics</th><th>${t.unit}</th><th>Date</th><th>Author</th><th>Text</th></tr></thead><tbody>
+<thead><tr><th>Rank</th><th>Engagement rank</th><th>Metrics</th><th>${t.unit}</th><th>Date</th><th>Author</th><th>Text</th></tr></thead><tbody>
 ${t.rows.map(r => `<tr><td>${r.rank}</td><td>${r.xrank}</td><td>${esc(r.metrics || "—")}</td><td>${r.likes}</td><td>${r.date}</td><td>${esc(r.author)}</td><td class="t">${esc(r.text)}</td></tr>`).join("")}
 </tbody></table>`).join("")}</body></html>`);
 };
@@ -393,7 +393,7 @@ ${meta ? `<p class="claim">${esc(meta.checked)}</p><p class="muted">@${esc(meta.
 <h2>Our bridging metrics</h2><div class="mets">${R.metrics.map((m, j) => `<div class="met"><h3>${badge(L3[j])}</h3><p>${esc(m.def || "")}</p><p><b>Coded yes when:</b> ${esc(m.rule || "")}</p>`
   + `<p class="muted">${R.map[L3[j]] ? esc(O.map(S => `${S.items.filter(x => x.m[L3[j]]).length} of ${nOf(S.items.length, S)}`).join(", ")) : "not coded"}</p></div>`).join("")}</div>
 ${R.agreement && R.agreement.length ? `<p class="muted">Checked against our own coding: ${R.agreement.map(g => `${esc(mname(g.L))} ${Math.round(100 * g.a / g.n)}% agreement on ${g.n} comments`).join(" · ")}.</p>` : ""}
-<h2>Our order</h2><p>${esc(describeOrder().replace(/^./, c => c.toUpperCase()))}. Community notes and replies are ordered separately, as on X. ${esc(VIEW_SAYS[view])}</p>
+<h2>Our order</h2><p>${esc(describeOrder().replace(/^./, c => c.toUpperCase()))}. Community notes and replies are ordered separately. ${esc(VIEW_SAYS[view])}</p>
 ${O.map(S => { const cs = columns(S, view); return `<h2>${esc(S.title)} <span class="muted">${esc(nOf(S.items.length, S))}${k < S.items.length ? `, the first ${k} shown` : ""}</span></h2>
 <div class="cols" style="--n:${Math.max(1, cs.length)}">${cs.map(C => `<div><h3 class="c"><i style="background:${C.hex}"></i>${esc(C.title)}</h3><ol>${C.list.slice(0, k).map(x => item(x, C.rank(x), C.move ? C.move(x) : null)).join("")}</ol></div>`).join("")}</div>`; }).join("")}
 <p class="muted" style="margin-top:30px">Made with the ANTIGONE bridging lab.</p>
