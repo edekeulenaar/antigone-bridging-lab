@@ -30,8 +30,8 @@
   each other. Define three. Each needs a <b>coding rule</b> precise enough that two people — or a person and a chatbot — reading the same
   comment would both say <i>yes</i> or both say <i>no</i>.</p>
   <div class="callout"><b>Base them on your close reading.</b> If the sides talk past each other because one argues facts and the other values,
-  a metric could pick out comments that address both. If a minority position receives little attention, a metric could move it up. Start from a template
-  below if you like, but rewrite it for your thread: say <i>which</i> statements, <i>how many</i>, <i>which</i> side.</div>
+  a metric could pick out comments that address both. If a minority position receives little attention, a metric could move it up. Two templates
+  are below as examples of the format; rewrite them for your thread, naming <i>which</i> statements, <i>how many</i> and <i>which</i> side.</div>
 
   <div class="row" style="margin:18px 0 6px;gap:8px"><span class="lab" style="align-self:center">Templates:</span><span id="tpl" class="row" style="gap:8px"></span></div>
   <p class="small muted" id="tpl-msg">Press a template to fill the first empty metric.</p>
@@ -48,18 +48,10 @@
 "use strict";
 const { $, el } = LAB;
 const TEMPLATES = [
-  { name: "Cross-cutting", def: "Comments that take up the statements of both sides, so that readers on one side see the other side's points in a comment that also addresses their own.",
-    rule: "Yes if the comment makes at least two statements, and at least one of them is a statement the post makes while another is a statement the fact-check makes (or the two contradict each other). Otherwise no." },
-  { name: "Majority", def: "Comments that make the thread's most common statement: what most users agree on, shown first so that readers see the common ground.",
-    rule: "Yes if the comment makes the statement that the largest number of comments make (see the statement list). Otherwise no." },
-  { name: "Minority", def: "Comments that make a rare statement, so that positions with little support are seen.",
-    rule: "Yes if every statement the comment makes is made by fewer than 10% of the comments. Comments that make no statement: no." },
-  { name: "Context", def: "Comments that explain rather than only assert: they give the background a reader of the other side needs.",
-    rule: "Yes if the comment explains or contextualises a statement — gives a source or link, a date, background facts, or the reason behind a position — instead of only asserting it. Otherwise no." },
-  { name: "Acknowledges the other side", def: "Comments that recognise a point of the other side before disagreeing.",
-    rule: "Yes if the comment states, concedes or fairly summarises a point of the side it disagrees with (for example ‘I see why…, but…’). Otherwise no." },
   { name: "Breadth", def: "Comments that make more than one statement, and so connect several points of the dispute.",
     rule: "Yes if the comment makes two or more different statements. Otherwise no." },
+  { name: "Context", def: "Comments that explain rather than only assert: they give the background a reader of the other side needs.",
+    rule: "Yes if the comment explains or contextualises a statement — gives a source or link, a date, background facts, or the reason behind a position — instead of only asserting it. Otherwise no." },
 ];
 const blank = () => ({ name: "", def: "", rule: "", example: "" });
 let M = LAB.store.get("metrics");
@@ -74,7 +66,7 @@ function draw() {
       return el("label", { class: "field", style: "margin-top:10px" }, el("span", { text: label }), t); };
     return el("div", { class: "metric" }, el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `Metric ${L}` }),
         el("button", { type: "button", class: "btn small", style: "margin-left:auto", text: "Clear", onclick: () => { M[j] = blank(); save(); draw(); } })),
-      f("name", "Name", 0, "for example: Cross-cutting"),
+      f("name", "Name", 0, "for example: Breadth"),
       f("def", "What it captures, and why it bridges", 3, "Which comments, and why putting them first would help the sides understand each other."),
       f("rule", "Coding rule: code yes when…", 4, "Exactly when a comment gets yes. Name the statements, the number, the side."),
       f("example", "An example from your thread (optional)", 2, "A comment that gets yes, quoted."));

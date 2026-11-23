@@ -9,9 +9,9 @@ The website for the bridging assignment (week 4) of the ANTIGONE Digital Methods
 | Instructions | `index.html` | the assignment, and how their work is saved |
 | 1 Pick a post | `posts.html` | the disputed posts from the Datasets; choose one and download its thread (with a `Statement` column) |
 | 2 Close read | `read.html` | the thread grouped by statement, with close-reading questions |
-| 3 Define metrics | `metrics.html` | three bridging metrics, each with a name, what it captures and a coding rule (templates included); download the codebook as Word or PDF |
+| 3 Define metrics | `metrics.html` | three bridging metrics, each with a name, what it captures and a coding rule (two templates); download the codebook as Word or PDF |
 | 4 Code with a chatbot | `prompt.html` | one prompt built from the post and the metrics; splitting long threads into parts; checking the chatbot's coding |
-| 5–6 Upload & order | `order.html` | upload the coded CSV (several parts at once, or a saved result file); order by engagement, date and the three metrics; agreement with the student's own coding; download a report (Word or PDF), a result file and a presentation page |
+| 5–6 Upload & order | `order.html` | upload the coded CSV (several parts at once, or a saved result file); order community notes and replies separately by engagement, date and the three metrics, with a three-metric side-by-side view; agreement with the student's own coding; download a report (Word or PDF), a result file and a presentation page |
 
 Everything runs in the browser and nothing is uploaded. Each student's work is saved in four ways:
 

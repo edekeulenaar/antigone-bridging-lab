@@ -61,7 +61,7 @@ function inMode(p) { return S.mode === "any" || p.majority; }
 function filtered() {
   const q = S.q.toLowerCase();
   return DATA.posts.filter(p => inMode(p) && (S.lang === "all" || p.lang === S.lang) && (!S.onlySt || p.statements > 0)
-    && (!q || [p.checked, p.post_text, p.poster, p.topic, p.verdict, p.id, ...p.verdicts.map(v => v.by + " " + v.rating)].join(" ").toLowerCase().includes(q)));
+    && (!q || [p.checked, p.post_text, p.poster, p.claimant, p.topic, p.verdict, p.id, ...p.verdicts.map(v => v.by + " " + v.rating)].join(" ").toLowerCase().includes(q)));
 }
 function render() {
   const inM = DATA.posts.filter(inMode);
@@ -83,20 +83,35 @@ $("#only-st").onchange = () => { S.onlySt = $("#only-st").checked; S.shown = 20;
 
 function card(p) {
   const pc = (a, b) => b ? (100 * a / b) : 0;
-  const box = el("article", { class: "pcard" + (p.id === want ? " hl" : ""), id: "p" + p.id });
-  box.append(el("div", { class: "k", text: `${NF.format(p.ratings)} ratings` + (p.majority ? " · disputed by the notes' majority" : " · disputed by a note") }),
+  const box = el("article", { class: "pcard two" + (p.id === want ? " hl" : ""), id: "p" + p.id });
+  const main = el("div", { class: "main" }), side = el("div", { class: "side" });
+  main.append(el("div", { class: "k", text: `${NF.format(p.ratings)} ratings` + (p.majority ? " · disputed by the notes' majority" : " · disputed by a note") }),
     el("div", { class: "claim", text: p.checked || "(the checked claim was not recorded)" }),
-    el("div", { class: "meta", text: [`@${p.poster}`, p.date, p.topic, p.lang_name].filter(Boolean).join(" · ") + (p.translated ? " · claim translated into English" : "") }));
-  if (p.post_text) box.append(el("details", { class: "more" }, el("summary", { text: "The post's text" }), el("p", { class: "small", style: "margin-top:6px", text: p.post_text })));
-  for (const v of p.verdicts) box.append(el("div", { class: "vline" }, el("b", { text: "Fact-checker " }), `${v.by} rated it `,
+    el("div", { class: "meta", text: [p.topic, p.lang_name].filter(Boolean).join(" · ") + (p.translated ? " · claim translated into English" : "") }));
+  if (p.post_text) main.append(el("details", { class: "more" }, el("summary", { text: "The post's text" }), el("p", { class: "small", style: "margin-top:6px", text: p.post_text })));
+  for (const v of p.verdicts) main.append(el("div", { class: "vline" }, el("b", { text: "Fact-checker " }), `${v.by} rated it `,
     el("b", { text: v.rating && v.rating.toLowerCase() !== v.verdict.toLowerCase() ? `“${v.rating}” (${v.verdict})` : v.verdict }),
-    v.date ? ` · ${v.date}` : "", v.url ? [" · ", el("a", { href: v.url, target: "_blank", rel: "noopener", text: "read the article ↗" })] : null));
-  box.append(el("div", { class: "nbar", title: `${p.notes_misleading} say misleading, ${p.notes_not} say not misleading` },
-      el("span", { style: `width:${pc(p.notes_misleading, p.notes)}%;background:var(--bad)` }), el("span", { style: `width:${pc(p.notes_not, p.notes)}%;background:var(--good)` })),
-    el("div", { class: "meta", text: `${p.notes} community note${p.notes === 1 ? "" : "s"}: ${p.notes_misleading} say misleading, ${p.notes_not} say not misleading · `
-      + `${p.notes_nmr} still need ratings · status: ${p.status || "unknown"} · ${p.replies ? NF.format(p.replies) + " replies collected" : "no replies collected"}` }));
-  if (p.agree) box.append(el("p", { class: "sum" }, el("b", { text: "Where they agree. " }), p.agree));
-  if (p.disagree) box.append(el("p", { class: "sum" }, el("b", { text: "Where they disagree. " }), p.disagree));
+    v.url ? [" · ", el("a", { href: v.url, target: "_blank", rel: "noopener", text: "read the article ↗" })] : null));
+  if (p.agree) main.append(el("p", { class: "sum" }, el("b", { text: "Where they agree. " }), p.agree));
+  if (p.disagree) main.append(el("p", { class: "sum" }, el("b", { text: "Where they disagree. " }), p.disagree));
+  // facts and bars, in the right-hand column
+  const facts = el("dl", { class: "facts" });
+  const fact = (k, v) => facts.append(el("div", {}, el("dt", { text: k }), el("dd", { text: v || "—" })));
+  fact("Claimant", p.claimant || "@" + p.poster); fact("Account", "@" + p.poster); fact("Platform", p.platform || "X/Twitter");
+  fact("Date posted", p.date); fact("Fact-checked", p.verdicts.map(v => v.date).filter(Boolean).join(", ")); fact("First note", p.first_note);
+  fact("Replies", p.replies_from ? (p.replies_from === p.replies_to ? p.replies_from : `${p.replies_from} to ${p.replies_to}`) : "not collected");
+  fact("Note status", p.status || "unknown"); fact("Post ID", p.id);
+  const bar = (label, parts, legend) => el("div", { class: "brow" }, el("span", { class: "bl", html: label }),
+    el("div", { class: "nbar" }, ...parts.map(([n, c]) => el("span", { style: `width:${n}%;background:${c}` }))), el("div", { class: "leg" }, ...legend));
+  const key = (c, t) => el("span", {}, el("i", { style: `background:${c}` }), t);
+  side.append(facts,
+    bar(`Notes <small>(${p.notes})</small>`, [[pc(p.notes_misleading, p.notes), "var(--bad)"], [pc(p.notes_not, p.notes), "var(--good)"]],
+      [key("var(--bad)", `say misleading ${p.notes_misleading}`), key("var(--good)", `say not misleading ${p.notes_not}`), el("span", { text: `${p.notes_nmr} still need ratings` })]));
+  const rs = p.reply_stance;
+  if (rs && rs.B + rs.R + rs.N) { const k = rs.B + rs.R + rs.N;
+    side.append(bar(`Replies <small>(${k} most liked)</small>`, [[pc(rs.B, k), "var(--good)"], [pc(rs.R, k), "var(--bad)"], [pc(rs.N, k), "var(--rule-2)"]],
+      [key("var(--good)", `back the post ${rs.B}`), key("var(--bad)", `reject it ${rs.R}`), key("var(--rule-2)", `neither ${rs.N}`), el("span", { text: `${NF.format(p.replies)} collected` })])); }
+  else side.append(el("p", { class: "meta", style: "margin-top:10px", text: p.replies ? `${NF.format(p.replies)} replies collected` : "No replies collected." }));
   const msg = el("span", { class: "msg" });
   const withSt = p.statements > 0;
   const chosen = LAB.store.get("post") === p.id;
@@ -108,10 +123,11 @@ function card(p) {
       LAB.download(`post_${p.id}_${withSt ? "with" : "without"}_statements.csv`, LAB.toCSV(LAB.OUT_COLS, rows)); msg.textContent = `${NF.format(rows.length)} rows`; }
     catch (e) { msg.className = "msg err"; msg.textContent = "Could not prepare the file: " + e.message; } };
   if (chosen) box.classList.add("hl");
-  box.append(el("div", { class: "acts" }, pick, dl,
+  main.append(el("div", { class: "acts" }, pick, dl,
     p.statements ? el("span", { class: "pill ok", text: `${p.statements} statements` }) : el("span", { class: "pill warn", text: "no statements: not suitable for close reading" }),
     chosen ? el("a", { href: "read.html?post=" + p.id, text: "Next: close read it →" }) : null,
     el("a", { href: p.url, target: "_blank", rel: "noopener", text: "Open the post on X ↗" }), msg));
+  box.append(main, side);
   return box;
 }
 
