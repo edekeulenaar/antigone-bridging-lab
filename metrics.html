@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3 Define metrics · Bridging</title>
+<title>3 Define metrics · ANTIGONE bridging lab</title>
 <meta name="description" content="Define three bridging metrics, each with a coding rule.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="top"><div class="in">
-  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
     <a href="posts.html">1 Pick a post</a>
@@ -30,7 +30,7 @@
   each other. Define three. Each needs a <b>coding rule</b> precise enough that two people — or a person and a chatbot — reading the same
   comment would both say <i>yes</i> or both say <i>no</i>.</p>
   <div class="callout"><b>Base them on your close reading.</b> If the sides talk past each other because one argues facts and the other values,
-  a metric could pick out comments that address both. If a minority position is drowned out, a metric could lift it. Start from a template
+  a metric could pick out comments that address both. If a minority position receives little attention, a metric could move it up. Start from a template
   below if you like, but rewrite it for your thread: say <i>which</i> statements, <i>how many</i>, <i>which</i> side.</div>
 
   <div class="row" style="margin:18px 0 6px;gap:8px"><span class="lab" style="align-self:center">Templates:</span><span id="tpl" class="row" style="gap:8px"></span></div>
@@ -38,7 +38,8 @@
   <div class="grid3" id="boxes" style="margin-top:12px"></div>
   <div class="row" style="margin-top:20px">
     <a class="btn primary" href="prompt.html">Next: code the thread with a chatbot →</a>
-    <button type="button" class="btn" id="dl">Download your definitions</button>
+    <button type="button" class="btn" id="dl">Download the codebook (Word)</button>
+    <button type="button" class="btn" id="pdf">Save the codebook as PDF</button>
     <span class="msg" id="saved"></span>
   </div>
 </main>
@@ -47,11 +48,11 @@
 "use strict";
 const { $, el } = LAB;
 const TEMPLATES = [
-  { name: "Cross-cutting", def: "Comments that take up the statements of both sides, so that readers of one side meet the other side's points in a comment that also speaks to theirs.",
+  { name: "Cross-cutting", def: "Comments that take up the statements of both sides, so that readers on one side see the other side's points in a comment that also addresses their own.",
     rule: "Yes if the comment makes at least two statements, and at least one of them is a statement the post makes while another is a statement the fact-check makes (or the two contradict each other). Otherwise no." },
   { name: "Majority", def: "Comments that make the thread's most common statement: what most users agree on, shown first so that readers see the common ground.",
     rule: "Yes if the comment makes the statement that the largest number of comments make (see the statement list). Otherwise no." },
-  { name: "Minority", def: "Comments that make a rare statement, so that positions the majority drowns out are read.",
+  { name: "Minority", def: "Comments that make a rare statement, so that positions with little support are seen.",
     rule: "Yes if every statement the comment makes is made by fewer than 10% of the comments. Comments that make no statement: no." },
   { name: "Context", def: "Comments that explain rather than only assert: they give the background a reader of the other side needs.",
     rule: "Yes if the comment explains or contextualises a statement — gives a source or link, a date, background facts, or the reason behind a position — instead of only asserting it. Otherwise no." },
@@ -63,7 +64,7 @@ const TEMPLATES = [
 const blank = () => ({ name: "", def: "", rule: "", example: "" });
 let M = LAB.store.get("metrics");
 if (!Array.isArray(M) || M.length !== 3) M = [blank(), blank(), blank()];
-const save = () => { const ok = LAB.store.set("metrics", M); $("#saved").textContent = ok ? "Saved in this browser." : "This browser would not save: download your definitions."; };
+const save = () => { const ok = LAB.store.set("metrics", M); $("#saved").textContent = ok ? "Saved in this browser." : "This browser could not save your metrics: download the codebook."; };
 
 function draw() {
   $("#boxes").replaceChildren(...M.map((m, j) => {
@@ -83,9 +84,19 @@ $("#tpl").append(...TEMPLATES.map(t => el("button", { type: "button", class: "bt
   const j = M.findIndex(m => !m.name && !m.def && !m.rule);
   if (j < 0) { $("#tpl-msg").textContent = "All three metrics are filled: clear one first."; return; }
   M[j] = Object.assign(blank(), t); save(); draw(); $("#tpl-msg").textContent = `Metric ${"ABC"[j]} filled with ${t.name}. Now rewrite it for your thread.`; } })));
-$("#dl").onclick = () => LAB.download("my_bridging_metrics.md", ["# My bridging metrics", "",
-  ...M.flatMap((m, j) => [`## Metric ${"ABC"[j]}: ${m.name || "(no name)"}`, "", `**What it captures.** ${m.def || "—"}`, "", `**Coding rule.** ${m.rule || "—"}`, "",
-    ...(m.example ? [`**Example.** ${m.example}`, ""] : [])])].join("\n"), "text/markdown");
+const cb = () => M.map((m, j) => ({ L: "ABC"[j], name: m.name || "(no name)", def: m.def || "—", rule: m.rule || "—", example: m.example || "" }));
+$("#dl").onclick = () => {
+  const blocks = [{ type: "title", text: "Bridging codebook" }, { type: "small", text: `ANTIGONE bridging lab · ${new Date().toISOString().slice(0, 10)}` }];
+  cb().forEach(m => { blocks.push({ type: "h1", text: `Metric ${m.L}: ${m.name}` }, { type: "p", runs: [{ t: "What it captures. ", b: true }, m.def] },
+    { type: "p", runs: [{ t: "Coding rule. ", b: true }, m.rule] }); if (m.example) blocks.push({ type: "p", runs: [{ t: "Example. ", b: true }, m.example] }); });
+  LAB.downloadBlob("bridging_codebook.docx", LAB.docx({ title: "Bridging codebook", blocks }));
+};
+$("#pdf").onclick = () => LAB.printHTML(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Bridging codebook</title><style>
+@page{size:A4;margin:18mm}body{font:11pt/1.5 Calibri,"Segoe UI",Arial,sans-serif;color:#111}h1{font-size:20pt;font-weight:400;margin:0 0 2pt}
+h2{font-size:14pt;margin:18pt 0 6pt}p{margin:0 0 6pt}.s{color:#595959;font-size:9pt}</style></head><body>
+<h1>Bridging codebook</h1><p class="s">ANTIGONE bridging lab · ${new Date().toISOString().slice(0, 10)}</p>
+${cb().map(m => `<h2>Metric ${m.L}: ${LAB.esc(m.name)}</h2><p><b>What it captures.</b> ${LAB.esc(m.def)}</p><p><b>Coding rule.</b> ${LAB.esc(m.rule)}</p>`
+  + (m.example ? `<p><b>Example.</b> ${LAB.esc(m.example)}</p>` : "")).join("")}</body></html>`);
 draw();
 if (M.some(m => m.name || m.rule)) $("#saved").textContent = "Your metrics, as you left them in this browser.";
 </script>

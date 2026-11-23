@@ -208,6 +208,90 @@ const LAB = (() => {
   }
   const short = (s, n) => (s = String(s ?? "")).length > n ? s.slice(0, n - 1) + "…" : s;
 
+  /* ---------- Word documents (.docx), written here without any library ----------
+     A .docx file is a zip archive of a few XML files. blocks is a list of
+     { type: "title" | "h1" | "h2" | "p" | "small", text | runs } and
+     { type: "table", widths: [twips], head: [..], rows: [[..]] }; a run is a string or { t, b, i }. */
+  const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc32 = b => { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
+  function zip(files) {
+    const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+    for (const f of files) {
+      const name = enc.encode(f.name), data = typeof f.data === "string" ? enc.encode(f.data) : f.data, crc = crc32(data);
+      const lh = new DataView(new ArrayBuffer(30));
+      [[0, 0x04034b50, 4], [4, 20, 2], [6, 0x0800, 2], [8, 0, 2], [10, 0, 2], [12, 0x21, 2], [14, crc, 4], [18, data.length, 4], [22, data.length, 4], [26, name.length, 2], [28, 0, 2]]
+        .forEach(([o, v, n]) => n === 4 ? lh.setUint32(o, v, true) : lh.setUint16(o, v, true));
+      parts.push(new Uint8Array(lh.buffer), name, data);
+      const ch = new DataView(new ArrayBuffer(46));
+      [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [8, 0x0800, 2], [10, 0, 2], [12, 0, 2], [14, 0x21, 2], [16, crc, 4], [20, data.length, 4], [24, data.length, 4],
+       [28, name.length, 2], [30, 0, 2], [32, 0, 2], [34, 0, 2], [36, 0, 2], [38, 0, 4], [42, offset, 4]]
+        .forEach(([o, v, n]) => n === 4 ? ch.setUint32(o, v, true) : ch.setUint16(o, v, true));
+      central.push(new Uint8Array(ch.buffer), name);
+      offset += 30 + name.length + data.length;
+    }
+    const size = central.reduce((a, b) => a + b.length, 0), end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true); end.setUint16(8, files.length, true); end.setUint16(10, files.length, true);
+    end.setUint32(12, size, true); end.setUint32(16, offset, true);
+    return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type: DOCX_MIME });
+  }
+  const xesc = s => String(s ?? "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F￾￿]/g, "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  function docxRuns(runs, base = "") {
+    return [].concat(runs).filter(r => r != null && r !== "").map(r => { const o = typeof r === "string" ? { t: r } : r;
+      const pr = base + (o.b ? "<w:b/>" : "") + (o.i ? "<w:i/>" : "") + (o.color ? `<w:color w:val="${o.color}"/>` : "");
+      return String(o.t).split("\n").map((line, k) => `<w:r>${pr ? `<w:rPr>${pr}</w:rPr>` : ""}${k ? "<w:br/>" : ""}<w:t xml:space="preserve">${xesc(line)}</w:t></w:r>`).join(""); }).join("");
+  }
+  function docx(opts) {
+    const W = opts.landscape ? 16838 : 11906, H = opts.landscape ? 11906 : 16838, M = 1134;
+    const para = (style, runs, base) => `<w:p>${style ? `<w:pPr><w:pStyle w:val="${style}"/></w:pPr>` : ""}${docxRuns(runs, base)}</w:p>`;
+    const cell = (w, runs, head) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${head ? '<w:shd w:val="clear" w:color="auto" w:fill="EDEDED"/>' : ""}</w:tcPr>`
+      + `<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>${docxRuns(runs, (head ? "<w:b/>" : "") + '<w:sz w:val="18"/><w:szCs w:val="18"/>')}</w:p></w:tc>`;
+    const B = '<w:top w:val="single" w:sz="4" w:color="BFBFBF"/><w:left w:val="single" w:sz="4" w:color="BFBFBF"/><w:bottom w:val="single" w:sz="4" w:color="BFBFBF"/>'
+      + '<w:right w:val="single" w:sz="4" w:color="BFBFBF"/><w:insideH w:val="single" w:sz="4" w:color="BFBFBF"/><w:insideV w:val="single" w:sz="4" w:color="BFBFBF"/>';
+    const body = opts.blocks.map(b => {
+      if (b.type === "table") {
+        return `<w:tbl><w:tblPr><w:tblW w:w="${b.widths.reduce((a, c) => a + c, 0)}" w:type="dxa"/><w:tblBorders>${B}</w:tblBorders><w:tblLayout w:type="fixed"/>`
+          + `<w:tblCellMar><w:left w:w="70" w:type="dxa"/><w:right w:w="70" w:type="dxa"/></w:tblCellMar></w:tblPr>`
+          + `<w:tblGrid>${b.widths.map(w => `<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`
+          + (b.head ? `<w:tr><w:trPr><w:tblHeader/></w:trPr>${b.head.map((h, k) => cell(b.widths[k], h, true)).join("")}</w:tr>` : "")
+          + b.rows.map(r => `<w:tr><w:trPr><w:cantSplit/></w:trPr>${r.map((c, k) => cell(b.widths[k], c, false)).join("")}</w:tr>`).join("") + "</w:tbl><w:p/>";
+      }
+      if (b.type === "small") return para("", b.runs || b.text, '<w:color w:val="595959"/><w:sz w:val="18"/><w:szCs w:val="18"/>');
+      return para({ title: "Title", h1: "Heading1", h2: "Heading2" }[b.type] || "", b.runs || b.text);
+    }).join("");
+    const doc = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}`
+      + `<w:sectPr><w:pgSz w:w="${W}" w:h="${H}"${opts.landscape ? ' w:orient="landscape"' : ""}/><w:pgMar w:top="${M}" w:right="${M}" w:bottom="${M}" w:left="${M}" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+    const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">`
+      + `<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:eastAsia="Calibri" w:cs="Calibri"/><w:sz w:val="21"/><w:szCs w:val="21"/><w:lang w:val="en-GB"/></w:rPr></w:rPrDefault>`
+      + `<w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>`
+      + `<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style>`
+      + `<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="60"/></w:pPr><w:rPr><w:sz w:val="40"/><w:szCs w:val="40"/></w:rPr></w:style>`
+      + `<w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="320" w:after="120"/><w:outlineLvl w:val="0"/></w:pPr><w:rPr><w:b/><w:sz w:val="30"/><w:szCs w:val="30"/></w:rPr></w:style>`
+      + `<w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:keepNext/><w:spacing w:before="200" w:after="80"/><w:outlineLvl w:val="1"/></w:pPr><w:rPr><w:b/><w:sz w:val="24"/><w:szCs w:val="24"/></w:rPr></w:style></w:styles>`;
+    const now = new Date().toISOString().replace(/\.\d+Z$/, "Z");
+    return zip([
+      { name: "[Content_Types].xml", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>` },
+      { name: "_rels/.rels", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>` },
+      { name: "docProps/core.xml", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>${xesc(opts.title || "")}</dc:title><dc:creator>ANTIGONE bridging lab</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">${now}</dcterms:created></cp:coreProperties>` },
+      { name: "word/_rels/document.xml.rels", data: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>` },
+      { name: "word/styles.xml", data: styles },
+      { name: "word/document.xml", data: doc },
+    ]);
+  }
+  function downloadBlob(name, blob) {
+    const a = el("a", { href: URL.createObjectURL(blob), download: name });
+    document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  }
+  // a PDF through the browser's own print dialog ("Save as PDF"), which handles every script and emoji
+  function printHTML(html) {
+    const f = el("iframe", { title: "Print", style: "position:fixed;right:0;bottom:0;width:0;height:0;border:0" });
+    document.body.append(f);
+    const d = f.contentWindow.document; d.open(); d.write(html); d.close();
+    const go = () => { try { f.contentWindow.focus(); f.contentWindow.print(); } finally { setTimeout(() => f.remove(), 60000); } };
+    if (d.readyState === "complete") setTimeout(go, 250); else f.onload = () => setTimeout(go, 250);
+  }
+
   return { DATASETS, $, el, esc, NF, parseCSV, toCSV, download, OUT_COLS, loadDisputed, threadRows, websiteStatements,
-           findCol, kindOf, KIND_LABEL, describe, splitStatements, normText, rng, shuffle, store, hash, param, dropzone, help, parseTime, yes, isYesNo, results, newId, filezone, postSelect, short };
+           findCol, kindOf, KIND_LABEL, describe, splitStatements, normText, rng, shuffle, store, hash, param, dropzone, help, parseTime, yes, isYesNo, results, newId, filezone, postSelect, short, docx, downloadBlob, printHTML, xesc };
 })();

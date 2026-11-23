@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>5–6 Upload &amp; order · Bridging</title>
+<title>5–6 Upload &amp; order · ANTIGONE bridging lab</title>
 <meta name="description" content="Upload a thread coded by your bridging metrics and order it by engagement, time, or your metrics.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="top"><div class="in">
-  <a class="brand" href="index.html">Bridging <small>ANTIGONE · week 4</small></a>
+  <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
     <a href="posts.html">1 Pick a post</a>
@@ -60,15 +60,23 @@
     <header><h2>Save and show</h2><span class="sub" id="save-state"></span></header>
     <div class="row">
       <label class="field" style="flex:1 1 300px"><span>Name of this result</span><input type="text" id="rname" placeholder="for example: Group 3 — Putin interview"></label>
-      <label class="field"><span>Comments in the presentation</span><select id="pres"><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
+      <label class="field"><span>Comments in the report and the presentation</span><select id="pres"><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
     </div>
-    <div class="row" style="margin-top:14px">
-      <button type="button" class="btn primary" id="dl-pres">Download a presentation page</button>
+    <h3 style="margin-top:18px">To hand in</h3>
+    <div class="row">
+      <button type="button" class="btn primary" id="dl-docx">Download the report (Word)</button>
+      <button type="button" class="btn" id="dl-pdf">Save the report as PDF</button>
+    </div>
+    <p class="small muted" style="margin-top:8px">The report contains the post, your bridging codebook (the three metrics, their coding rules and
+    how many comments each applies to) and the bridged ranking. For the PDF, choose <i>Save as PDF</i> as the printer in the print dialog.</p>
+    <h3 style="margin-top:18px">To show and to keep</h3>
+    <div class="row">
+      <button type="button" class="btn" id="dl-pres">Download a presentation page</button>
       <button type="button" class="btn" id="dl-result">Download your result file</button>
       <button type="button" class="btn" id="dl-csv">Download the ordered CSV</button>
     </div>
-    <p class="small muted" style="margin-top:10px">The <b>presentation page</b> opens in any browser, offline too: bring it to class. The <b>result file</b>
-    holds everything — your coded thread, your metrics, your order — and opens here again, on any computer.</p>
+    <p class="small muted" style="margin-top:8px">The presentation page opens in any browser, also offline. The result file contains the coded thread,
+    the metrics and the order, and can be opened on this page on any computer.</p>
   </section>
 </main>
 <script src="assets/lab.js"></script>
@@ -275,6 +283,56 @@ $("#dl-result").onclick = () => LAB.download(`${fileBase()}_result.json`, JSON.s
   postId: R.postId, savedAt: new Date().toISOString(), metrics: R.metrics, map: R.map, order: R.order, compare: R.compare, topk: R.topk, pres: R.pres, cols: R.cols, rows: R.rows }), "application/json");
 $("#dl-csv").onclick = () => { const O = orders(), cols = R.cols.filter(c => c !== "rank_yours" && c !== "rank_engagement").concat(["rank_yours", "rank_engagement"]);
   LAB.download(`${fileBase()}_ordered.csv`, LAB.toCSV(cols, O.yours.map(x => Object.assign({}, x.r, { rank_yours: x.ry, rank_engagement: x.rx })))); };
+/* ---------- the report: Word and PDF ---------- */
+async function reportData() {
+  const O = orders(), k = +R.pres || 20, N = ITEMS.length;
+  let meta = null; try { if (R.postId) meta = (await LAB.loadDisputed()).posts.find(p => p.id === R.postId) || null; } catch (e) {}
+  const metrics = R.metrics.map((m, j) => { const L = L3[j], n = R.map[L] ? ITEMS.filter(x => x.m[L]).length : null, g = (R.agreement || []).find(a => a.L === L);
+    return { L, name: mname(L), def: (m && m.def) || "", rule: (m && m.rule) || "", example: (m && m.example) || "",
+      count: n == null ? "Not coded in this file." : `Coded yes for ${n} of ${N} comments (${N ? Math.round(100 * n / N) : 0}%).`
+        + (g ? ` Agreement with the group's own coding: ${g.a} of ${g.n} comments (${Math.round(100 * g.a / g.n)}%).` : "") }; });
+  const rows = O.yours.slice(0, k).map(x => ({ rank: x.ry, xrank: x.rx, metrics: L3.filter(L => x.m[L]).map(mname).join(", "), likes: x.likes,
+    date: isNaN(x.t) ? "" : new Date(x.t).toISOString().slice(0, 10), author: x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind], text: x.text || "" }));
+  const order = describeOrder().replace(/^./, c => c.toUpperCase()) + ".";
+  return { meta, metrics, rows, order, k: Math.min(k, N), N, date: new Date().toISOString().slice(0, 10) };
+}
+const postLine = m => m ? `@${m.poster}, ${m.date}. Fact-checked: ${m.verdicts.map(v => `${v.by}, ${v.rating && v.rating.toLowerCase() !== v.verdict.toLowerCase() ? `${v.rating} (${v.verdict})` : v.verdict}`).join("; ")}. `
+  + `${m.notes} community notes (${m.notes_misleading} say misleading). ${m.replies} replies.` : "";
+$("#dl-docx").onclick = async () => {
+  const d = await reportData();
+  const blocks = [{ type: "title", text: R.name || "Bridging" }, { type: "small", text: `ANTIGONE bridging lab · ${d.date}` }];
+  if (d.meta) blocks.push({ type: "h1", text: "The post" }, { type: "p", text: d.meta.checked }, { type: "small", text: postLine(d.meta) });
+  blocks.push({ type: "h1", text: "Bridging codebook" });
+  d.metrics.forEach(m => { blocks.push({ type: "h2", text: `Metric ${m.L}: ${m.name}` },
+    { type: "p", runs: [{ t: "What it captures. ", b: true }, m.def || "—"] }, { type: "p", runs: [{ t: "Coding rule. ", b: true }, m.rule || "—"] });
+    if (m.example) blocks.push({ type: "p", runs: [{ t: "Example. ", b: true }, m.example] });
+    blocks.push({ type: "small", text: m.count }); });
+  blocks.push({ type: "h1", text: "Order" }, { type: "p", text: d.order },
+    { type: "h1", text: "Bridged ranking" },
+    { type: "small", text: `The first ${d.k} of ${d.N} comments in this order. “X's rank” is the comment's position when the thread is ordered by engagement (most liked first).` },
+    { type: "table", widths: [700, 800, 2300, 900, 1200, 1700, 6970], head: ["Rank", "X's rank", "Metrics", "Likes", "Date", "Author", "Comment"],
+      rows: d.rows.map(r => [String(r.rank), String(r.xrank), r.metrics || "—", String(r.likes), r.date, r.author, r.text]) });
+  LAB.downloadBlob(`${fileBase()}_report.docx`, LAB.docx({ title: R.name || "Bridging", landscape: true, blocks }));
+};
+$("#dl-pdf").onclick = async () => {
+  const d = await reportData();
+  LAB.printHTML(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${esc(R.name || "Bridging")}</title><style>
+@page{size:A4 landscape;margin:14mm}body{font:10.5pt/1.45 Calibri,"Segoe UI",Arial,sans-serif;color:#111;margin:0}
+h1{font-size:20pt;font-weight:400;margin:0 0 2pt}h2{font-size:14pt;margin:16pt 0 6pt}h3{font-size:11.5pt;margin:12pt 0 4pt}
+p{margin:0 0 6pt}.s{color:#595959;font-size:9pt}table{border-collapse:collapse;width:100%;font-size:8.5pt}
+th,td{border:1px solid #bfbfbf;padding:3pt 4pt;text-align:left;vertical-align:top}th{background:#ededed}tr{break-inside:avoid}
+td.t{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>
+<h1>${esc(R.name || "Bridging")}</h1><p class="s">ANTIGONE bridging lab · ${d.date}</p>
+${d.meta ? `<h2>The post</h2><p>${esc(d.meta.checked)}</p><p class="s">${esc(postLine(d.meta))}</p>` : ""}
+<h2>Bridging codebook</h2>${d.metrics.map(m => `<h3>Metric ${m.L}: ${esc(m.name)}</h3><p><b>What it captures.</b> ${esc(m.def || "—")}</p>`
+  + `<p><b>Coding rule.</b> ${esc(m.rule || "—")}</p>${m.example ? `<p><b>Example.</b> ${esc(m.example)}</p>` : ""}<p class="s">${esc(m.count)}</p>`).join("")}
+<h2>Order</h2><p>${esc(d.order)}</p>
+<h2>Bridged ranking</h2><p class="s">The first ${d.k} of ${d.N} comments in this order. “X's rank” is the comment's position when the thread is ordered by engagement (most liked first).</p>
+<table><colgroup><col style="width:4%"><col style="width:5%"><col style="width:14%"><col style="width:5%"><col style="width:7%"><col style="width:11%"><col></colgroup>
+<thead><tr><th>Rank</th><th>X's rank</th><th>Metrics</th><th>Likes</th><th>Date</th><th>Author</th><th>Comment</th></tr></thead><tbody>
+${d.rows.map(r => `<tr><td>${r.rank}</td><td>${r.xrank}</td><td>${esc(r.metrics || "—")}</td><td>${r.likes}</td><td>${r.date}</td><td>${esc(r.author)}</td><td class="t">${esc(r.text)}</td></tr>`).join("")}
+</tbody></table></body></html>`);
+};
 $("#dl-pres").onclick = async () => {
   const O = orders(), k = +R.pres || 20, N = ITEMS.length;
   let meta = null; try { if (R.postId) meta = (await LAB.loadDisputed()).posts.find(p => p.id === R.postId) || null; } catch (e) {}
@@ -306,7 +364,7 @@ ${R.agreement && R.agreement.length ? `<p class="muted">Checked against our own 
 <h2>Our order</h2><p>${esc(describeOrder().replace(/^./, c => c.toUpperCase()))}.${R.compare ? " Next to it, X's order: the most liked first. ▲ and ▼ show how far a comment moved." : ""}</p>
 <div class="cols"><div><h2 style="margin-top:6px">Our order</h2><ol>${O.yours.slice(0, k).map(x => item(x, x.ry, R.compare ? x.rx - x.ry : null)).join("")}</ol></div>
 ${R.compare ? `<div><h2 style="margin-top:6px">X's order: most liked first</h2><ol>${O.x.slice(0, k).map(x => item(x, x.rx, null)).join("")}</ol></div>` : ""}</div>
-<p class="muted" style="margin-top:30px">${N} comments in all${k < N ? `; the first ${k} shown` : ""}. Made with the ANTIGONE bridging site.</p>
+<p class="muted" style="margin-top:30px">${N} comments in all${k < N ? `; the first ${k} shown` : ""}. Made with the ANTIGONE bridging lab.</p>
 </main></body></html>`;
   LAB.download(`${fileBase()}_presentation.html`, html, "text/html");
 };
