@@ -45,7 +45,7 @@ h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.7rem
   line-height: 1.15; margin: 0 0 14px; letter-spacing: -0.01em; text-wrap: balance; }
 h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.35rem; line-height: 1.25; margin: 0 0 10px; }
 h3 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--ink-3); font-weight: 500; margin: 0 0 10px; }
-.lede { color: var(--ink-2); max-width: 74ch; margin: 0 0 8px; font-size: 16.5px; }
+.lede { color: var(--ink-2); margin: 0 0 8px; font-size: 16.5px; }
 .lede b { color: var(--ink); font-weight: 600; }
 p { margin: 0 0 12px; }
 .muted { color: var(--ink-3); }
@@ -207,7 +207,7 @@ ol.steps > li::before { content: counter(s); position: absolute; left: 18px; top
   background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
 ol.steps h2 { font-size: 1.15rem; margin: 0 0 4px; }
 ol.steps p { margin: 0; color: var(--ink-2); font-size: 15px; }
-.prose { max-width: 76ch; }
+.prose { max-width: none; }
 .prose p, .prose li { color: var(--ink-2); }
 .prose h2 { margin-top: 34px; }
 .prose ol, .prose ul { padding-left: 1.3em; }
@@ -225,9 +225,9 @@ ol.steps p { margin: 0; color: var(--ink-2); font-size: 15px; }
 .pcard .vline b { color: var(--ink); font-weight: 600; }
 .nbar { display: flex; height: 9px; border-radius: 5px; overflow: hidden; background: var(--surface-2); margin: 10px 0 5px; max-width: 520px; }
 .nbar span { display: block; height: 100%; }
-.pcard .sum { font-size: 14px; color: var(--ink-2); margin: 10px 0 0; max-width: 90ch; }
+.pcard .sum { font-size: 14px; color: var(--ink-2); margin: 10px 0 0; }
 .pcard .sum b { color: var(--ink); font-weight: 600; }
-.pcard.two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 4px 26px; }
+.pcard.two { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 4px 26px; }
 .pcard .side { border-left: 1px solid var(--rule); padding-left: 22px; }
 @media (max-width: 900px) { .pcard.two { grid-template-columns: 1fr; } .pcard .side { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 12px; margin-top: 10px; } }
 .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px 14px; margin: 2px 0 4px; }
@@ -239,6 +239,7 @@ ol.steps p { margin: 0; color: var(--ink-2); font-size: 15px; }
 .brow .nbar { margin: 0; max-width: none; }
 .brow .leg { grid-column: 2; display: flex; flex-wrap: wrap; gap: 2px 12px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .brow .leg i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+.pcard .side .acts { margin-top: 12px; }
 .pcard .acts { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-top: 14px; font-size: 13.5px; }
 .pill { font-size: 11.5px; padding: 1px 9px; border-radius: 999px; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--rule); white-space: nowrap; }
 .pill.warn { background: color-mix(in srgb, var(--warn) 16%, transparent); border-color: transparent; color: var(--ink); }
@@ -269,3 +270,6 @@ ol.steps p { margin: 0; color: var(--ink-2); font-size: 15px; }
 .found .err { color: var(--bad); }
 .cltab td select { font-size: 12.5px; padding: 2px 6px; }
 @media (max-width: 800px) { .toolbar { position: static; } }
+
+.qs { columns: 2 380px; column-gap: 36px; margin: 6px 0 0; padding-left: 1.3em; color: var(--ink-2); font-size: 14.5px; }
+.qs li { break-inside: avoid; margin: 0 0 8px; }

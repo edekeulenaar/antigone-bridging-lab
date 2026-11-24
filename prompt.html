@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4 Code with a chatbot · ANTIGONE bridging lab</title>
+<title>4 Code with an LLM · ANTIGONE bridging lab</title>
 <meta name="description" content="Turn your bridging metrics into a prompt, and code your thread with a chatbot.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,17 +18,15 @@
     <a href="posts.html">1 Pick a post</a>
     <a href="read.html">2 Close read</a>
     <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html" aria-current="page">4 Code with a chatbot</a>
+    <a href="prompt.html" aria-current="page">4 Code with an LLM</a>
     <a href="order.html">5–6 Upload &amp; order</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>4 · Code the thread with a chatbot</h1>
-  <p class="lede">This page writes a prompt from your post and your three metrics. Give it to a chatbot together with your
-  thread's CSV: the chatbot adds three columns, <code>metric_A</code>, <code>metric_B</code> and <code>metric_C</code>, with <i>yes</i> or <i>no</i>
-  for every comment.</p>
+  <h1>4 · Code the thread with an LLM</h1>
+  <p class="lede">This page writes the prompt from your post and your metrics / codebook. The prompt can be edited.</p>
 
   <section class="step">
     <header><span class="n">1</span><h2>Your post and your metrics</h2></header>
@@ -56,13 +54,13 @@
   <section class="step"><div class="prose">
     <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">3</span><h2 style="margin:0">Run it</h2></header>
     <ol>
-      <li><b>Open your chatbot</b> — ChatGPT, Claude, Gemini, Mistral, DeepSeek or another — in a new conversation.</li>
-      <li><b>Attach the thread's CSV</b> (paperclip or <i>+</i> button) and <b>paste the prompt</b> in the same message. Send.</li>
-      <li><b>Download the CSV it returns.</b> If it prints the CSV as text instead, copy all of it into a plain-text editor and save it as <code>.csv</code>.</li>
-      <li><b>Check that every row came back,</b> with the three new columns filled. Some chatbots, especially free versions, stop before the end of a long file: if rows are missing,
-        split the thread into parts (below), send each part with the same prompt in a new conversation, and upload all the parts together in step 5.</li>
-      <li><b>Use the same chatbot for every part</b>, and note its name and the date.</li>
+      <li>Open a chatbot (ChatGPT, Claude, Gemini, Mistral, DeepSeek…), attach your CSV and paste the prompt. It adds three columns, <code>metric_A</code>,
+        <code>metric_B</code> and <code>metric_C</code>, with <i>yes</i> or <i>no</i> for every comment.</li>
+      <li>Download the CSV it returns and check that every row came back. If the chatbot stops part-way, split the thread into parts on the same page
+        (below) and send each part with the same prompt.</li>
     </ol>
+    <p class="small muted">If the chatbot prints the CSV as text instead of a file, copy all of it into a plain-text editor and save it as <code>.csv</code>.
+      Use the same chatbot for every part, and note its name and the date.</p>
     <details class="more"><summary>Split the thread into parts</summary>
       <div class="row" style="margin-top:10px">
         <label class="field"><span>Rows per part</span><input type="number" id="per" value="80" min="10" max="2000"></label>
@@ -74,14 +72,9 @@
 
   <section class="step"><div class="prose">
     <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">4</span><h2 style="margin:0">Check the chatbot's coding</h2></header>
-    <ol>
-      <li><b>Code 20 comments yourself.</b> In the returned CSV, add three columns, <code>mine_A</code>, <code>mine_B</code> and <code>mine_C</code>,
-        and write <i>yes</i> or <i>no</i> in them for 20 comments of your choice — some that the chatbot marked <i>yes</i>, some <i>no</i>. Code them
-        from your rule, without looking at the chatbot's answer.</li>
-      <li><b>Upload the file in step 5.</b> The page compares your columns with the chatbot's and shows, for each metric, how often you agree.</li>
-      <li><b>If you agree on fewer than about 8 comments in 10</b> (a rule of thumb for this assignment, not an established threshold), the rule may be imprecise or the chatbot may be misreading it: make the rule more precise
-        (in step 3, or in the prompt), and run it again.</li>
-    </ol>
+    <p>Add the columns <code>mine_A</code>, <code>mine_B</code> and <code>mine_C</code> to the returned file and code 20 comments yourself, without
+      looking at the chatbot's answers. The next page shows how often you agree. If you agree on fewer than about 8 in 10 (a rule of thumb for this
+      assignment, not an established threshold), make the rules more precise and run the prompt again.</p>
   </div></section>
   <p style="margin-top:24px"><a class="btn primary" href="order.html">Next: upload and order →</a></p>
 </main>

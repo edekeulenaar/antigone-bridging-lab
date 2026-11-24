@@ -199,7 +199,7 @@ const LAB = (() => {
   /* ---------- the post a student is working on ---------- */
   async function postSelect(sel, opts = {}) {
     const d = await loadDisputed();
-    const ps = d.posts.filter(p => !opts.onlyStatements || p.statements > 0).sort((a, b) => b.ratings - a.ratings);
+    const ps = d.posts.filter(p => p.statements > 0).sort((a, b) => b.ratings - a.ratings);
     sel.replaceChildren(el("option", { value: "", text: `— choose one of ${ps.length} posts —` }),
       ...ps.map(p => el("option", { value: p.id, text: `${p.checked.slice(0, 95)}${p.checked.length > 95 ? "…" : ""} (@${p.poster}, ${p.replies} replies)` })));
     const want = param("post") || store.get("post");

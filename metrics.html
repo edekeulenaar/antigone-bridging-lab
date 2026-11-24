@@ -18,7 +18,7 @@
     <a href="posts.html">1 Pick a post</a>
     <a href="read.html">2 Close read</a>
     <a href="metrics.html" aria-current="page">3 Define metrics</a>
-    <a href="prompt.html">4 Code with a chatbot</a>
+    <a href="prompt.html">4 Code with an LLM</a>
     <a href="order.html">5–6 Upload &amp; order</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
@@ -26,18 +26,22 @@
 
 <main class="wrap">
   <h1>3 · Define your bridging metrics</h1>
-  <p class="lede">A bridging metric is a property of a comment that, if comments with it came first, would help the two sides understand
-  each other. Define three. Each needs a <b>coding rule</b> precise enough that two people — or a person and a chatbot — reading the same
-  comment would both say <i>yes</i> or both say <i>no</i>.</p>
-  <div class="callout"><b>Base them on your close reading.</b> If the sides talk past each other because one argues facts and the other values,
-  a metric could pick out comments that address both. If a minority position receives little attention, a metric could move it up. Two templates
-  are below as examples of the format; rewrite them for your thread, naming <i>which</i> statements, <i>how many</i> and <i>which</i> side.</div>
+  <p class="lede">Define three metrics. These should be properties of a comment that, if comments with them came first, would help other sides
+  understand each other. For each, write:</p>
+  <ul class="lede" style="margin:0 0 8px;padding-left:1.3em">
+    <li>a <b>name</b>;</li>
+    <li><b>what it captures</b>, and why putting such comments first would amount to “bridging”;</li>
+    <li>a <b>coding rule</b>: exactly when a comment counts as “<i>yes</i>”, precise enough that two people, or a person and a chatbot, would code every comment the same way.</li>
+  </ul>
+  <p class="lede"><b>Examples</b>: a comment has “breadth” if it makes two or more different statements; or it gives <b>context</b> if it explains a
+  statement with a source, a date or an explanation.</p>
+  <p class="small muted">Your codebook can be downloaded as a Word document or a PDF, and is also part of the report in step 6.</p>
 
   <div class="row" style="margin:18px 0 6px;gap:8px"><span class="lab" style="align-self:center">Templates:</span><span id="tpl" class="row" style="gap:8px"></span></div>
-  <p class="small muted" id="tpl-msg">Press a template to fill the first empty metric.</p>
+  <p class="small muted" id="tpl-msg">Press a template to fill the first empty metric, then rewrite it for your thread.</p>
   <div class="grid3" id="boxes" style="margin-top:12px"></div>
   <div class="row" style="margin-top:20px">
-    <a class="btn primary" href="prompt.html">Next: code the thread with a chatbot →</a>
+    <a class="btn primary" href="prompt.html">Next: code the thread with an LLM →</a>
     <button type="button" class="btn" id="dl">Download the codebook (Word)</button>
     <button type="button" class="btn" id="pdf">Save the codebook as PDF</button>
     <span class="msg" id="saved"></span>
@@ -66,8 +70,8 @@ function draw() {
       return el("label", { class: "field", style: "margin-top:10px" }, el("span", { text: label }), t); };
     return el("div", { class: "metric" }, el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `Metric ${L}` }),
         el("button", { type: "button", class: "btn small", style: "margin-left:auto", text: "Clear", onclick: () => { M[j] = blank(); save(); draw(); } })),
-      f("name", "Name", 0, "for example: Breadth"),
-      f("def", "What it captures, and why it bridges", 3, "Which comments, and why putting them first would help the sides understand each other."),
+      f("name", "Name", 0, ""),
+      f("def", "What it captures, and why putting such comments first would amount to bridging", 3, "Which comments, and why putting them first would help the sides understand each other."),
       f("rule", "Coding rule: code yes when…", 4, "Exactly when a comment gets yes. Name the statements, the number, the side."),
       f("example", "An example from your thread (optional)", 2, "A comment that gets yes, quoted."));
   }));

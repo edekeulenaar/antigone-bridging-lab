@@ -18,17 +18,17 @@
     <a href="posts.html">1 Pick a post</a>
     <a href="read.html">2 Close read</a>
     <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html">4 Code with a chatbot</a>
+    <a href="prompt.html">4 Code with an LLM</a>
     <a href="order.html" aria-current="page">5–6 Upload &amp; order</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>5–6 · Upload your coded thread, and order it</h1>
-  <p class="lede">Upload the CSV the chatbot returned. Then decide how the thread is ordered: by engagement, by time, or by your metrics.
-  Community notes and replies are shown separately, and each is ordered on its own; on X, notes also appear apart from the replies. Your result is saved in this browser as you
-  work; download it to open it on another computer, or as a page to show in class.</p>
+  <h1>5–6 · Upload the coded thread, and order it</h1>
+  <p class="lede">Upload the coded CSV. If the chatbot returned several parts, upload them all at once. The page finds your three metric columns
+  (change them if it guessed wrong), counts how many comments have each metric, and compares the chatbot's coding with yours.</p>
+  <p class="small muted">Results are saved automatically in your browser under <i>Your saved results</i>.</p>
 
   <section class="step" id="saved-box" hidden>
     <header><h2>Your saved results</h2><span class="sub">in this browser</span></header>
@@ -43,14 +43,17 @@
 
   <section class="step off" id="s-order">
     <header><span class="n">6</span><h2>Order the thread</h2><span class="sub" id="order-sub"></span></header>
+    <p style="margin:0 0 10px">Decide how the thread is ordered, in up to three levels, from: <b>engagement</b> (most liked first), <b>chronological</b>
+    order (oldest or newest first), and your <b>three metrics</b>. Choosing a metric moves every comment that has it to the top. Community notes and
+    replies are shown separately. For notes, engagement means the number of ratings.</p>
     <div class="row" id="levels" style="align-items:flex-end"></div>
     <p class="found" id="order-says" style="margin-top:10px"></p>
     <div class="row" id="counts" style="gap:8px;margin:6px 0 14px"></div>
     <div class="row" style="margin-bottom:6px">
-      <label class="field"><span>View</span><select id="viewmode"><option value="x">Your order next to the engagement order</option><option value="metrics">The three metrics side by side</option><option value="yours">Your order only</option></select></label>
+      <label class="field" style="flex:0 1 380px"><span>View</span><select id="viewmode"><option value="metrics">Three rankings side by side, one per metric</option><option value="x">Your order next to the engagement order</option><option value="yours">Your order only</option></select></label>
       <label class="field"><span>Show</span><select id="topk"><option value="10">top 10</option><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
     </div>
-    <p class="small muted" id="view-says" style="margin:0 0 6px;max-width:95ch"></p>
+    <p class="small muted" id="view-says" style="margin:0 0 6px"></p>
     <div id="view"></div>
     <details class="more" style="margin-top:20px"><summary>Your metrics (as they will appear in your presentation)</summary>
       <div class="grid3" id="mets" style="margin-top:12px"></div>
@@ -69,8 +72,9 @@
       <button type="button" class="btn primary" id="dl-docx">Download the report (Word)</button>
       <button type="button" class="btn" id="dl-pdf">Save the report as PDF</button>
     </div>
-    <p class="small muted" style="margin-top:8px">The report contains the post, your bridging codebook (the three metrics, their coding rules and
-    how many notes and replies each applies to), and the bridged rankings of the community notes and of the replies, in the view chosen above. For the PDF, choose <i>Save as PDF</i> as the printer in the print dialog.</p>
+    <p class="small muted" style="margin-top:8px">Download the <b>report</b> (Word, or PDF through the browser's print dialog). It contains your chosen
+    post, your bridging codebook, your order and the ranked community notes and replies (for each metric, if you chose the three-metric view). That is
+    the appendix of your hand-in. For the PDF, choose <i>Save as PDF</i> as the printer in the print dialog.</p>
     <h3 style="margin-top:18px">To show and to keep</h3>
     <div class="row">
       <button type="button" class="btn" id="dl-pres">Download a presentation page</button>
@@ -133,7 +137,7 @@ LAB.filezone($("#drop"), (files, say) => {
     const bare = n => n.replace(/\.(csv|tsv|txt)$/i, "");
     const name = parsed.length > 1 ? `${bare(parsed[0].name)} (+${parsed.length - 1} more part${parsed.length > 2 ? "s" : ""})` : bare(parsed[0].name);
     openResult({ id: LAB.newId(), name, postId, cols, rows, metrics: Array.isArray(m) && m.length === 3 ? m : [{}, {}, {}], map: null,
-      order: ["A", "eng", ""], view: "x", topk: 20, pres: 20 }, true);
+      order: ["eng", "", ""], view: "metrics", viewV2: true, topk: 20, pres: 20 }, true);
     say(`${parsed.map(x => `${x.name}: ${NF.format(x.p.rows.length)} rows`).join(" · ")}`, "msg ok");
   } catch (e) { say("The file could not be read: " + e.message, "msg err"); }
 }, { multiple: true, accept: ".csv,text/csv,.tsv,.txt,.json,application/json", label: "Drop your coded CSV (or all its parts, or a result file) here, or" });
@@ -153,8 +157,8 @@ function guessMap(cols, rows, metrics) {
 }
 
 function openResult(r, fresh) {
-  R = Object.assign({ order: ["A", "eng", ""], topk: 20, pres: 20, metrics: [{}, {}, {}] }, r);
-  if (!["x", "metrics", "yours"].includes(R.view)) R.view = R.compare === false ? "yours" : "x";
+  R = Object.assign({ order: ["eng", "", ""], topk: 20, pres: 20, metrics: [{}, {}, {}] }, r);
+  if (!R.viewV2 || !["x", "metrics", "yours"].includes(R.view)) { R.view = "metrics"; R.viewV2 = true; }
   D = LAB.describe(R.cols, R.rows);
   D.timeCol = LAB.findCol(R.cols, ["timestamp", "created_at", "date", "time", "datetime"]);
   if (!R.map || !Object.values(R.map).some(c => R.cols.includes(c))) R.map = guessMap(R.cols, R.rows, R.metrics);
@@ -169,7 +173,7 @@ function openResult(r, fresh) {
 const metricNames = () => R.metrics.map((m, j) => `${L3[j]}: ${(m && m.name) || "—"}`).join(" · ");
 function persist() {
   if (!R) return;
-  const ok = LAB.results.saveSettings(R.id, { metrics: R.metrics, map: R.map, order: R.order, view: R.view, topk: R.topk, pres: R.pres, name: R.name, postId: R.postId },
+  const ok = LAB.results.saveSettings(R.id, { metrics: R.metrics, map: R.map, order: R.order, view: R.view, viewV2: true, topk: R.topk, pres: R.pres, name: R.name, postId: R.postId },
     { name: R.name, metrics: metricNames() });
   const good = ok && R.persist !== false;
   $("#save-state").textContent = good ? "✓ saved in this browser" : "⚠ this browser could not keep a copy: download your result file";
@@ -248,7 +252,7 @@ function orders() {
   return SECS().map(s => { const items = ITEMS.filter(x => x.sec === s.key);
     const yours = items.slice().sort(compare(R.order)), x = items.slice().sort(compare(["eng"]));
     yours.forEach((it, k) => it.ry = k + 1); x.forEach((it, k) => it.rx = k + 1);
-    const byM = {}; L3.filter(L => R.map[L]).forEach(L => { byM[L] = items.slice().sort(compare([L, "eng"])); byM[L].forEach((it, k) => it["r" + L] = k + 1); });
+    const byM = {}; L3.filter(L => R.map[L]).forEach(L => { byM[L] = items.slice().sort(compare([L, ...R.order.filter(k => k && k !== L)])); byM[L].forEach((it, k) => it["r" + L] = k + 1); });
     return Object.assign({}, s, { items, yours, x, byM }); });
 }
 /* the columns of one section, for the chosen view */
@@ -258,8 +262,9 @@ function columns(S, view) {
   if (view === "x") cols.push({ title: `Engagement order: ${S.eng}`, list: S.x, rank: x => x.rx, move: null, c: "var(--rule-2)", hex: "#9a9a94" });
   return cols;
 }
+const ENG_NOTE = "The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.";
 const VIEW_SAYS = { x: "Your order next to the engagement order. ▲ and ▼ show how far a note or reply moved compared with the engagement order. The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.",
-  metrics: "One column per metric: the notes or replies coded yes for that metric come first, then the most rated (notes) or most liked (replies). ▲ and ▼ show how far each moved compared with the engagement order.",
+  get metrics() { return `Three rankings side by side, one per metric. Each puts the notes or replies coded yes for that metric first, then ${R ? describeOrder() : "your order"}. ▲ and ▼ show how far each moved compared with the engagement order. ` + ENG_NOTE; },
   yours: "Your order only." };
 function card(x, rank, move) {
   return el("article", { class: "cmt" },
@@ -275,7 +280,7 @@ function render() {
   if (!R) return;
   const O = orders(), k = +R.topk || 20;
   $("#order-sub").textContent = O.map(S => nOf(S.items.length, S)).join(" · ");
-  $("#order-says").innerHTML = `<b>Your order:</b> ${esc(describeOrder())}. Ties keep the order of your file. Community notes and replies are ordered separately; for notes, engagement means ratings.`;
+  $("#order-says").innerHTML = `<b>Your order:</b> ${esc(describeOrder())}. Ties keep the order of your file.`;
   $("#view-says").textContent = VIEW_SAYS[R.view] + (R.view === "metrics" && !L3.some(L => R.map[L]) ? " No metric columns are set." : "");
   $("#counts").replaceChildren(...L3.filter(L => R.map[L]).map(L => el("span", { class: "chip g", style: `background:${COL[L]};font-size:12.5px;padding:3px 10px`,
     text: `${mname(L)}: ` + O.map(S => `${S.items.filter(x => x.m[L]).length} of ${nOf(S.items.length, S)}`).join(", ") })));
@@ -324,7 +329,7 @@ async function reportData() {
   const view = R.view === "metrics" && L3.some(L => R.map[L]) ? "metrics" : "yours";
   const sections = O.flatMap(S => columns(S, view).map(C => ({ title: view === "metrics" ? `${S.title}: ${C.title}` : S.title, S, unit: S.unit[0].toUpperCase() + S.unit.slice(1),
     k: Math.min(k, S.items.length), N: S.items.length, eng: S.eng, rows: C.list.slice(0, k).map(x => row(x, C)) })));
-  const order = view === "metrics" ? "Each metric's order: the notes or replies coded yes for it first, then the most rated (notes) or most liked (replies)."
+  const order = view === "metrics" ? `Three rankings, one per metric: the notes or replies coded yes for the metric first, then ${describeOrder()}. Community notes and replies are ordered separately.`
     : describeOrder().replace(/^./, c => c.toUpperCase()) + ". Community notes and replies are ordered separately.";
   return { meta, metrics, sections, order, N, date: new Date().toISOString().slice(0, 10) };
 }
