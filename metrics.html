@@ -58,8 +58,9 @@ const TEMPLATES = [
     rule: "Yes if the comment explains or contextualises a statement — gives a source or link, a date, background facts, or the reason behind a position — instead of only asserting it. Otherwise no." },
 ];
 const blank = () => ({ name: "", def: "", rule: "", example: "" });
-let M = LAB.store.get("metrics");
-if (!Array.isArray(M) || M.length !== 3) M = [blank(), blank(), blank()];
+const stored = LAB.store.get("metrics");
+let M = LAB.myMetrics(stored);
+if (JSON.stringify(M) !== JSON.stringify(stored)) LAB.store.set("metrics", M);
 const save = () => { const ok = LAB.store.set("metrics", M); $("#saved").textContent = ok ? "Saved in this browser." : "This browser could not save your metrics: download the codebook."; };
 
 function draw() {

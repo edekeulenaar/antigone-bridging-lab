@@ -133,11 +133,11 @@ LAB.filezone($("#drop"), (files, say) => {
     }
     const postCol = LAB.findCol(cols, ["post_id"]);
     const postId = postCol ? (rows.map(r => String(r[postCol] || "").trim()).find(v => /^\d{6,}$/.test(v)) || null) : null;
-    const m = LAB.store.get("metrics");
+    const m = LAB.myMetrics(LAB.store.get("metrics"));
     const bare = n => n.replace(/\.(csv|tsv|txt)$/i, "");
     const name = parsed.length > 1 ? `${bare(parsed[0].name)} (+${parsed.length - 1} more part${parsed.length > 2 ? "s" : ""})` : bare(parsed[0].name);
-    openResult({ id: LAB.newId(), name, postId, cols, rows, metrics: Array.isArray(m) && m.length === 3 ? m : [{}, {}, {}], map: null,
-      order: ["eng", "", ""], view: "metrics", viewV2: true, topk: 20, pres: 20 }, true);
+    openResult({ id: LAB.newId(), name, postId, cols, rows, metrics: m, map: null,
+      order: ["eng", "old", ""], view: "metrics", viewV2: true, topk: 20, pres: 20 }, true);
     say(`${parsed.map(x => `${x.name}: ${NF.format(x.p.rows.length)} rows`).join(" · ")}`, "msg ok");
   } catch (e) { say("The file could not be read: " + e.message, "msg err"); }
 }, { multiple: true, accept: ".csv,text/csv,.tsv,.txt,.json,application/json", label: "Drop your coded CSV (or all its parts, or a result file) here, or" });
@@ -157,7 +157,8 @@ function guessMap(cols, rows, metrics) {
 }
 
 function openResult(r, fresh) {
-  R = Object.assign({ order: ["eng", "", ""], topk: 20, pres: 20, metrics: [{}, {}, {}] }, r);
+  R = Object.assign({ order: ["eng", "old", ""], topk: 20, pres: 20 }, r);
+  R.metrics = LAB.myMetrics(R.metrics);
   if (!R.viewV2 || !["x", "metrics", "yours"].includes(R.view)) { R.view = "metrics"; R.viewV2 = true; }
   D = LAB.describe(R.cols, R.rows);
   D.timeCol = LAB.findCol(R.cols, ["timestamp", "created_at", "date", "time", "datetime"]);
@@ -181,6 +182,7 @@ function persist() {
 }
 
 /* ---------- reading the file ---------- */
+const ready = L => !!(R && R.map[L] && String((R.metrics[L3.indexOf(L)] || {}).name || "").trim());
 const mname = L => { const m = R.metrics[L3.indexOf(L)]; return (m && m.name) || `Metric ${L}`; };
 function build() {
   const likeOf = r => { const k = D.typeCol ? LAB.kindOf(r[D.typeCol]) : "comment", c = k === "note" ? (D.ratingCol || D.likeCol) : D.likeCol;
@@ -204,6 +206,7 @@ function drawFound() {
   if (!L3.some(L => R.map[L])) warn.push("No metric columns were found. The chatbot should have added metric_A, metric_B and metric_C: pick the right columns below, or check the file it returned.");
   L3.forEach(L => { if (R.map[L]) { const filled = ITEMS.filter(x => String(x.r[R.map[L]] ?? "").trim()).length;
     if (filled < N) warn.push(`“${R.map[L]}” (${mname(L)}) is empty for ${N - filled} of ${N} comments: the chatbot may have stopped part-way. Those count as no.`); } });
+  L3.forEach(L => { if (R.map[L] && !ready(L)) warn.push(`The column “${R.map[L]}” has no metric name yet: name metric ${L} in step 3 or under “Your metrics” below to order by it.`); });
   if (!D.likeCol) warn.push("No likes column: engagement treats every comment as 0 likes.");
   if (!D.timeCol || ITEMS.every(x => isNaN(x.t))) warn.push("No readable dates: chronological order falls back to the order of your file.");
   else { const bad = ITEMS.filter(x => isNaN(x.t)).length; if (bad) warn.push(`${bad} comments have no readable date; in chronological order they come last.`); }
@@ -228,7 +231,7 @@ function drawFound() {
 
 /* ---------- ordering ---------- */
 const KEYS = () => [["", "—"], ["eng", "Engagement: most liked first"], ["old", "Chronological: oldest first"], ["new", "Chronological: newest first"],
-  ...L3.filter(L => R.map[L]).map(L => [L, `${mname(L)} first`])];
+  ...L3.filter(ready).map(L => [L, `${mname(L)} first`])];
 function drawLevels() {
   const opts = KEYS();
   $("#levels").replaceChildren(...[0, 1, 2].map(k => { const s = el("select", { "aria-label": `Order, level ${k + 1}` }, ...opts.filter(o => k > 0 || o[0]).map(([v, t]) => el("option", { value: v, text: t })));
@@ -252,12 +255,12 @@ function orders() {
   return SECS().map(s => { const items = ITEMS.filter(x => x.sec === s.key);
     const yours = items.slice().sort(compare(R.order)), x = items.slice().sort(compare(["eng"]));
     yours.forEach((it, k) => it.ry = k + 1); x.forEach((it, k) => it.rx = k + 1);
-    const byM = {}; L3.filter(L => R.map[L]).forEach(L => { byM[L] = items.slice().sort(compare([L, ...R.order.filter(k => k && k !== L)])); byM[L].forEach((it, k) => it["r" + L] = k + 1); });
+    const byM = {}; L3.filter(ready).forEach(L => { byM[L] = items.slice().sort(compare([L, ...R.order.filter(k => k && k !== L)])); byM[L].forEach((it, k) => it["r" + L] = k + 1); });
     return Object.assign({}, s, { items, yours, x, byM }); });
 }
 /* the columns of one section, for the chosen view */
 function columns(S, view) {
-  if (view === "metrics") return L3.filter(L => R.map[L]).map(L => ({ title: `${mname(L)} first`, list: S.byM[L], rank: x => x["r" + L], move: x => x.rx - x["r" + L], c: COL[L], hex: HEX[L], L }));
+  if (view === "metrics") return L3.filter(ready).map(L => ({ title: `${mname(L)} first`, list: S.byM[L], rank: x => x["r" + L], move: x => x.rx - x["r" + L], c: COL[L], hex: HEX[L], L }));
   const cols = [{ title: "Your order", list: S.yours, rank: x => x.ry, move: view === "x" ? x => x.rx - x.ry : null, c: "var(--accent)", hex: "#2a78d6" }];
   if (view === "x") cols.push({ title: `Engagement order: ${S.eng}`, list: S.x, rank: x => x.rx, move: null, c: "var(--rule-2)", hex: "#9a9a94" });
   return cols;
@@ -281,8 +284,8 @@ function render() {
   const O = orders(), k = +R.topk || 20;
   $("#order-sub").textContent = O.map(S => nOf(S.items.length, S)).join(" · ");
   $("#order-says").innerHTML = `<b>Your order:</b> ${esc(describeOrder())}. Ties keep the order of your file.`;
-  $("#view-says").textContent = VIEW_SAYS[R.view] + (R.view === "metrics" && !L3.some(L => R.map[L]) ? " No metric columns are set." : "");
-  $("#counts").replaceChildren(...L3.filter(L => R.map[L]).map(L => el("span", { class: "chip g", style: `background:${COL[L]};font-size:12.5px;padding:3px 10px`,
+  $("#view-says").textContent = VIEW_SAYS[R.view] + (R.view === "metrics" && !L3.some(ready) ? " None of your metrics is ready yet: each needs a name and a column." : "");
+  $("#counts").replaceChildren(...L3.filter(ready).map(L => el("span", { class: "chip g", style: `background:${COL[L]};font-size:12.5px;padding:3px 10px`,
     text: `${mname(L)}: ` + O.map(S => `${S.items.filter(x => x.m[L]).length} of ${nOf(S.items.length, S)}`).join(", ") })));
   const col = (C, S) => el("div", { class: "col" }, el("h3", {}, el("span", { class: "sw", style: `width:10px;height:10px;border-radius:2px;display:inline-block;background:${C.c}` }), C.title),
     ...C.list.slice(0, k).map(x => card(x, C.rank(x), C.move ? C.move(x) : null)));
@@ -304,16 +307,16 @@ function drawMets() {
       f("name", "Name"), f("def", "What it captures", 3), f("rule", "Coding rule", 3)); }));
 }
 $("#from-step3").onclick = () => { const m = LAB.store.get("metrics"); if (!Array.isArray(m) || m.length !== 3) { alert("No metrics were saved in step 3 in this browser."); return; }
-  R.metrics = JSON.parse(JSON.stringify(m)); persist(); drawMets(); drawFound(); drawLevels(); render(); };
+  R.metrics = LAB.myMetrics(JSON.parse(JSON.stringify(m))); persist(); drawMets(); drawFound(); drawLevels(); render(); };
 
 /* ---------- downloads ---------- */
 const fileBase = () => (R.name || "bridging").replace(/[^\w\-]+/g, "_").replace(/_+/g, "_").slice(0, 60);
 $("#dl-result").onclick = () => LAB.download(`${fileBase()}_result.json`, JSON.stringify({ app: "antigone-bridging-result", version: 2, id: R.id, name: R.name,
   postId: R.postId, savedAt: new Date().toISOString(), metrics: R.metrics, map: R.map, order: R.order, view: R.view, topk: R.topk, pres: R.pres, cols: R.cols, rows: R.rows }), "application/json");
-$("#dl-csv").onclick = () => { const O = orders(), extra = ["section", "rank_yours", "rank_engagement", ...L3.filter(L => R.map[L]).map(L => "rank_metric_" + L)];
+$("#dl-csv").onclick = () => { const O = orders(), extra = ["section", "rank_yours", "rank_engagement", ...L3.filter(ready).map(L => "rank_metric_" + L)];
   const cols = R.cols.filter(c => !extra.includes(c)).concat(extra);
   LAB.download(`${fileBase()}_ordered.csv`, LAB.toCSV(cols, O.flatMap(S => S.yours.map(x => Object.assign({}, x.r, { section: S.title, rank_yours: x.ry, rank_engagement: x.rx },
-    Object.fromEntries(L3.filter(L => R.map[L]).map(L => ["rank_metric_" + L, x["r" + L]]))))))); };
+    Object.fromEntries(L3.filter(ready).map(L => ["rank_metric_" + L, x["r" + L]]))))))); };
 /* ---------- the report: Word and PDF ---------- */
 async function reportData() {
   const O = orders(), k = +R.pres || 20, N = ITEMS.length;
@@ -326,7 +329,7 @@ async function reportData() {
   const row = (x, C) => ({ rank: C.rank(x), xrank: x.rx, metrics: L3.filter(L => x.m[L]).map(mname).join(", "), likes: x.likes,
     date: isNaN(x.t) ? "" : new Date(x.t).toISOString().slice(0, 10), author: x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind], text: x.text || "" });
   // the report lists your order, or each metric's order in the three-metric view
-  const view = R.view === "metrics" && L3.some(L => R.map[L]) ? "metrics" : "yours";
+  const view = R.view === "metrics" && L3.some(ready) ? "metrics" : "yours";
   const sections = O.flatMap(S => columns(S, view).map(C => ({ title: view === "metrics" ? `${S.title}: ${C.title}` : S.title, S, unit: S.unit[0].toUpperCase() + S.unit.slice(1),
     k: Math.min(k, S.items.length), N: S.items.length, eng: S.eng, rows: C.list.slice(0, k).map(x => row(x, C)) })));
   const order = view === "metrics" ? `Three rankings, one per metric: the notes or replies coded yes for the metric first, then ${describeOrder()}. Community notes and replies are ordered separately.`
@@ -371,7 +374,7 @@ ${t.rows.map(r => `<tr><td>${r.rank}</td><td>${r.xrank}</td><td>${esc(r.metrics 
 </tbody></table>`).join("")}</body></html>`);
 };
 $("#dl-pres").onclick = async () => {
-  const O = orders(), k = +R.pres || 20, N = ITEMS.length, view = R.view === "metrics" && !L3.some(L => R.map[L]) ? "yours" : R.view;
+  const O = orders(), k = +R.pres || 20, N = ITEMS.length, view = R.view === "metrics" && !L3.some(ready) ? "yours" : R.view;
   let meta = null; try { if (R.postId) meta = (await LAB.loadDisputed()).posts.find(p => p.id === R.postId) || null; } catch (e) {}
   const badge = L => `<span class="b" style="background:${HEX[L]}">${esc(mname(L))}</span>`;
   const item = (x, rank, move) => `<li><div class="m"><b>${rank}</b>${move != null ? (move ? `<span class="${move > 0 ? "up" : "dn"}">${move > 0 ? "▲" : "▼"}${Math.abs(move)}</span>` : `<span>=</span>`) : ""}`

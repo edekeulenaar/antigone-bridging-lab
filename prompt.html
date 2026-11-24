@@ -83,7 +83,7 @@
 "use strict";
 const { $, el, NF } = LAB;
 let META = null, ROWS = null;
-const M = (() => { const m = LAB.store.get("metrics"); return Array.isArray(m) && m.length === 3 ? m : [{}, {}, {}]; })();
+const M = LAB.myMetrics(LAB.store.get("metrics"));
 
 $("#mets").append(...M.map((m, j) => el("div", { class: "metric" },
   el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `metric_${"ABC"[j]}: ${m.name || "not defined yet"}` })),

@@ -206,6 +206,16 @@ const LAB = (() => {
     if (want && ps.some(p => p.id === want)) sel.value = want;
     return d;
   }
+  /* metrics the student created. Templates removed from step 3 that a browser may still hold, unedited, do not count. */
+  const OLD_TEMPLATE_RULES = ["Yes if the comment makes at least two statements, and at least one of them is a statement the post makes",
+    "Yes if the comment makes the statement that the largest number of comments make", "Yes if every statement the comment makes is made by fewer than 10%",
+    "Yes if the comment states, concedes or fairly summarises a point of the side it disagrees with"];
+  const isOldTemplate = m => !!m && OLD_TEMPLATE_RULES.some(r => String(m.rule || "").trim().startsWith(r));
+  const blankMetric = () => ({ name: "", def: "", rule: "", example: "" });
+  function myMetrics(m) {
+    if (!Array.isArray(m) || m.length !== 3) return [blankMetric(), blankMetric(), blankMetric()];
+    return m.map(x => isOldTemplate(x) ? blankMetric() : Object.assign(blankMetric(), x || {}));
+  }
   const short = (s, n) => (s = String(s ?? "")).length > n ? s.slice(0, n - 1) + "…" : s;
 
   /* ---------- Word documents (.docx), written here without any library ----------
@@ -293,5 +303,5 @@ const LAB = (() => {
   }
 
   return { DATASETS, $, el, esc, NF, parseCSV, toCSV, download, OUT_COLS, loadDisputed, threadRows, websiteStatements,
-           findCol, kindOf, KIND_LABEL, describe, splitStatements, normText, rng, shuffle, store, hash, param, dropzone, help, parseTime, yes, isYesNo, results, newId, filezone, postSelect, short, docx, downloadBlob, printHTML, xesc };
+           findCol, kindOf, KIND_LABEL, describe, splitStatements, normText, rng, shuffle, store, hash, param, dropzone, help, parseTime, yes, isYesNo, results, newId, filezone, postSelect, short, myMetrics, docx, downloadBlob, printHTML, xesc };
 })();
