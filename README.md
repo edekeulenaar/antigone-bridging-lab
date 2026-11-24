@@ -1,26 +1,21 @@
 # ANTIGONE bridging lab
 
-The website for the bridging assignment (week 4) of the ANTIGONE Digital Methods class. Students design bridging metrics for a disputed X thread, code the thread by them with a chatbot, and reorder it.
+The website for Assignment 3 (Bridging: From Disagreement to Intervention) of the ANTIGONE Digital Methods class. Students select a disputed X post, design three bridging metrics, test them on a sample of about 20 comments (manually or with an LLM), and compare the result with ranking by likes.
 
 **Address:** https://edekeulenaar.github.io/antigone-bridging-lab/
 
-| step | page | what students do there |
+| task | page | what students do there |
 |---|---|---|
-| Instructions | `index.html` | the assignment, and how their work is saved |
-| 1 Pick a post | `posts.html` | the 118 disputed posts with statements; details, the shares of the fact-check, notes and replies; download the full thread (CSV) and the fact-check (Markdown) |
-| 2 Close read | `read.html` | the thread grouped by statement, with close-reading questions |
-| 3 Define metrics | `metrics.html` | three bridging metrics, each with a name, what it captures and a coding rule (two templates); download the codebook as Word or PDF |
-| 4 Code with an LLM | `prompt.html` | one prompt built from the post and the metrics; splitting long threads into parts; checking the chatbot's coding |
-| 5–6 Upload & order | `order.html` | upload the coded CSV (several parts at once, or a saved result file); order community notes and replies separately by engagement, date and the three metrics, shown by default as three rankings side by side, one per metric; agreement with the student's own coding; download a report (Word or PDF), a result file and a presentation page |
+| Instructions | `index.html` | the assignment and the submission requirements |
+| 1 Select a post | `posts.html` | the 118 disputed posts with statements; details, the shares of the fact-check, notes and replies; download the full thread (CSV) and the fact-check (Markdown) |
+| 1 The disagreement | `read.html` | the thread grouped by statement, to identify the main disagreement |
+| 2 Design metrics | `metrics.html` | three bridging metrics, each with a name, what it captures and how to identify it (two templates); download them as Word or PDF |
+| 3 Code a sample | `prompt.html` | a seeded random sample of about 20 comments (replies, notes or both) as a CSV with empty `metric_A`–`metric_C` columns; a prompt for coding it with an LLM |
+| 3 Compare with likes | `order.html` | upload the coded sample (or a saved result file); three rankings side by side, one per metric, with each comment's move compared with ranking by likes; community notes and replies separately; download a report (Word or PDF), the coded comments (CSV) and a result file |
 
-Everything runs in the browser and nothing is uploaded. Each student's work is saved in four ways:
+Everything runs in the browser and nothing is uploaded. Each student's work is saved automatically in their own browser, and as a result file (`.json`) that reopens on `order.html` on any computer. The report and the CSV are what students hand in with their methods note.
 
-- automatically in their own browser, as a list of saved results;
-- as a result file (`.json`) that reopens on `order.html` on any computer;
-- as a presentation page (`.html`, no scripts) to show in class;
-- as a report to hand in (Word `.docx`, or PDF through the browser's print dialog) with the post, the codebook, the order and the ranked comments.
-
-The chatbot adds `metric_A`, `metric_B` and `metric_C` (yes/no). Students add `mine_A`, `mine_B` and `mine_C` for 20 comments to check its coding. The order page also reads columns named after the metrics, other yes/no values (Ja/Nee, TRUE, 1, "yes (…)"), CSVs wrapped in a chatbot's code fence, semicolon-separated files and day-month dates.
+The order page reads `metric_A`, `metric_B` and `metric_C` (yes/no), columns named after the metrics, other yes/no values (Ja/Nee, TRUE, 1, "yes (…)"), CSVs wrapped in a chatbot's code fence, semicolon-separated files and day-month dates. If `mine_A`… columns are present, it also shows how often they agree with the metric columns.
 
 ## The `Statement` column
 

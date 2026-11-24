@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>4 Code with an LLM · ANTIGONE bridging lab</title>
-<meta name="description" content="Turn your bridging metrics into a prompt, and code your thread with a chatbot.">
+<title>3 Code a sample · ANTIGONE bridging lab</title>
+<meta name="description" content="Draw a sample of about 20 comments and code it by your three bridging metrics, manually or with an LLM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
@@ -15,68 +15,62 @@
   <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
-    <a href="posts.html">1 Pick a post</a>
-    <a href="read.html">2 Close read</a>
-    <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html" aria-current="page">4 Code with an LLM</a>
-    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="posts.html">1 Select a post</a>
+    <a href="read.html">1 The disagreement</a>
+    <a href="metrics.html">2 Design metrics</a>
+    <a href="prompt.html" aria-current="page">3 Code a sample</a>
+    <a href="order.html">3 Compare with likes</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>4 · Code the thread with an LLM</h1>
-  <p class="lede">This page writes the prompt from your post and your metrics / codebook. The prompt can be edited.</p>
+  <h1>3 · Test your metrics on a sample</h1>
+  <p class="lede">Apply your metrics to a sample of approximately 20 comments, manually or with LLM assistance. Then upload the coded sample on
+  <a href="order.html">3 Compare with likes</a> to see which comments your metrics would prioritise, compared with ranking by likes.</p>
 
   <section class="step">
-    <header><span class="n">1</span><h2>Your post and your metrics</h2></header>
-    <div class="row">
+    <header><span class="n">a</span><h2>Draw a sample</h2><span class="sub" id="thread-msg"></span></header>
+    <div class="row" style="align-items:flex-end">
       <label class="field" style="flex:1 1 420px"><span>Your post</span><select id="post"><option value="">Loading…</option></select></label>
-      <button type="button" class="btn" id="dl-thread">Download its thread (CSV)</button>
-      <span class="msg" id="thread-msg"></span>
+      <label class="field"><span>Comments in the sample</span><input type="number" id="n" value="20" min="5" max="200" style="width:90px"></label>
+      <label class="field"><span>From</span><select id="from"><option value="reply">replies</option><option value="both">replies and community notes</option><option value="note">community notes</option></select></label>
+      <button type="button" class="btn" id="redraw">Draw a new sample</button>
+      <button type="button" class="btn primary" id="dl-sample">Download the sample (CSV)</button>
+    </div>
+    <p class="small muted" style="margin-top:8px">The sample is drawn at random and stays the same in this browser until you draw a new one. The file holds the
+    original post and the fact-check for context, the sampled comments, and three empty columns, <code>metric_A</code>, <code>metric_B</code> and
+    <code>metric_C</code>, for your codes.</p>
+    <details class="more" style="margin-top:6px"><summary id="sample-sum">The sample</summary><div id="sample" style="margin-top:8px"></div></details>
+  </section>
+
+  <section class="step">
+    <header><span class="n">b</span><h2>Code it</h2></header>
+    <div class="grid2">
+      <div><h3>Manually</h3>
+        <p class="small">Open the sample in a spreadsheet and write <i>yes</i> or <i>no</i> in <code>metric_A</code>, <code>metric_B</code> and
+        <code>metric_C</code> for every comment, following how you identify each metric. Save it as CSV.</p></div>
+      <div><h3>With LLM assistance</h3>
+        <p class="small">Open a chatbot (ChatGPT, Claude, Gemini, Mistral, DeepSeek…), attach the sample and paste the prompt below. It fills in the three
+        columns. Download the CSV it returns and check its codes; correct them where you disagree. If it prints the CSV as text, copy it into a plain-text
+        editor and save it as <code>.csv</code>. Note the LLM you used.</p></div>
     </div>
     <div id="mets" class="grid3" style="margin-top:14px"></div>
     <p class="small" style="margin-top:10px"><a href="metrics.html">Edit your metrics</a> — they are saved in this browser, so the prompt below updates when you come back.</p>
   </section>
 
   <section class="step">
-    <header><span class="n">2</span><h2>Your prompt</h2><span class="sub">you can edit it</span></header>
-    <textarea id="prompt" rows="18" spellcheck="false" aria-label="The prompt"></textarea>
+    <header><span class="n">c</span><h2>The prompt</h2><span class="sub">for LLM assistance; you can edit it</span></header>
+    <textarea id="prompt" rows="16" spellcheck="false" aria-label="The prompt"></textarea>
     <div class="row" style="margin-top:10px">
       <button type="button" class="btn primary" id="copy">Copy the prompt</button>
       <button type="button" class="btn" id="dl">Download it as a text file</button>
       <button type="button" class="btn" id="reset">Rewrite it from my metrics</button>
       <span class="msg" id="copy-msg"></span>
     </div>
-    <p class="small muted" style="margin-top:8px">Your edits to the prompt are kept in this browser. Put your final prompt in your hand-in.</p>
+    <p class="small muted" style="margin-top:8px">Your edits to the prompt are kept in this browser.</p>
   </section>
-
-  <section class="step"><div class="prose">
-    <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">3</span><h2 style="margin:0">Run it</h2></header>
-    <ol>
-      <li>Open a chatbot (ChatGPT, Claude, Gemini, Mistral, DeepSeek…), attach your CSV and paste the prompt. It adds three columns, <code>metric_A</code>,
-        <code>metric_B</code> and <code>metric_C</code>, with <i>yes</i> or <i>no</i> for every comment.</li>
-      <li>Download the CSV it returns and check that every row came back. If the chatbot stops part-way, split the thread into parts on the same page
-        (below) and send each part with the same prompt.</li>
-    </ol>
-    <p class="small muted">If the chatbot prints the CSV as text instead of a file, copy all of it into a plain-text editor and save it as <code>.csv</code>.
-      Use the same chatbot for every part, and note its name and the date.</p>
-    <details class="more"><summary>Split the thread into parts</summary>
-      <div class="row" style="margin-top:10px">
-        <label class="field"><span>Rows per part</span><input type="number" id="per" value="80" min="10" max="2000"></label>
-        <button type="button" class="btn" id="split">Make the parts</button>
-      </div>
-      <div class="row" id="parts" style="margin-top:10px;gap:8px"></div>
-    </details>
-  </div></section>
-
-  <section class="step"><div class="prose">
-    <header style="display:flex;align-items:baseline;gap:12px;margin-bottom:12px"><span class="n" style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">4</span><h2 style="margin:0">Check the chatbot's coding</h2></header>
-    <p>Add the columns <code>mine_A</code>, <code>mine_B</code> and <code>mine_C</code> to the returned file and code 20 comments yourself, without
-      looking at the chatbot's answers. The next page shows how often you agree. If you agree on fewer than about 8 in 10 (a rule of thumb for this
-      assignment, not an established threshold), make the rules more precise and run the prompt again.</p>
-  </div></section>
-  <p style="margin-top:24px"><a class="btn primary" href="order.html">Next: upload and order →</a></p>
+  <p style="margin-top:24px"><a class="btn primary" href="order.html">Next: compare with ranking by likes →</a></p>
 </main>
 <script src="assets/lab.js"></script>
 <script>
@@ -84,30 +78,59 @@
 const { $, el, NF } = LAB;
 let META = null, ROWS = null;
 const M = LAB.myMetrics(LAB.store.get("metrics"));
+const isComment = r => /reply|note/i.test(r.Type);
 
 $("#mets").append(...M.map((m, j) => el("div", { class: "metric" },
   el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `metric_${"ABC"[j]}: ${m.name || "not defined yet"}` })),
-  m.rule ? el("p", { class: "small", text: m.rule }) : el("p", { class: "small err", text: "No coding rule yet: define it in step 3." }))));
+  m.rule ? el("p", { class: "small", text: m.rule }) : el("p", { class: "small err", text: "Not defined yet: define it in step 2." }))));
 
 LAB.postSelect($("#post")).then(d => { META = d; if ($("#post").value) load($("#post").value); else build(); })
   .catch(e => { $("#thread-msg").textContent = "The posts could not be loaded: " + e.message; build(); });
 $("#post").onchange = () => { const id = $("#post").value; if (!id) return; LAB.store.set("post", id); load(id); };
 
+/* the sample: a seeded random draw, kept per post in this browser */
+const S = Object.assign({ n: 20, from: "reply" }, LAB.store.get("sampleopts") || {});
+$("#n").value = S.n; $("#from").value = S.from;
+const seedKey = () => "sampleseed:" + $("#post").value;
+function seed() { let s = LAB.store.get(seedKey()); if (!s) { s = Math.floor(Math.random() * 2 ** 31); LAB.store.set(seedKey(), s); } return s; }
+function sample() {
+  if (!ROWS) return null;
+  const pool = ROWS.map((r, i) => ({ r, i })).filter(x => isComment(x.r) && (S.from === "both" || (S.from === "note" ? /note/i : /reply/i).test(x.r.Type)));
+  const pick = LAB.shuffle(pool, LAB.rng(seed())).slice(0, Math.max(1, Math.min(+S.n || 20, pool.length))).sort((a, b) => a.i - b.i);
+  return { pool: pool.length, rows: pick.map(x => x.r) };
+}
+function sampleRows() { const sm = sample(); if (!sm) return null;
+  const blank = r => Object.assign({}, r, { metric_A: "", metric_B: "", metric_C: "" });
+  return ROWS.filter(r => !isComment(r)).map(blank).concat(sm.rows.map(blank)); }
+function drawSample() {
+  const sm = sample(); if (!sm) { $("#sample").replaceChildren(); return; }
+  $("#sample-sum").textContent = `The sample: ${sm.rows.length} of ${NF.format(sm.pool)} ${S.from === "note" ? "community notes" : S.from === "reply" ? "replies" : "replies and notes"}`;
+  $("#sample").replaceChildren(...sm.rows.map(r => el("div", { class: "cmt" },
+    el("div", { class: "cm" }, el("span", { text: /note/i.test(r.Type) ? "Community note" : r.author ? "@" + r.author : "Reply" }),
+      el("span", { text: /note/i.test(r.Type) ? `${r.n_ratings || 0} ratings` : `${r.like_count || 0} likes` }), el("span", { text: String(r.timestamp || "").slice(0, 16) })),
+    el("div", { class: "cb", text: LAB.short(String(r.text_translated || r.text || "").trim(), 500) }))));
+}
+$("#n").onchange = () => { S.n = Math.max(5, Math.min(200, +$("#n").value || 20)); $("#n").value = S.n; LAB.store.set("sampleopts", S); drawSample(); };
+$("#from").onchange = () => { S.from = $("#from").value; LAB.store.set("sampleopts", S); drawSample(); };
+$("#redraw").onclick = () => { if (!ROWS) return; LAB.store.set(seedKey(), Math.floor(Math.random() * 2 ** 31)); drawSample(); };
+$("#dl-sample").onclick = () => { const rows = sampleRows(); if (!rows) { $("#thread-msg").textContent = "Choose a post first."; return; }
+  LAB.download(`post_${$("#post").value}_sample.csv`, LAB.toCSV(LAB.OUT_COLS.concat(["metric_A", "metric_B", "metric_C"]), rows)); };
+
 async function load(id) {
-  $("#thread-msg").className = "msg"; $("#thread-msg").textContent = "Loading …";
-  try { ROWS = await LAB.threadRows(id, true); $("#thread-msg").textContent = `${NF.format(ROWS.length)} rows`; }
-  catch (e) { ROWS = null; $("#thread-msg").className = "msg err"; $("#thread-msg").textContent = "Could not load the thread: " + e.message; }
-  build(true);
+  $("#thread-msg").className = "sub"; $("#thread-msg").textContent = "Loading …";
+  try { ROWS = await LAB.threadRows(id, true); $("#thread-msg").textContent = `${NF.format(ROWS.filter(isComment).length)} comments in the thread`; }
+  catch (e) { ROWS = null; $("#thread-msg").textContent = "Could not load the thread: " + e.message; }
+  drawSample(); build();
 }
 
 function generate() {
   const id = $("#post").value, p = META && META.posts.find(x => x.id === id);
-  const comments = (ROWS || []).filter(r => /reply|note/i.test(r.Type));
+  const comments = (ROWS || []).filter(isComment);
   const counts = new Map(); comments.forEach(r => LAB.splitStatements(r.Statement).forEach(s => counts.set(s.label || s.key, (counts.get(s.label || s.key) || 0) + 1)));
   const post = (ROWS || []).find(r => /original/i.test(r.Type)), fcs = (ROWS || []).filter(r => /fact/i.test(r.Type));
   const side = r => r && r.Statement ? LAB.splitStatements(r.Statement).map(s => s.label || s.key) : [];
   const L = ["You are helping with a research project on how people disagree in X (Twitter) threads.", "",
-    "I attach a CSV file with one X thread. Each row is one item; the column \"Type\" says which: the original post, a fact-check, a community note or a reply. "
+    "I attach a CSV file with a sample of comments from one X thread, together with the original post and the fact-check. Each row is one item; the column \"Type\" says which: the original post, a fact-check, a community note or a reply. "
     + "The text is in the column \"text_translated\" (an English translation) or, where that is empty, in \"text\". "
     + "The column \"Statement\" lists the statements each item makes, separated by \" | \".", ""];
   if (p) {
@@ -116,27 +139,27 @@ function generate() {
     L.push(`${p.notes} community notes: ${p.notes_misleading} say the post is misleading, ${p.notes_not} say it is not.`, "");
   }
   if (counts.size) {
-    L.push(`THE STATEMENTS IN THIS THREAD, and how many of its ${comments.length} comments make each`);
+    L.push(`THE STATEMENTS IN THE WHOLE THREAD, and how many of its ${comments.length} comments make each`);
     [...counts].sort((a, b) => b[1] - a[1]).forEach(([t, n], k) => L.push(`${k + 1}. ${t} — ${n} comment${n === 1 ? "" : "s"} (${(100 * n / comments.length).toFixed(n / comments.length < 0.01 ? 1 : 0)}%)`));
     if (side(post).length) L.push("", "The original post makes: " + side(post).join(" | "));
     if (fcs.some(f => side(f).length)) L.push("The fact-check makes: " + fcs.flatMap(side).join(" | "));
     L.push("");
   }
-  L.push("TASK", "Code every community note and every reply on three bridging metrics. Add three new columns, \"metric_A\", \"metric_B\" and \"metric_C\", and write yes or no in each.", "");
+  L.push("TASK", "Code every community note and every reply in the file on three bridging metrics. Fill in the columns \"metric_A\", \"metric_B\" and \"metric_C\" with yes or no.", "");
   M.forEach((m, j) => { L.push(`metric_${"ABC"[j]} — ${m.name || "(name)"}`);
     if (m.def) L.push(`What it captures: ${m.def}`);
-    L.push(`Code yes when: ${m.rule || "(write the coding rule in step 3)"}`); if (m.example) L.push(`Example of a yes: ${m.example}`); L.push(""); });
+    L.push(`Code yes when: ${m.rule || "(write how to identify it in step 2)"}`); if (m.example) L.push(`Example of a yes: ${m.example}`); L.push(""); });
   L.push("RULES", "- Apply each rule exactly as written. When a comment does not clearly meet a rule, write no.",
-    "- Judge what the comment says, not whether it is true.", "- Leave the three new columns empty for the original post and the fact-check.",
+    "- Judge what the comment says, not whether it is true.", "- Leave the three columns empty for the original post and the fact-check.",
     "- Do not change, reorder, add or delete any other row or column.", "",
-    "OUTPUT", "Return the complete CSV file with the three new columns, as a file I can download. If you cannot make files, print the whole CSV in one code block. "
-    + "Do not skip, shorten or summarise rows. If the file is too long to finish, say so instead of stopping silently.");
+    "OUTPUT", "Return the complete CSV file with the three columns filled in, as a file I can download. If you cannot make files, print the whole CSV in one code block. "
+    + "Do not skip, shorten or summarise rows.");
   return L.join("\n");
 }
 function build() {   // the student's own edited prompt for this post, if there is one; otherwise a fresh one
   const saved = LAB.store.get("prompt:" + ($("#post").value || "none"));
   $("#prompt").value = saved || generate();
-  if (saved) $("#copy-msg").textContent = "This is your edited prompt from before. “Rewrite it from my metrics” starts again.";
+  $("#copy-msg").textContent = saved ? "This is your edited prompt from before. “Rewrite it from my metrics” starts again." : "";
 }
 $("#prompt").addEventListener("input", () => LAB.store.set("prompt:" + ($("#post").value || "none"), $("#prompt").value));
 $("#reset").onclick = () => { LAB.store.del("prompt:" + ($("#post").value || "none")); $("#prompt").value = generate(); $("#copy-msg").textContent = "Rewritten from your metrics."; };
@@ -144,15 +167,6 @@ $("#copy").onclick = () => { const t = $("#prompt").value, m = $("#copy-msg");
   (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => m.textContent = "Copied.",
     () => { $("#prompt").select(); try { document.execCommand("copy"); m.textContent = "Copied."; } catch (e) { m.textContent = "Select the prompt and copy it by hand."; } }); };
 $("#dl").onclick = () => LAB.download("bridging_prompt.txt", $("#prompt").value, "text/plain");
-$("#dl-thread").onclick = () => { if (!ROWS) { $("#thread-msg").textContent = "Choose a post first."; return; }
-  LAB.download(`post_${$("#post").value}_thread.csv`, LAB.toCSV(LAB.OUT_COLS, ROWS)); };
-$("#split").onclick = () => {
-  if (!ROWS) { $("#parts").replaceChildren(el("span", { class: "msg err", text: "Choose a post first." })); return; }
-  const per = Math.max(10, +$("#per").value || 80), head = ROWS.filter(r => !/reply|note/i.test(r.Type)), body = ROWS.filter(r => /reply|note/i.test(r.Type));
-  const parts = []; for (let i = 0; i < body.length; i += per) parts.push((i === 0 ? head : []).concat(body.slice(i, i + per)));
-  $("#parts").replaceChildren(...parts.map((rows, k) => el("button", { type: "button", class: "btn small", text: `Part ${k + 1} of ${parts.length} (${rows.length} rows)`,
-    onclick: () => LAB.download(`post_${$("#post").value}_part${k + 1}of${parts.length}.csv`, LAB.toCSV(LAB.OUT_COLS, rows)) })));
-};
 </script>
 </body>
 </html>

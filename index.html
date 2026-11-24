@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ANTIGONE bridging lab</title>
-<meta name="description" content="Design bridging metrics for a disputed X thread, code the thread by them with a chatbot, and reorder it.">
+<meta name="description" content="Assignment 3: design three bridging metrics for a disputed X post, test them on a sample of comments, and compare the result with ranking by likes.">
 <script>if (new URLSearchParams(location.search).get("post")) location.replace("posts.html" + location.search);</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,77 +16,42 @@
   <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html" aria-current="page">Instructions</a>
-    <a href="posts.html">1 Pick a post</a>
-    <a href="read.html">2 Close read</a>
-    <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html">4 Code with an LLM</a>
-    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="posts.html">1 Select a post</a>
+    <a href="read.html">1 The disagreement</a>
+    <a href="metrics.html">2 Design metrics</a>
+    <a href="prompt.html">3 Code a sample</a>
+    <a href="order.html">3 Compare with likes</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
   <div class="prose">
-  <h1>Week 4 · Bridging</h1>
-  <p class="lede">This <b>bridging</b> section is part of the methodological cookbook series on the practical and empirical questions of how to
-  identify and study so-called <i>speech grey zones</i>.</p>
-  <p class="small"><b>Data:</b> the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>. Each step below has a page on this site.</p>
-
-  <h2>Goal</h2>
-  <p>In week 2, fact-checks were used as entry points into speech grey zones. In week 3, these were <b>described</b>: how fact-checkers and community
-  notes disagreed, what commenters said about notes, and what they agreed and disagreed on.</p>
-  <p>This week's assignment moves from describing the conflict to intervening in it.</p>
-  <p>The intervention is called <b>bridging</b>: a mechanism for facilitating <i>understanding</i> — the possibility that users who make conflicting
-  statements have the information they need to understand and engage with each other. Bridging is a <b>framework</b>, not a single technique.
-  Following this week's reading, each operationalisation names three things:</p>
-  <div class="tw"><table>
-    <thead><tr><th>part</th><th>question it answers</th></tr></thead>
-    <tbody>
-      <tr><td><b>bridging goal</b></td><td>What would count as mutual understanding?</td></tr>
-      <tr><td><b>relation metric</b></td><td>What measurable property of a comment stands in for that goal?</td></tr>
-      <tr><td><b>attention allocator</b></td><td>What does the platform do with it? Here: how does it order the comments?</td></tr>
-    </tbody>
-  </table></div>
-  <p><b>The goal of the assignment</b> is to take one disputed X thread, define three bridging metrics, code every comment of the thread by them,
-  and reorder the thread so that comments with bridging properties come first.</p>
+  <h1>Assignment 3 — Bridging: From Disagreement to Intervention</h1>
+  <p class="lede"><b>Deadline:</b> Monday, 7 December, 17:00.</p>
+  <p class="lede">Using this bridging lab, explore how the ordering of comments might facilitate understanding between people who disagree.</p>
+  <h2>Your task is to:</h2>
   </div>
-
-  <h2 style="margin-top:34px">Six steps</h2>
   <ol class="steps">
-    <li><h2><a href="posts.html">Pick a post</a></h2><p>Choose one of the disputed posts (posts where the fact-checker's verdict and the community
-      notes reach opposite conclusions) and press <i>Work on this post</i>. Download its thread as a CSV.</p></li>
-    <li><h2><a href="read.html">Close read the thread</a></h2><p>Open each statement, read the comments that make it, and discuss the questions on
-      the page. For each answer, note two or three comments as evidence.</p></li>
-    <li><h2><a href="metrics.html">Define your bridging metrics</a></h2><p>Define three metrics: properties of a comment that, if comments with them
-      came first, would help other sides understand each other. For each, write a name, what it captures, and a coding rule.</p></li>
-    <li><h2><a href="prompt.html">Code the thread with an LLM</a></h2><p>The page writes the prompt from your post and your metrics / codebook. A
-      chatbot adds <code>metric_A</code>, <code>metric_B</code> and <code>metric_C</code>, with <i>yes</i> or <i>no</i> for every comment.</p></li>
-    <li><h2><a href="order.html">Upload the coded thread</a></h2><p>Upload the coded CSV. If the chatbot returned several parts, upload them all at
-      once.</p></li>
-    <li><h2><a href="order.html">Order the thread</a></h2><p>Decide how the thread is ordered, in up to three levels, from engagement, chronological
-      order and your three metrics. Choosing a metric moves every comment that has it to the top. Community notes and replies are shown separately.</p></li>
+    <li><h2>Select a disputed post</h2><p>Choose a case from the bridging lab and briefly identify the main disagreement.</p>
+      <p class="small"><a href="posts.html">1 Select a post →</a> · <a href="read.html">1 The disagreement →</a></p></li>
+    <li><h2>Design three bridging metrics</h2><p>What properties of a comment might help opposing sides understand each other? Define three metrics and
+      explain how you would identify them.</p>
+      <p class="small"><a href="metrics.html">2 Design metrics →</a></p></li>
+    <li><h2>Test your metrics</h2><p>Apply them to a sample of approximately 20 comments, manually or with LLM assistance. Which comments would your
+      metrics prioritise, compared with ranking by likes?</p>
+      <p class="small"><a href="prompt.html">3 Code a sample →</a> · <a href="order.html">3 Compare with likes →</a></p></li>
+    <li><h2>Reflect on the intervention</h2><p>What might your proposed ranking make more visible? What assumptions does it make about productive
+      disagreement, and what might it overlook?</p></li>
   </ol>
 
   <div class="prose">
-  <h2>How your work is saved</h2>
-  <p>Results are saved automatically in your browser under <i>Your saved results</i>. The <b>report</b> (Word or PDF) is the appendix to hand in.</p>
-
-  <h2>Deliverables</h2>
-  <p>One post per group / individual.</p>
-  <div class="tw"><table>
-    <thead><tr><th>#</th><th>what</th><th>step</th></tr></thead>
-    <tbody>
-      <tr><td>1</td><td>Your chosen post.</td><td>1</td></tr>
-      <tr><td>2</td><td>The close reading.</td><td>2</td></tr>
-      <tr><td>3</td><td>The three bridging metrics.</td><td>3</td></tr>
-      <tr><td>4</td><td><b>Your prompt</b>, the LLM you used, and (optionally) how often its coding agreed with your own.</td><td>4</td></tr>
-      <tr><td>5</td><td><b>The bridging thread</b>: what your order puts first (compared, for example, with the engagement order). The report (Word or PDF) from step 6 contains the codebook and the ranking.</td><td>5–6</td></tr>
-    </tbody>
-  </table></div>
-  <p>Length: 2,500 words, appendices excluded.</p>
-  <p><b>Format</b>: one document (Word or PDF), with the report downloaded in step 6 as an appendix; add your result file and your presentation page.</p>
-  <p><b>Deadline</b>: Monday 7 December, 17:00, the evening before the class discussion.</p>
-  <p><b>In class the week after</b>: ten minutes per group, showing your presentation page: your post, your metrics, and your reordered thread.</p>
+  <h2>Submission</h2>
+  <p>Submit a short methods note (maximum 500 words) accompanied by your three metrics and a small table or spreadsheet showing your coded comments.</p>
+  <p>You may work individually or in groups of up to three students. If you work in a group, you may submit the same jointly prepared assignment.</p>
+  <p>Everyone must upload the assignment individually to Canvas, even when working in a group. Please include the names of your group members, if applicable.</p>
+  <p class="small muted">On this site, the report on <a href="order.html">3 Compare with likes</a> (Word or PDF) contains your three metrics and a table of
+  your coded comments; the CSV download on the same page is the spreadsheet. Your work is saved in your browser; nothing is sent anywhere.</p>
   </div>
   <footer class="foot">ANTIGONE · Digital Methods class. Data: the <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets</a>
   (fact-checks from ClaimReview via Fact-Check Insights; community notes and ratings from X's public exports; replies collected from X).</footer>

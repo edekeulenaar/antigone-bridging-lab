@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>5–6 Upload &amp; order · ANTIGONE bridging lab</title>
-<meta name="description" content="Upload a thread coded by your bridging metrics and order it by engagement, time, or your metrics.">
+<title>3 Compare with likes · ANTIGONE bridging lab</title>
+<meta name="description" content="Upload your coded comments and compare the rankings by your three bridging metrics with ranking by likes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
@@ -15,20 +15,20 @@
   <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
-    <a href="posts.html">1 Pick a post</a>
-    <a href="read.html">2 Close read</a>
-    <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html">4 Code with an LLM</a>
-    <a href="order.html" aria-current="page">5–6 Upload &amp; order</a>
+    <a href="posts.html">1 Select a post</a>
+    <a href="read.html">1 The disagreement</a>
+    <a href="metrics.html">2 Design metrics</a>
+    <a href="prompt.html">3 Code a sample</a>
+    <a href="order.html" aria-current="page">3 Compare with likes</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>5–6 · Upload the coded thread, and order it</h1>
-  <p class="lede">Upload the coded CSV. If the chatbot returned several parts, upload them all at once. The page finds your three metric columns
-  (change them if it guessed wrong), counts how many comments have each metric, and compares the chatbot's coding with yours.</p>
-  <p class="small muted">Results are saved automatically in your browser under <i>Your saved results</i>.</p>
+  <h1>3 · Compare your metrics with ranking by likes</h1>
+  <p class="lede">Upload your coded sample. Which comments would your metrics prioritise, compared with ranking by likes?</p>
+  <p class="small muted">The page finds your three metric columns (change them if it guessed wrong) and counts how many comments have each metric.
+  Results are saved automatically in your browser under <i>Your saved results</i>.</p>
 
   <section class="step" id="saved-box" hidden>
     <header><h2>Your saved results</h2><span class="sub">in this browser</span></header>
@@ -36,53 +36,51 @@
   </section>
 
   <section class="step">
-    <header><span class="n">5</span><h2>Upload</h2><span class="sub">the coded CSV — several files if the chatbot returned parts — or a result file you saved</span></header>
+    <header><span class="n">a</span><h2>Upload</h2><span class="sub">your coded sample (CSV), or a result file you saved</span></header>
     <div id="drop"></div>
     <div id="found" class="found" style="margin-top:14px"></div>
   </section>
 
   <section class="step off" id="s-order">
-    <header><span class="n">6</span><h2>Order the thread</h2><span class="sub" id="order-sub"></span></header>
-    <p style="margin:0 0 10px">Decide how the thread is ordered, in up to three levels, from: <b>engagement</b> (most liked first), <b>chronological</b>
-    order (oldest or newest first), and your <b>three metrics</b>. Choosing a metric moves every comment that has it to the top. Community notes and
-    replies are shown separately. For notes, engagement means the number of ratings.</p>
+    <header><span class="n">b</span><h2>Compare</h2><span class="sub" id="order-sub"></span></header>
+    <p style="margin:0 0 10px">Each of the three rankings below puts the comments with one of your metrics first; the levels below decide the order after
+    that: <b>likes</b> (most liked first) or <b>date</b> (oldest or newest first). ▲ and ▼ show how far a comment moved compared with ranking by likes.
+    Community notes and replies are shown separately; for notes, likes are replaced by the number of ratings.</p>
     <div class="row" id="levels" style="align-items:flex-end"></div>
     <p class="found" id="order-says" style="margin-top:10px"></p>
     <div class="row" id="counts" style="gap:8px;margin:6px 0 14px"></div>
     <div class="row" style="margin-bottom:6px">
-      <label class="field" style="flex:0 1 380px"><span>View</span><select id="viewmode"><option value="metrics">Three rankings side by side, one per metric</option><option value="x">Your order next to the engagement order</option><option value="yours">Your order only</option></select></label>
+      <label class="field" style="flex:0 1 380px"><span>View</span><select id="viewmode"><option value="metrics">Three rankings side by side, one per metric</option><option value="x">Your order next to ranking by likes</option><option value="yours">Your order only</option></select></label>
       <label class="field"><span>Show</span><select id="topk"><option value="10">top 10</option><option value="20">top 20</option><option value="50">top 50</option><option value="100000">all</option></select></label>
     </div>
     <p class="small muted" id="view-says" style="margin:0 0 6px"></p>
     <div id="view"></div>
-    <details class="more" style="margin-top:20px"><summary>Your metrics (as they will appear in your presentation)</summary>
+    <details class="more" style="margin-top:20px"><summary>Your metrics (as they will appear in your report)</summary>
       <div class="grid3" id="mets" style="margin-top:12px"></div>
-      <button type="button" class="btn small" id="from-step3" style="margin-top:10px">Take them again from step 3</button>
+      <button type="button" class="btn small" id="from-step3" style="margin-top:10px">Take them again from step 2</button>
     </details>
   </section>
 
   <section class="step off" id="s-save">
-    <header><h2>Save and show</h2><span class="sub" id="save-state"></span></header>
+    <header><h2>Save and hand in</h2><span class="sub" id="save-state"></span></header>
     <div class="row">
-      <label class="field" style="flex:1 1 300px"><span>Name of this result</span><input type="text" id="rname" placeholder="for example: Group 3 — Putin interview"></label>
-      <label class="field"><span>Notes and replies in the report and the presentation</span><select id="pres"><option value="20">top 20 of each</option><option value="50">top 50 of each</option><option value="100000">all</option></select></label>
+      <label class="field" style="flex:1 1 300px"><span>Name of this result</span><input type="text" id="rname" placeholder="for example: Group 3, Putin interview"></label>
+      <label class="field"><span>Comments in the report</span><select id="pres"><option value="20">top 20 of each</option><option value="50">top 50 of each</option><option value="100000">all</option></select></label>
     </div>
-    <h3 style="margin-top:18px">To hand in</h3>
+    <h3 style="margin-top:18px">To hand in: your three metrics and a table of your coded comments</h3>
     <div class="row">
       <button type="button" class="btn primary" id="dl-docx">Download the report (Word)</button>
       <button type="button" class="btn" id="dl-pdf">Save the report as PDF</button>
+      <button type="button" class="btn" id="dl-csv">Download the coded comments (CSV)</button>
     </div>
-    <p class="small muted" style="margin-top:8px">Download the <b>report</b> (Word, or PDF through the browser's print dialog). It contains your chosen
-    post, your bridging codebook, your order and the ranked community notes and replies (for each metric, if you chose the three-metric view). That is
-    the appendix of your hand-in. For the PDF, choose <i>Save as PDF</i> as the printer in the print dialog.</p>
-    <h3 style="margin-top:18px">To show and to keep</h3>
+    <p class="small muted" style="margin-top:8px">The report contains your post, your three metrics and the ranked comments with their codes and their rank
+    by likes. The CSV is the same table as a spreadsheet. For the PDF, choose <i>Save as PDF</i> as the printer in the print dialog.</p>
+    <h3 style="margin-top:18px">To keep</h3>
     <div class="row">
-      <button type="button" class="btn" id="dl-pres">Download a presentation page</button>
       <button type="button" class="btn" id="dl-result">Download your result file</button>
-      <button type="button" class="btn" id="dl-csv">Download the ordered CSV</button>
     </div>
-    <p class="small muted" style="margin-top:8px">The presentation page opens in any browser, also offline. The result file contains the coded thread,
-    the metrics and the order, and can be opened on this page on any computer.</p>
+    <p class="small muted" style="margin-top:8px">The result file contains your coded comments, your metrics and your order, and can be opened on this
+    page on any computer.</p>
   </section>
 </main>
 <script src="assets/lab.js"></script>
@@ -203,10 +201,10 @@ function drawFound() {
   const N = ITEMS.length, warn = [];
   const sel = L => { const s = el("select", { "aria-label": `Column of metric ${L}` }, el("option", { value: "", text: "(no column)" }), ...R.cols.map(c => el("option", { value: c, text: c })));
     s.value = R.map[L] || ""; s.onchange = () => { R.map[L] = s.value; persist(); build(); drawFound(); drawLevels(); render(); }; return s; };
-  if (!L3.some(L => R.map[L])) warn.push("No metric columns were found. The chatbot should have added metric_A, metric_B and metric_C: pick the right columns below, or check the file it returned.");
+  if (!L3.some(L => R.map[L])) warn.push("No metric columns were found. Fill in metric_A, metric_B and metric_C in the sample file with yes or no, or pick the right columns below.");
   L3.forEach(L => { if (R.map[L]) { const filled = ITEMS.filter(x => String(x.r[R.map[L]] ?? "").trim()).length;
-    if (filled < N) warn.push(`“${R.map[L]}” (${mname(L)}) is empty for ${N - filled} of ${N} comments: the chatbot may have stopped part-way. Those count as no.`); } });
-  L3.forEach(L => { if (R.map[L] && !ready(L)) warn.push(`The column “${R.map[L]}” has no metric name yet: name metric ${L} in step 3 or under “Your metrics” below to order by it.`); });
+    if (filled < N) warn.push(`“${R.map[L]}” (${mname(L)}) is empty for ${N - filled} of ${N} comments. Those count as no.`); } });
+  L3.forEach(L => { if (R.map[L] && !ready(L)) warn.push(`The column “${R.map[L]}” has no metric name yet: name metric ${L} in step 2 or under “Your metrics” below to order by it.`); });
   if (!D.likeCol) warn.push("No likes column: engagement treats every comment as 0 likes.");
   if (!D.timeCol || ITEMS.every(x => isNaN(x.t))) warn.push("No readable dates: chronological order falls back to the order of your file.");
   else { const bad = ITEMS.filter(x => isNaN(x.t)).length; if (bad) warn.push(`${bad} comments have no readable date; in chronological order they come last.`); }
@@ -230,7 +228,7 @@ function drawFound() {
 }
 
 /* ---------- ordering ---------- */
-const KEYS = () => [["", "—"], ["eng", "Engagement: most liked first"], ["old", "Chronological: oldest first"], ["new", "Chronological: newest first"],
+const KEYS = () => [["", "—"], ["eng", "Likes: most liked first"], ["old", "Chronological: oldest first"], ["new", "Chronological: newest first"],
   ...L3.filter(ready).map(L => [L, `${mname(L)} first`])];
 function drawLevels() {
   const opts = KEYS();
@@ -262,12 +260,12 @@ function orders() {
 function columns(S, view) {
   if (view === "metrics") return L3.filter(ready).map(L => ({ title: `${mname(L)} first`, list: S.byM[L], rank: x => x["r" + L], move: x => x.rx - x["r" + L], c: COL[L], hex: HEX[L], L }));
   const cols = [{ title: "Your order", list: S.yours, rank: x => x.ry, move: view === "x" ? x => x.rx - x.ry : null, c: "var(--accent)", hex: "#2a78d6" }];
-  if (view === "x") cols.push({ title: `Engagement order: ${S.eng}`, list: S.x, rank: x => x.rx, move: null, c: "var(--rule-2)", hex: "#9a9a94" });
+  if (view === "x") cols.push({ title: `Ranking by ${S.unit}: ${S.eng}`, list: S.x, rank: x => x.rx, move: null, c: "var(--rule-2)", hex: "#9a9a94" });
   return cols;
 }
-const ENG_NOTE = "The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.";
-const VIEW_SAYS = { x: "Your order next to the engagement order. ▲ and ▼ show how far a note or reply moved compared with the engagement order. The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.",
-  get metrics() { return `Three rankings side by side, one per metric. Each puts the notes or replies coded yes for that metric first, then ${R ? describeOrder() : "your order"}. ▲ and ▼ show how far each moved compared with the engagement order. ` + ENG_NOTE; },
+const ENG_NOTE = "Ranking by likes approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.";
+const VIEW_SAYS = { x: "Your order next to ranking by likes. ▲ and ▼ show how far a note or reply moved compared with ranking by likes. " + ENG_NOTE,
+  get metrics() { return `Three rankings side by side, one per metric. Each puts the notes or replies coded yes for that metric first, then ${R ? describeOrder() : "your order"}. ▲ and ▼ show how far each moved compared with ranking by likes. ` + ENG_NOTE; },
   yours: "Your order only." };
 function card(x, rank, move) {
   return el("article", { class: "cmt" },
@@ -304,9 +302,9 @@ function drawMets() {
       t.value = m[key] || ""; t.oninput = () => { m[key] = t.value; persist(); if (key === "name") { drawFound(); drawLevels(); render(); } };
       return el("label", { class: "field", style: "margin-top:8px" }, el("span", { text: label }), t); };
     return el("div", { class: "metric" }, el("div", { class: "mh" }, el("span", { class: "sw", style: `background:${COL[L3[j]]}` }), el("h3", { text: `Metric ${L3[j]}` })),
-      f("name", "Name"), f("def", "What it captures", 3), f("rule", "Coding rule", 3)); }));
+      f("name", "Name"), f("def", "What it captures", 3), f("rule", "How you identify it", 3)); }));
 }
-$("#from-step3").onclick = () => { const m = LAB.store.get("metrics"); if (!Array.isArray(m) || m.length !== 3) { alert("No metrics were saved in step 3 in this browser."); return; }
+$("#from-step3").onclick = () => { const m = LAB.store.get("metrics"); if (!Array.isArray(m) || m.length !== 3) { alert("No metrics were saved in step 2 in this browser."); return; }
   R.metrics = LAB.myMetrics(JSON.parse(JSON.stringify(m))); persist(); drawMets(); drawFound(); drawLevels(); render(); };
 
 /* ---------- downloads ---------- */
@@ -342,15 +340,15 @@ $("#dl-docx").onclick = async () => {
   const d = await reportData();
   const blocks = [{ type: "title", text: R.name || "Bridging" }, { type: "small", text: `ANTIGONE bridging lab · ${d.date}` }];
   if (d.meta) blocks.push({ type: "h1", text: "The post" }, { type: "p", text: d.meta.checked }, { type: "small", text: postLine(d.meta) });
-  blocks.push({ type: "h1", text: "Bridging codebook" });
+  blocks.push({ type: "h1", text: "Bridging metrics" });
   d.metrics.forEach(m => { blocks.push({ type: "h2", text: `Metric ${m.L}: ${m.name}` },
-    { type: "p", runs: [{ t: "What it captures. ", b: true }, m.def || "—"] }, { type: "p", runs: [{ t: "Coding rule. ", b: true }, m.rule || "—"] });
+    { type: "p", runs: [{ t: "What it captures. ", b: true }, m.def || "—"] }, { type: "p", runs: [{ t: "How to identify it. ", b: true }, m.rule || "—"] });
     if (m.example) blocks.push({ type: "p", runs: [{ t: "Example. ", b: true }, m.example] });
     blocks.push({ type: "small", text: m.count }); });
   blocks.push({ type: "h1", text: "Order" }, { type: "p", text: d.order });
   d.sections.forEach(t => blocks.push({ type: "h1", text: `Bridged ranking: ${t.title}` },
-    { type: "small", text: `The first ${t.k} of ${nOf(t.N, t.S)}. “Engagement rank” is the position when they are ordered by engagement (${t.eng}). The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.` },
-    { type: "table", widths: [700, 800, 2300, 900, 1200, 1700, 6970], head: ["Rank", "Engagement rank", "Metrics", t.unit, "Date", "Author", "Text"],
+    { type: "small", text: `The first ${t.k} of ${nOf(t.N, t.S)}. “Rank by likes” is the position when they are ranked by likes (for notes, by ratings) (${t.eng}). Ranking by likes approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.` },
+    { type: "table", widths: [700, 800, 2300, 900, 1200, 1700, 6970], head: ["Rank", "Rank by likes", "Metrics", t.unit, "Date", "Author", "Text"],
       rows: t.rows.map(r => [String(r.rank), String(r.xrank), r.metrics || "—", String(r.likes), r.date, r.author, r.text]) }));
   LAB.downloadBlob(`${fileBase()}_report.docx`, LAB.docx({ title: R.name || "Bridging", landscape: true, blocks }));
 };
@@ -364,49 +362,14 @@ th,td{border:1px solid #bfbfbf;padding:3pt 4pt;text-align:left;vertical-align:to
 td.t{white-space:pre-wrap;overflow-wrap:anywhere}</style></head><body>
 <h1>${esc(R.name || "Bridging")}</h1><p class="s">ANTIGONE bridging lab · ${d.date}</p>
 ${d.meta ? `<h2>The post</h2><p>${esc(d.meta.checked)}</p><p class="s">${esc(postLine(d.meta))}</p>` : ""}
-<h2>Bridging codebook</h2>${d.metrics.map(m => `<h3>Metric ${m.L}: ${esc(m.name)}</h3><p><b>What it captures.</b> ${esc(m.def || "—")}</p>`
-  + `<p><b>Coding rule.</b> ${esc(m.rule || "—")}</p>${m.example ? `<p><b>Example.</b> ${esc(m.example)}</p>` : ""}<p class="s">${esc(m.count)}</p>`).join("")}
+<h2>Bridging metrics</h2>${d.metrics.map(m => `<h3>Metric ${m.L}: ${esc(m.name)}</h3><p><b>What it captures.</b> ${esc(m.def || "—")}</p>`
+  + `<p><b>How to identify it.</b> ${esc(m.rule || "—")}</p>${m.example ? `<p><b>Example.</b> ${esc(m.example)}</p>` : ""}<p class="s">${esc(m.count)}</p>`).join("")}
 <h2>Order</h2><p>${esc(d.order)}</p>
-${d.sections.map(t => `<h2>Bridged ranking: ${esc(t.title)}</h2><p class="s">The first ${t.k} of ${esc(nOf(t.N, t.S))}. “Engagement rank” is the position when they are ordered by engagement (${esc(t.eng)}). The engagement order approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.</p>
+${d.sections.map(t => `<h2>Bridged ranking: ${esc(t.title)}</h2><p class="s">The first ${t.k} of ${esc(nOf(t.N, t.S))}. “Rank by likes” is the position when they are ranked by likes (for notes, by ratings) (${esc(t.eng)}). Ranking by likes approximates X's own reply ranking, which this site does not reproduce. X does not order community notes by ratings: it shows the notes that its rating algorithm classifies as helpful.</p>
 <table><colgroup><col style="width:4%"><col style="width:5%"><col style="width:14%"><col style="width:5%"><col style="width:7%"><col style="width:11%"><col></colgroup>
-<thead><tr><th>Rank</th><th>Engagement rank</th><th>Metrics</th><th>${t.unit}</th><th>Date</th><th>Author</th><th>Text</th></tr></thead><tbody>
+<thead><tr><th>Rank</th><th>Rank by likes</th><th>Metrics</th><th>${t.unit}</th><th>Date</th><th>Author</th><th>Text</th></tr></thead><tbody>
 ${t.rows.map(r => `<tr><td>${r.rank}</td><td>${r.xrank}</td><td>${esc(r.metrics || "—")}</td><td>${r.likes}</td><td>${r.date}</td><td>${esc(r.author)}</td><td class="t">${esc(r.text)}</td></tr>`).join("")}
 </tbody></table>`).join("")}</body></html>`);
-};
-$("#dl-pres").onclick = async () => {
-  const O = orders(), k = +R.pres || 20, N = ITEMS.length, view = R.view === "metrics" && !L3.some(ready) ? "yours" : R.view;
-  let meta = null; try { if (R.postId) meta = (await LAB.loadDisputed()).posts.find(p => p.id === R.postId) || null; } catch (e) {}
-  const badge = L => `<span class="b" style="background:${HEX[L]}">${esc(mname(L))}</span>`;
-  const item = (x, rank, move) => `<li><div class="m"><b>${rank}</b>${move != null ? (move ? `<span class="${move > 0 ? "up" : "dn"}">${move > 0 ? "▲" : "▼"}${Math.abs(move)}</span>` : `<span>=</span>`) : ""}`
-    + `<span>${esc(x.r.author ? "@" + x.r.author : LAB.KIND_LABEL[x.kind])}</span><span>${NF.format(x.likes)} ${x.kind === "note" ? "ratings" : "likes"}</span>`
-    + `${isNaN(x.t) ? "" : `<span>${new Date(x.t).toISOString().slice(0, 10)}</span>`}</div><p>${esc(LAB.short(x.text || "(no text)", 700))}</p>`
-    + `<div>${L3.filter(L => x.m[L]).map(badge).join(" ")}</div></li>`;
-  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(R.name || "Bridging")}</title><style>
-body{margin:0;background:#f7f7f6;color:#15171a;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-main{max-width:1180px;margin:0 auto;padding:40px 24px 80px}h1{font:400 2.1rem/1.15 Georgia,serif;margin:0 0 10px}h2{font:400 1.35rem Georgia,serif;margin:34px 0 10px}
-.claim{font:400 1.2rem/1.45 Georgia,serif;border-left:3px solid #2a78d6;padding:8px 14px;background:#fff;border-radius:0 8px 8px 0}
-.muted{color:#5b6068;font-size:14px}.mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-.met{background:#fff;border:1px solid #dcdcd8;border-radius:12px;padding:14px 16px}.met h3{margin:0 0 6px;font-size:16px}.met p{margin:6px 0;font-size:14px;color:#3e434a}
-.b{display:inline-block;color:#fff;border-radius:999px;padding:1px 9px;font-size:12px;margin:2px 4px 0 0}
-.cols{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:18px}h3.c{font-size:15px;margin:4px 0 10px;display:flex;gap:8px;align-items:center}h3.c i{width:10px;height:10px;border-radius:2px;display:inline-block}ol{list-style:none;margin:0;padding:0}
-li{background:#fff;border:1px solid #dcdcd8;border-radius:10px;padding:10px 13px;margin-bottom:8px}li p{margin:6px 0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px}
-.m{display:flex;gap:9px;font-size:12.5px;color:#5b6068;flex-wrap:wrap}.m b{color:#15171a}.up{color:#1b7a3e}.dn{color:#b3261e}
-table{border-collapse:collapse;font-size:14px}td,th{padding:5px 12px;border-bottom:1px solid #dcdcd8;text-align:left}
-@media(max-width:800px){.cols{grid-template-columns:1fr}}@media print{body{background:#fff}li,.met{break-inside:avoid}}
-</style></head><body><main>
-<p class="muted">ANTIGONE · bridging assignment · ${esc(new Date().toISOString().slice(0, 10))}</p>
-<h1>${esc(R.name || "Bridging")}</h1>
-${meta ? `<p class="claim">${esc(meta.checked)}</p><p class="muted">@${esc(meta.poster)} · ${esc(meta.date)} · fact-checked: ${esc(meta.verdicts.map(v => `${v.by}, ${v.rating || v.verdict}`).join("; "))} · ${meta.notes} community notes (${meta.notes_misleading} say misleading) · ${NF.format(meta.replies)} replies</p>` : ""}
-<h2>Our bridging metrics</h2><div class="mets">${R.metrics.map((m, j) => `<div class="met"><h3>${badge(L3[j])}</h3><p>${esc(m.def || "")}</p><p><b>Coded yes when:</b> ${esc(m.rule || "")}</p>`
-  + `<p class="muted">${R.map[L3[j]] ? esc(O.map(S => `${S.items.filter(x => x.m[L3[j]]).length} of ${nOf(S.items.length, S)}`).join(", ")) : "not coded"}</p></div>`).join("")}</div>
-${R.agreement && R.agreement.length ? `<p class="muted">Checked against our own coding: ${R.agreement.map(g => `${esc(mname(g.L))} ${Math.round(100 * g.a / g.n)}% agreement on ${g.n} comments`).join(" · ")}.</p>` : ""}
-<h2>Our order</h2><p>${esc(describeOrder().replace(/^./, c => c.toUpperCase()))}. Community notes and replies are ordered separately. ${esc(VIEW_SAYS[view])}</p>
-${O.map(S => { const cs = columns(S, view); return `<h2>${esc(S.title)} <span class="muted">${esc(nOf(S.items.length, S))}${k < S.items.length ? `, the first ${k} shown` : ""}</span></h2>
-<div class="cols" style="--n:${Math.max(1, cs.length)}">${cs.map(C => `<div><h3 class="c"><i style="background:${C.hex}"></i>${esc(C.title)}</h3><ol>${C.list.slice(0, k).map(x => item(x, C.rank(x), C.move ? C.move(x) : null)).join("")}</ol></div>`).join("")}</div>`; }).join("")}
-<p class="muted" style="margin-top:30px">Made with the ANTIGONE bridging lab.</p>
-</main></body></html>`;
-  LAB.download(`${fileBase()}_presentation.html`, html, "text/html");
 };
 
 drawSaved();

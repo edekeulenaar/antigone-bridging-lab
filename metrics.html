@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3 Define metrics · ANTIGONE bridging lab</title>
+<title>2 Design metrics · ANTIGONE bridging lab</title>
 <meta name="description" content="Define three bridging metrics, each with a coding rule.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,35 +15,32 @@
   <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
-    <a href="posts.html">1 Pick a post</a>
-    <a href="read.html">2 Close read</a>
-    <a href="metrics.html" aria-current="page">3 Define metrics</a>
-    <a href="prompt.html">4 Code with an LLM</a>
-    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="posts.html">1 Select a post</a>
+    <a href="read.html">1 The disagreement</a>
+    <a href="metrics.html" aria-current="page">2 Design metrics</a>
+    <a href="prompt.html">3 Code a sample</a>
+    <a href="order.html">3 Compare with likes</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>3 · Define your bridging metrics</h1>
-  <p class="lede">Define three metrics. These should be properties of a comment that, if comments with them came first, would help other sides
-  understand each other. For each, write:</p>
-  <ul class="lede" style="margin:0 0 8px;padding-left:1.3em">
-    <li>a <b>name</b>;</li>
-    <li><b>what it captures</b>, and why putting such comments first would amount to “bridging”;</li>
-    <li>a <b>coding rule</b>: exactly when a comment counts as “<i>yes</i>”, precise enough that two people, or a person and a chatbot, would code every comment the same way.</li>
-  </ul>
+  <h1>2 · Design three bridging metrics</h1>
+  <p class="lede">What properties of a comment might help opposing sides understand each other? Define three metrics and explain how you would
+  identify them. For each, write a <b>name</b>, <b>what it captures</b>, and <b>how you identify it</b>: exactly when a comment counts as “<i>yes</i>”,
+  precise enough that two people, or a person and an LLM, would code the same comment the same way.</p>
   <p class="lede"><b>Examples</b>: a comment has “breadth” if it makes two or more different statements; or it gives <b>context</b> if it explains a
   statement with a source, a date or an explanation.</p>
-  <p class="small muted">Your codebook can be downloaded as a Word document or a PDF, and is also part of the report in step 6.</p>
+  <p class="small muted">Your metrics are saved in this browser and can be downloaded as a Word document or a PDF; they are also part of the report on
+  <a href="order.html">3 Compare with likes</a>.</p>
 
   <div class="row" style="margin:18px 0 6px;gap:8px"><span class="lab" style="align-self:center">Templates:</span><span id="tpl" class="row" style="gap:8px"></span></div>
   <p class="small muted" id="tpl-msg">Press a template to fill the first empty metric, then rewrite it for your thread.</p>
   <div class="grid3" id="boxes" style="margin-top:12px"></div>
   <div class="row" style="margin-top:20px">
-    <a class="btn primary" href="prompt.html">Next: code the thread with an LLM →</a>
-    <button type="button" class="btn" id="dl">Download the codebook (Word)</button>
-    <button type="button" class="btn" id="pdf">Save the codebook as PDF</button>
+    <a class="btn primary" href="prompt.html">Next: code a sample →</a>
+    <button type="button" class="btn" id="dl">Download the metrics (Word)</button>
+    <button type="button" class="btn" id="pdf">Save the metrics as PDF</button>
     <span class="msg" id="saved"></span>
   </div>
 </main>
@@ -61,7 +58,7 @@ const blank = () => ({ name: "", def: "", rule: "", example: "" });
 const stored = LAB.store.get("metrics");
 let M = LAB.myMetrics(stored);
 if (JSON.stringify(M) !== JSON.stringify(stored)) LAB.store.set("metrics", M);
-const save = () => { const ok = LAB.store.set("metrics", M); $("#saved").textContent = ok ? "Saved in this browser." : "This browser could not save your metrics: download the codebook."; };
+const save = () => { const ok = LAB.store.set("metrics", M); $("#saved").textContent = ok ? "Saved in this browser." : "This browser could not save your metrics: download them."; };
 
 function draw() {
   $("#boxes").replaceChildren(...M.map((m, j) => {
@@ -72,8 +69,8 @@ function draw() {
     return el("div", { class: "metric" }, el("div", { class: "mh" }, el("span", { class: "sw", style: `background:var(--g${j + 1})` }), el("h3", { text: `Metric ${L}` }),
         el("button", { type: "button", class: "btn small", style: "margin-left:auto", text: "Clear", onclick: () => { M[j] = blank(); save(); draw(); } })),
       f("name", "Name", 0, ""),
-      f("def", "What it captures, and why putting such comments first would amount to bridging", 3, "Which comments, and why putting them first would help the sides understand each other."),
-      f("rule", "Coding rule: code yes when…", 4, "Exactly when a comment gets yes. Name the statements, the number, the side."),
+      f("def", "What it captures, and why it might help opposing sides understand each other", 3, "Which comments, and why putting them first would help the sides understand each other."),
+      f("rule", "How you identify it: code yes when…", 4, "Exactly when a comment gets yes. Name the statements, the number, the side."),
       f("example", "An example from your thread (optional)", 2, "A comment that gets yes, quoted."));
   }));
 }
@@ -83,16 +80,16 @@ $("#tpl").append(...TEMPLATES.map(t => el("button", { type: "button", class: "bt
   M[j] = Object.assign(blank(), t); save(); draw(); $("#tpl-msg").textContent = `Metric ${"ABC"[j]} filled with ${t.name}. Now rewrite it for your thread.`; } })));
 const cb = () => M.map((m, j) => ({ L: "ABC"[j], name: m.name || "(no name)", def: m.def || "—", rule: m.rule || "—", example: m.example || "" }));
 $("#dl").onclick = () => {
-  const blocks = [{ type: "title", text: "Bridging codebook" }, { type: "small", text: `ANTIGONE bridging lab · ${new Date().toISOString().slice(0, 10)}` }];
+  const blocks = [{ type: "title", text: "Bridging metrics" }, { type: "small", text: `ANTIGONE bridging lab · ${new Date().toISOString().slice(0, 10)}` }];
   cb().forEach(m => { blocks.push({ type: "h1", text: `Metric ${m.L}: ${m.name}` }, { type: "p", runs: [{ t: "What it captures. ", b: true }, m.def] },
-    { type: "p", runs: [{ t: "Coding rule. ", b: true }, m.rule] }); if (m.example) blocks.push({ type: "p", runs: [{ t: "Example. ", b: true }, m.example] }); });
-  LAB.downloadBlob("bridging_codebook.docx", LAB.docx({ title: "Bridging codebook", blocks }));
+    { type: "p", runs: [{ t: "How to identify it. ", b: true }, m.rule] }); if (m.example) blocks.push({ type: "p", runs: [{ t: "Example. ", b: true }, m.example] }); });
+  LAB.downloadBlob("bridging_metrics.docx", LAB.docx({ title: "Bridging metrics", blocks }));
 };
-$("#pdf").onclick = () => LAB.printHTML(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Bridging codebook</title><style>
+$("#pdf").onclick = () => LAB.printHTML(`<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Bridging metrics</title><style>
 @page{size:A4;margin:18mm}body{font:11pt/1.5 Calibri,"Segoe UI",Arial,sans-serif;color:#111}h1{font-size:20pt;font-weight:400;margin:0 0 2pt}
 h2{font-size:14pt;margin:18pt 0 6pt}p{margin:0 0 6pt}.s{color:#595959;font-size:9pt}</style></head><body>
-<h1>Bridging codebook</h1><p class="s">ANTIGONE bridging lab · ${new Date().toISOString().slice(0, 10)}</p>
-${cb().map(m => `<h2>Metric ${m.L}: ${LAB.esc(m.name)}</h2><p><b>What it captures.</b> ${LAB.esc(m.def)}</p><p><b>Coding rule.</b> ${LAB.esc(m.rule)}</p>`
+<h1>Bridging metrics</h1><p class="s">ANTIGONE bridging lab · ${new Date().toISOString().slice(0, 10)}</p>
+${cb().map(m => `<h2>Metric ${m.L}: ${LAB.esc(m.name)}</h2><p><b>What it captures.</b> ${LAB.esc(m.def)}</p><p><b>How to identify it.</b> ${LAB.esc(m.rule)}</p>`
   + (m.example ? `<p><b>Example.</b> ${LAB.esc(m.example)}</p>` : "")).join("")}</body></html>`);
 draw();
 if (M.some(m => m.name || m.rule)) $("#saved").textContent = "Your metrics, as you left them in this browser.";

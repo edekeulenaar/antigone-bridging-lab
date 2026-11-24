@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>1 Pick a post · ANTIGONE bridging lab</title>
+<title>1 Select a post · ANTIGONE bridging lab</title>
 <meta name="description" content="The disputed posts: where the professional fact-checker and the community notes reached opposite conclusions. Download each thread as a CSV.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,20 +15,20 @@
   <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
-    <a href="posts.html" aria-current="page">1 Pick a post</a>
-    <a href="read.html">2 Close read</a>
-    <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html">4 Code with an LLM</a>
-    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="posts.html" aria-current="page">1 Select a post</a>
+    <a href="read.html">1 The disagreement</a>
+    <a href="metrics.html">2 Design metrics</a>
+    <a href="prompt.html">3 Code a sample</a>
+    <a href="order.html">3 Compare with likes</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>1 · Pick a post</h1>
-  <p class="lede">Choose one of the disputed posts (posts where the fact-checker's verdict and the community notes reach opposite conclusions)
-  and press <i>Work on this post</i>. The list shows only posts with statements, which step 2 requires.</p>
-  <p class="small muted">Download its thread as a CSV. Each row is the original post, the fact-check, a community note or a reply (<code>Type</code>);
+  <h1>1 · Select a disputed post</h1>
+  <p class="lede">Choose a case and press <i>Work on this post</i>. A post is disputed when the fact-checker's verdict and the community notes reach
+  opposite conclusions. Then briefly identify the main disagreement on <a href="read.html">1 The disagreement</a>.</p>
+  <p class="small muted">The full thread can be downloaded as a CSV. Each row is the original post, the fact-check, a community note or a reply (<code>Type</code>);
   <code>text_translated</code> is the English text, <code>like_count</code> the likes, <code>timestamp</code> the date, and <code>Statement</code>
   the statements the row makes (several separated by <code>|</code>). A post's language is the language most of its replies are in.</p>
 
@@ -120,7 +120,7 @@ function card(p) {
   side.append(el("div", { class: "acts" }, pick, dl, md, el("span", { class: "pill ok", text: `${p.statements} statements` }),
     el("a", { href: p.url, target: "_blank", rel: "noopener", text: "Open the post on X ↗" }),
     ...vs.filter(v => v.url).map(v => el("a", { href: v.url, target: "_blank", rel: "noopener", text: `Fact-check by ${v.by} ↗` })),
-    chosen ? el("a", { href: "read.html?post=" + p.id, text: "Next: close read it →" }) : null, msg));
+    chosen ? el("a", { href: "read.html?post=" + p.id, text: "Next: identify the disagreement →" }) : null, msg));
   box.append(main, side);
   return box;
 }

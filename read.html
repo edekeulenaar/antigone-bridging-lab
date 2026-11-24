@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2 Close read · ANTIGONE bridging lab</title>
-<meta name="description" content="Read a disputed thread statement by statement.">
+<title>1 The disagreement · ANTIGONE bridging lab</title>
+<meta name="description" content="Identify the main disagreement in a disputed X thread, statement by statement.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Libre+Caslon+Text:ital,wght@0,400;1,400&display=swap">
@@ -15,21 +15,20 @@
   <a class="brand" href="index.html">ANTIGONE bridging lab</a>
   <nav class="nav" aria-label="Steps">
     <a href="index.html">Instructions</a>
-    <a href="posts.html">1 Pick a post</a>
-    <a href="read.html" aria-current="page">2 Close read</a>
-    <a href="metrics.html">3 Define metrics</a>
-    <a href="prompt.html">4 Code with an LLM</a>
-    <a href="order.html">5–6 Upload &amp; order</a>
+    <a href="posts.html">1 Select a post</a>
+    <a href="read.html" aria-current="page">1 The disagreement</a>
+    <a href="metrics.html">2 Design metrics</a>
+    <a href="prompt.html">3 Code a sample</a>
+    <a href="order.html">3 Compare with likes</a>
     <a href="https://claude.ai/artifact/C2MCv6EvPMsV7Sf9JYqmwA#disputed" target="_blank" rel="noopener">Datasets ↗</a>
   </nav>
 </div></div>
 
 <main class="wrap">
-  <h1>2 · Close read the thread</h1>
-  <p class="lede">Fact-checkers, community notes and commenters disagree around competing <b>statements</b>. In the Tucker Carlson interview
-  thread, for instance, the post argued that <i>"Western populations are misinformed by their media"</i> and butted against community notes
-  and comments that said that <i>"Western media has never suppressed Russian or Putin's viewpoints"</i>.</p>
-  <p class="lede">Open each statement, read the comments that make it, and discuss these questions:</p>
+  <h1>1 · Identify the main disagreement</h1>
+  <p class="lede">Briefly identify the main disagreement in your case. Below, the thread is laid out by the statements made by the post, the fact-check,
+  the community notes and the replies: open a statement to read the comments that make it. The labels show which statements the post and the
+  fact-check make, and which statements contradict each other.</p>
 
   <section class="step">
     <div class="row">
@@ -38,23 +37,11 @@
     <details class="more"><summary>…or open a CSV of your own (with a <code>Statement</code> column)</summary><div id="drop" style="margin-top:10px"></div></details>
   </section>
 
-  <section class="step" style="margin-top:22px">
-    <h2>Questions to discuss</h2>
-    <ol class="qs">
-      <li>Which statements do <b>most comments</b> make, and which kinds of users make them?</li>
-      <li>Which statements do <b>few comments</b> make? Are they rare because few users hold them, or because they receive little attention in the thread?</li>
-      <li>Where does one side attribute to the other a position <b>it does not hold</b>?</li>
-      <li>Which statements of one side <b>get no answer from the other</b>?</li>
-      <li>What would both (or more) sides <b>need to know to understand one another</b>?</li>
-    </ol>
-    <p class="small muted" style="margin-top:8px">For each answer, note two or three comments as evidence. You may base your bridging metrics on these answers.</p>
-  </section>
-
   <section class="step" id="stmts-box" hidden>
     <header><h2>The statements</h2><span class="sub" id="st-sub"></span></header>
     <div id="stmts"></div>
   </section>
-  <p style="margin-top:24px"><a class="btn primary" href="metrics.html">Next: define your bridging metrics →</a></p>
+  <p style="margin-top:24px"><a class="btn primary" href="metrics.html">Next: design your metrics →</a></p>
 </main>
 <script src="assets/lab.js"></script>
 <script>
